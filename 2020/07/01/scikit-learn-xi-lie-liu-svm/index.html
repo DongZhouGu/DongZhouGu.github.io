@@ -1,0 +1,1996 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="scikit-learn系列六：SVM, 欢迎来到，TWOTO 的博客">
+    <meta name="description" content="技术、效率、摄影">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>scikit-learn系列六：SVM | 欢迎来到，TWOTO 的博客</title>
+    <link rel="icon" type="image/png" href="/twoto.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/jquery/jquery.min.js"></script>
+
+<style type="text/css" lang="css">
+    #loading-container{
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-height: 100vh;
+        width: 100vw;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #FFF;
+        text-align: center;
+        /* loader页面消失采用渐隐的方式*/
+        -webkit-transition: opacity 1s ease;
+        -moz-transition: opacity 1s ease;
+        -o-transition: opacity 1s ease;
+        transition: opacity 1s ease;
+    }
+    .loading-image{
+        width: 120px;
+        height: 50px;
+        transform: translate(-50%);
+    }
+    
+    .loading-image div:nth-child(2) {
+        -webkit-animation: pacman-balls 1s linear 0s infinite;
+        animation: pacman-balls 1s linear 0s infinite
+    }
+
+    .loading-image div:nth-child(3) {
+        -webkit-animation: pacman-balls 1s linear .33s infinite;
+        animation: pacman-balls 1s linear .33s infinite
+    }
+
+    .loading-image div:nth-child(4) {
+        -webkit-animation: pacman-balls 1s linear .66s infinite;
+        animation: pacman-balls 1s linear .66s infinite
+    }
+
+    .loading-image div:nth-child(5) {
+        -webkit-animation: pacman-balls 1s linear .99s infinite;
+        animation: pacman-balls 1s linear .99s infinite
+    }
+    
+   .loading-image div:first-of-type {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_up .5s 0s infinite;
+        animation: rotate_pacman_half_up .5s 0s infinite;
+    }
+    .loading-image div:nth-child(2) {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_down .5s 0s infinite;
+        animation: rotate_pacman_half_down .5s 0s infinite;
+        margin-top: -50px;
+    }
+    @-webkit-keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @-webkit-keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+
+    @keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+    
+    @-webkit-keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+
+    @keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+    
+   
+    .loading-image div:nth-child(3),
+    .loading-image div:nth-child(4),
+    .loading-image div:nth-child(5),
+    .loading-image div:nth-child(6){
+        background-color: #49b1f5;
+        width: 15px;
+        height: 15px;
+        border-radius: 100%;
+        margin: 2px;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        transform: translateY(-6.25px);
+        top: 25px;
+        left: 100px;
+    }
+    .loading-text{
+        margin-bottom: 20vh;
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2rem;
+        box-sizing: border-box;
+        padding: 0 10px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    @media only screen and (max-width: 500px) {
+         .loading-text{
+            font-size: 1.5rem;
+         }
+    }
+    .fadeout {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    /* logo出现动画 */
+    @-webkit-keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}100%{opacity:1;-webkit-transform:none;transform:none}}
+    @keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);}}
+ </style>
+ <script>
+(function () {
+    const loaded = function(){
+       setTimeout(function(){
+            const loader = document.getElementById("loading-container");
+            loader.className="fadeout" ;//使用渐隐的方法淡出loading page
+            // document.getElementById("body-wrap").style.display="flex";
+            setTimeout(function(){
+                loader.style.display="none";
+            },1000); 
+        },1000);//强制显示loading page 1s  
+    };
+    loaded();
+})()
+ </script><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="欢迎来到，TWOTO 的博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><style type="text/css" lang="css">
+    #loading-container{
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-height: 100vh;
+        width: 100vw;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #FFF;
+        text-align: center;
+        /* loader页面消失采用渐隐的方式*/
+        -webkit-transition: opacity 1s ease;
+        -moz-transition: opacity 1s ease;
+        -o-transition: opacity 1s ease;
+        transition: opacity 1s ease;
+    }
+    .loading-image{
+        width: 120px;
+        height: 50px;
+        transform: translate(-50%);
+    }
+    
+    .loading-image div:nth-child(2) {
+        -webkit-animation: pacman-balls 1s linear 0s infinite;
+        animation: pacman-balls 1s linear 0s infinite
+    }
+
+    .loading-image div:nth-child(3) {
+        -webkit-animation: pacman-balls 1s linear .33s infinite;
+        animation: pacman-balls 1s linear .33s infinite
+    }
+
+    .loading-image div:nth-child(4) {
+        -webkit-animation: pacman-balls 1s linear .66s infinite;
+        animation: pacman-balls 1s linear .66s infinite
+    }
+
+    .loading-image div:nth-child(5) {
+        -webkit-animation: pacman-balls 1s linear .99s infinite;
+        animation: pacman-balls 1s linear .99s infinite
+    }
+    
+   .loading-image div:first-of-type {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_up .5s 0s infinite;
+        animation: rotate_pacman_half_up .5s 0s infinite;
+    }
+    .loading-image div:nth-child(2) {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_down .5s 0s infinite;
+        animation: rotate_pacman_half_down .5s 0s infinite;
+        margin-top: -50px;
+    }
+    @-webkit-keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @-webkit-keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+
+    @keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+    
+    @-webkit-keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+
+    @keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+    
+   
+    .loading-image div:nth-child(3),
+    .loading-image div:nth-child(4),
+    .loading-image div:nth-child(5),
+    .loading-image div:nth-child(6){
+        background-color: #49b1f5;
+        width: 15px;
+        height: 15px;
+        border-radius: 100%;
+        margin: 2px;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        transform: translateY(-6.25px);
+        top: 25px;
+        left: 100px;
+    }
+    .loading-text{
+        margin-bottom: 20vh;
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2rem;
+        box-sizing: border-box;
+        padding: 0 10px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    @media only screen and (max-width: 500px) {
+         .loading-text{
+            font-size: 1.5rem;
+         }
+    }
+    .fadeout {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    /* logo出现动画 */
+    @-webkit-keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}100%{opacity:1;-webkit-transform:none;transform:none}}
+    @keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);}}
+ </style>
+ <script>
+(function () {
+    const loaded = function(){
+       setTimeout(function(){
+            const loader = document.getElementById("loading-container");
+            loader.className="fadeout" ;//使用渐隐的方法淡出loading page
+            // document.getElementById("body-wrap").style.display="flex";
+            setTimeout(function(){
+                loader.style.display="none";
+            },1000); 
+        },1000);//强制显示loading page 1s  
+    };
+    loaded();
+})()
+ </script></head>
+
+
+
+ <div id="loading-container">
+     <p class="loading-text">玩命加载中 . . . </p> 
+     <div class="loading-image">
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div> 
+         <div></div>
+     </div>
+ </div><body>
+<!--动态线条背景-->
+<script type="text/javascript"
+color="122 103 238" opacity='0.5' zIndex="-1" count="200"
+src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+</script>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/mylogo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">欢迎来到，TWOTO 的博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/gallery" class="waves-effect waves-light">
+      
+      <i class="fas fa-camera-retro" style="zoom: 0.6;"></i>
+      
+      <span>相册</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/mylogo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">欢迎来到，TWOTO 的博客</div>
+        <div class="logo-desc">
+            
+            技术、效率、摄影
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/gallery" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-camera-retro"></i>
+			
+			相册
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/DongZhouGu" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/DongZhouGu" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/medias/featureimages/11.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">scikit-learn系列六：SVM</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/ML%E7%AE%97%E6%B3%95/">
+                                <span class="chip bg-color">ML算法</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                机器学习
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-07-01
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    5.4k
+                </div>
+                
+
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="项目地址传送门，欢迎-star-和-fork-！"><a href="#项目地址传送门，欢迎-star-和-fork-！" class="headerlink" title="项目地址传送门，欢迎 star 和 fork ！"></a>项目地址<a href="https://github.com/DongZhouGu/scikit-learn-ml" target="_blank" rel="noopener">传送门</a>，欢迎 star 和 fork ！</h2><h2 id="1-SVM概述"><a href="#1-SVM概述" class="headerlink" title="1. SVM概述"></a>1. SVM概述</h2><p>支持向量机(Support Vector Machines, SVM): 是一种监督学习算法。在工业界和学术界都有广泛的应用。特别是针对数据集较小的情况下，往往其分类效果比神经网络好。</p>
+<ul>
+<li>支持向量(Support Vector) 就是离分隔超平面最近的那些点。</li>
+<li>机(Machine) 就是表示一种算法，而不是表示机器。</li>
+</ul>
+<h2 id="2-SVM原理"><a href="#2-SVM原理" class="headerlink" title="2. SVM原理"></a>2. SVM原理</h2><p>SVM的原理就是使用分隔超平面来划分数据集，并使得支持向量（数据集中离分隔超平面最近的点）到该分隔超平面的距离最大。其最大特点是能构造出最大间距的决策边界，从而提高分类算法的鲁棒性。</p>
+<p>要给左右两边的点进行分类，明显发现: 选择D会比B、C分隔的效果要好很多。</p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/SVM_3_linearly-separable.jpg" alt="线性可分"></p>
+<h3 id="2-1-寻找最大间隔"><a href="#2-1-寻找最大间隔" class="headerlink" title="2.1 寻找最大间隔"></a>2.1 寻找最大间隔</h3><h4 id="点到超平面的距离"><a href="#点到超平面的距离" class="headerlink" title="点到超平面的距离"></a>点到超平面的距离</h4><ul>
+<li><p>分隔超平面<code>函数间距</code>:  $y(x)=w^Tx+b$</p>
+</li>
+<li><p>分类的结果:  $f(x)=sign(w^Tx+b)$   (sign表示&gt;0为1，&lt;0为-1，=0为0) </p>
+</li>
+<li><p>点到超平面的<code>几何间距</code>: $d(x)=(w^Tx+b)/||w||$  （$||w||$表示w矩阵的二范数=&gt; $\sqrt{w^T*w}$, 点到超平面的距离也是类似的）</p>
+</li>
+</ul>
+<p>$$<br>d=\left|\frac{A x_{0}+B y_{0}+C}{\sqrt{A^{2}+B^{2}}}\right|<br>$$</p>
+<h4 id="拉格朗日乘子法"><a href="#拉格朗日乘子法" class="headerlink" title="拉格朗日乘子法"></a>拉格朗日乘子法</h4><ul>
+<li>类别标签用-1、1，是为了后期方便 $ label<em>(w^Tx+b)$ 的标识和距离计算；如果 $label</em>(w^Tx+b)&gt;0$ 表示预测正确，否则预测错误。</li>
+<li>现在目标很明确，就是要找到<code>w</code>和<code>b</code>，因此我们必须要找到最小间隔的数据点，也就是前面所说的<code>支持向量</code>。<ul>
+<li>也就说，让最小的距离取最大.(最小的距离: 就是最小间隔的数据点；最大: 就是最大间距，为了找出最优超平面–最终就是支持向量)</li>
+<li>目标函数: $arg: max_{关于w, b} \left( min[label<em>(w^Tx+b)]</em>\frac{1}{||w||} \right) $<ol>
+<li>如果 $label*(w^Tx+b)&gt;0$ 表示预测正确，也称<code>函数间隔</code>，$||w||$ 可以理解为归一化，也称<code>几何间隔</code>。</li>
+<li>令 $label<em>(w^Tx+b)&gt;=1$， 因为0～1之间，得到的点是存在误判的可能性，所以要保障 $min[label</em>(w^Tx+b)]=1$，才能更好降低噪音数据影响。</li>
+<li>所以本质上是求 $arg: max_{关于w, b}  \frac{1}{||w||} $；也就说，我们约束(前提)条件是: $label*(w^Tx+b)=1$</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>新的目标函数求解:  $arg: max_{关于w, b}  \frac{1}{||w||} $<ul>
+<li>=&gt; 就是求: $arg: min_{关于w, b} ||w|| $ (求矩阵会比较麻烦，如果x只是 $\frac{1}{2}*x^2$ 的偏导数，那么。。同样是求最小值)</li>
+<li>=&gt; 就是求: $arg: min_{关于w, b} (\frac{1}{2}*||w||^2)$ (二次函数求导，求极值，平方也方便计算)</li>
+<li>本质上就是求线性不等式的二次优化问题(求分隔超平面，等价于求解相应的凸二次规划问题)</li>
+</ul>
+</li>
+<li>通过拉格朗日乘子法，求二次优化问题<ul>
+<li>假设需要求极值的目标函数 (objective function) 为 f(x,y)，限制条件为 φ(x,y)=M  # M=1</li>
+<li>设g(x,y)=M-φ(x,y)   # 临时φ(x,y)表示下文中 $label*(w^Tx+b)$</li>
+<li>定义一个新函数: F(x,y,λ)=f(x,y)+λg(x,y)</li>
+<li>a为λ（a&gt;=0），代表要引入的拉格朗日乘子(Lagrange multiplier)</li>
+<li>那么:  $L(w,b,\alpha)=\frac{1}{2} * ||w||^2 + \sum_{i=1}^{n} \alpha_i * [1 - label * (w^Tx+b)]$</li>
+<li>因为: $label<em>(w^Tx+b)&gt;=1, \alpha&gt;=0$ , 所以 $\alpha</em>[1-label<em>(w^Tx+b)]&lt;=0$ , $\sum_{i=1}^{n} \alpha_i * [1-label</em>(w^Tx+b)]&lt;=0$ </li>
+<li>当 $label*(w^Tx+b)&gt;1$ 则 $\alpha=0$ ，表示该点为<font color="red">非支持向量</font></li>
+<li>相当于求解:  $max_{关于\alpha} L(w,b,\alpha) = \frac{1}{2} *||w||^2$ </li>
+<li>如果求:  $min_{关于w, b} \frac{1}{2} *||w||^2$ , 也就是要求:  $min_{关于w, b} \left( max_{关于\alpha} L(w,b,\alpha)\right)$ </li>
+</ul>
+</li>
+<li>现在转化到对偶问题的求解<ul>
+<li>$min_{关于w, b} \left(max_{关于\alpha} L(w,b,\alpha) \right) $ &gt;= $max_{关于\alpha} \left(min_{关于w, b}\ L(w,b,\alpha) \right) $ </li>
+<li>现在分2步</li>
+<li>先求:  $min_{关于w, b} L(w,b,\alpha)=\frac{1}{2} * ||w||^2 + \sum_{i=1}^{n} \alpha_i * [1 - label * (w^Tx+b)]$</li>
+<li>就是求<code>L(w,b,a)</code>关于[w, b]的偏导数, 得到<code>w和b的值</code>，并化简为: <code>L和a的方程</code>。</li>
+<li>参考:  如果公式推导还是不懂，也可以参考《统计学习方法》李航-P103&lt;学习的对偶算法&gt;<br><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/SVM_%E6%9D%BE%E5%BC%9B%E5%8F%98%E9%87%8F.jpg" alt="计算拉格朗日函数的对偶函数"></li>
+</ul>
+</li>
+<li>终于得到课本上的公式:  $max_{关于\alpha} \left( \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i, j=1}^{m} label_i·label_j·\alpha_i·\alpha_j·&lt;x_i, x_j&gt; \right) $</li>
+<li>约束条件:  $a&gt;=0$ 并且 $\sum_{i=1}^{m} a_i·label_i=0$</li>
+</ul>
+<h3 id="2-2-松弛变量-slack-variable"><a href="#2-2-松弛变量-slack-variable" class="headerlink" title="2.2 松弛变量(slack variable)"></a>2.2 松弛变量(slack variable)</h3><p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/%E6%9D%BE%E5%BC%9B%E5%8F%98%E9%87%8F.png" alt="松弛变量公式"></p>
+<ul>
+<li>我们知道几乎所有的数据都不那么干净, 通过引入松弛变量来 <code>允许数据点可以处于分隔面错误的一侧</code>。</li>
+<li>约束条件:  $C&gt;=a&gt;=0$ 并且 $\sum_{i=1}^{m} a_i·label_i=0$</li>
+<li>总的来说: <ul>
+<li><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/SVM_5_Lagrangemultiplier.png" alt="松弛变量"> 表示 <code>松弛变量</code></li>
+<li>常量C是 <code>惩罚因子</code>, 表示离群点的权重（用于控制“最大化间隔”和“保证大部分点的函数间隔小于1.0” ）<ul>
+<li>$label*(w^Tx+b) &gt; 1$ and alpha = 0 (在边界外，就是非支持向量)</li>
+<li>$label*(w^Tx+b) = 1$ and 0&lt; alpha &lt; C (在分割超平面上，就支持向量)</li>
+<li>$label*(w^Tx+b) &lt; 1$ and alpha = C (在分割超平面内，是误差点 -&gt; C表示它该受到的惩罚因子程度)</li>
+<li>参考地址: <a href="https://www.zhihu.com/question/48351234/answer/110486455" target="_blank" rel="noopener">https://www.zhihu.com/question/48351234/answer/110486455</a></li>
+</ul>
+</li>
+<li>C值越大，表示离群点影响越大，就越容易过度拟合；反之有可能欠拟合。</li>
+<li>我们看到，目标函数控制了离群点的数目和程度，使大部分样本点仍然遵守限制条件。</li>
+<li>例如: 正类有10000个样本，而负类只给了100个（C越大表示100个负样本的影响越大，就会出现过度拟合，所以C决定了负样本对模型拟合程度的影响！，C就是一个非常关键的优化点！）</li>
+</ul>
+</li>
+<li>这一结论十分直接，SVM中的主要工作就是要求解 alpha.</li>
+</ul>
+<h3 id="2-3-核函数"><a href="#2-3-核函数" class="headerlink" title="2.3 核函数"></a>2.3 核函数</h3><ul>
+<li>对于线性可分的情况，效果明显</li>
+<li>对于非线性的情况也一样，此时需要用到一种叫<code>核函数(kernel)</code>的工具将数据转化为分类器易于理解的形式。</li>
+</ul>
+<blockquote>
+<p>利用核函数将数据映射到高维空间</p>
+</blockquote>
+<ul>
+<li>使用核函数: 可以将数据从某个特征空间到另一个特征空间的映射。（通常情况下: 这种映射会将低维特征空间映射到高维空间。）</li>
+<li>如果觉得特征空间很装逼、很难理解。</li>
+<li>可以把核函数想象成一个包装器(wrapper)或者是接口(interface)，它能将数据从某个很难处理的形式转换成为另一个较容易处理的形式。</li>
+<li>经过空间转换后: 低维需要解决的非线性问题，就变成了高维需要解决的线性问题。</li>
+<li>SVM 优化特别好的地方，在于所有的运算都可以写成内积(inner product: 是指2个向量相乘，得到单个标量 或者 数值)；内积替换成核函数的方式被称为<code>核技巧(kernel trick)</code>或者<code>核"变电"(kernel substation)</code></li>
+<li>核函数并不仅仅应用于支持向量机，很多其他的机器学习算法也都用到核函数。最流行的核函数: 径向基函数(radial basis function)hecn/AiLearning/blob/master/src/py2.x/ml/6.SVM/svm-complete.py</li>
+</ul>
+<h2 id="3-scikit-learn里的SVM"><a href="#3-scikit-learn里的SVM" class="headerlink" title="3. scikit-learn里的SVM"></a>3. scikit-learn里的SVM</h2><p>在scikit-learn里对SVM的算法实现都在包sklearn.svm下面，其中SVC类是用来进行分类任务的，SVR类是用来进行数值回归任务的。我们可能会有疑问，SVM不是用来进行分类的算法吗，为什么可以用来进行数值回归？实际上这只是数学上的一些扩展而已，在计算机里，可以用离散的数值计算来代替连续的数值回归。我们在K-近邻算法中已经看到过这种扩展实现。</p>
+<p>我们以 SVC 为例。首先需要选择 SVM 的核函数，由参数 kernel 来指定，其中值 linea r表示线性核函数，它只能产生直线形状的分隔超平面；值 poly 表示多项式核函数，用它可以构建出复杂形状的分隔超平面；值 rbf 表示径向基核函数，即高斯核函数。</p>
+<p>不同的核函数需要指定不同的参数。针对线性核函数，只需要指定参数 C，它表示对不符合最大间距规则的样本的惩罚力度，即前面介绍的松弛系数。针对多项式核函数，除了参数 C 之外，还需要指定 degree，它表示多项式的阶数。针对高斯核函数，除了参数C之外，还需要指定 gamma 值，这个值对应的是高斯核函数公式中的$\frac{1}{2 \sigma^{2}}$</p>
+<p>下面先来看一个最简单的例子。我们生成一个有两个特征、包含两种类别的数据，然后用线性核函数的SVM算法进行分类：</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
+<span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">def</span> <span class="token function">plot_hyperplane</span><span class="token punctuation">(</span>clf<span class="token punctuation">,</span> X<span class="token punctuation">,</span> y<span class="token punctuation">,</span> 
+                    h<span class="token operator">=</span><span class="token number">0.02</span><span class="token punctuation">,</span> 
+                    draw_sv<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> 
+                    title<span class="token operator">=</span><span class="token string">'hyperplan'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment" spellcheck="true"># create a mesh to plot in</span>
+    x_min<span class="token punctuation">,</span> x_max <span class="token operator">=</span> X<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>min<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> X<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>max<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span>
+    y_min<span class="token punctuation">,</span> y_max <span class="token operator">=</span> X<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>min<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> X<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>max<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span>
+    xx<span class="token punctuation">,</span> yy <span class="token operator">=</span> np<span class="token punctuation">.</span>meshgrid<span class="token punctuation">(</span>np<span class="token punctuation">.</span>arange<span class="token punctuation">(</span>x_min<span class="token punctuation">,</span> x_max<span class="token punctuation">,</span> h<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                         np<span class="token punctuation">.</span>arange<span class="token punctuation">(</span>y_min<span class="token punctuation">,</span> y_max<span class="token punctuation">,</span> h<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span>title<span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>xlim<span class="token punctuation">(</span>xx<span class="token punctuation">.</span>min<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> xx<span class="token punctuation">.</span>max<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>ylim<span class="token punctuation">(</span>yy<span class="token punctuation">.</span>min<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> yy<span class="token punctuation">.</span>max<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>xticks<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>yticks<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    Z <span class="token operator">=</span> clf<span class="token punctuation">.</span>predict<span class="token punctuation">(</span>np<span class="token punctuation">.</span>c_<span class="token punctuation">[</span>xx<span class="token punctuation">.</span>ravel<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> yy<span class="token punctuation">.</span>ravel<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true"># Put the result into a color plot</span>
+    Z <span class="token operator">=</span> Z<span class="token punctuation">.</span>reshape<span class="token punctuation">(</span>xx<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>contourf<span class="token punctuation">(</span>xx<span class="token punctuation">,</span> yy<span class="token punctuation">,</span> Z<span class="token punctuation">,</span> cmap<span class="token operator">=</span><span class="token string">'hot'</span><span class="token punctuation">,</span> alpha<span class="token operator">=</span><span class="token number">0.5</span><span class="token punctuation">)</span>
+
+    markers <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'o'</span><span class="token punctuation">,</span> <span class="token string">'s'</span><span class="token punctuation">,</span> <span class="token string">'^'</span><span class="token punctuation">]</span>
+    colors <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
+    labels <span class="token operator">=</span> np<span class="token punctuation">.</span>unique<span class="token punctuation">(</span>y<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> label <span class="token keyword">in</span> labels<span class="token punctuation">:</span>
+        plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>X<span class="token punctuation">[</span>y<span class="token operator">==</span>label<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> 
+                    X<span class="token punctuation">[</span>y<span class="token operator">==</span>label<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> 
+                    c<span class="token operator">=</span>colors<span class="token punctuation">[</span>label<span class="token punctuation">]</span><span class="token punctuation">,</span> 
+                    marker<span class="token operator">=</span>markers<span class="token punctuation">[</span>label<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> draw_sv<span class="token punctuation">:</span>
+        sv <span class="token operator">=</span> clf<span class="token punctuation">.</span>support_vectors_
+        plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>sv<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> sv<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">=</span><span class="token string">'y'</span><span class="token punctuation">,</span> marker<span class="token operator">=</span><span class="token string">'x'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> sklearn <span class="token keyword">import</span> svm
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>datasets <span class="token keyword">import</span> make_blobs
+
+X<span class="token punctuation">,</span> y <span class="token operator">=</span> make_blobs<span class="token punctuation">(</span>n_samples<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">,</span> centers<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">,</span> 
+                  random_state<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span> cluster_std<span class="token operator">=</span><span class="token number">0.3</span><span class="token punctuation">)</span>
+clf <span class="token operator">=</span> svm<span class="token punctuation">.</span>SVC<span class="token punctuation">(</span>C<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> kernel<span class="token operator">=</span><span class="token string">'linear'</span><span class="token punctuation">)</span>
+clf<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dpi<span class="token operator">=</span><span class="token number">144</span><span class="token punctuation">)</span>
+plot_hyperplane<span class="token punctuation">(</span>clf<span class="token punctuation">,</span> X<span class="token punctuation">,</span> y<span class="token punctuation">,</span> h<span class="token operator">=</span><span class="token number">0.01</span><span class="token punctuation">,</span> 
+                title<span class="token operator">=</span><span class="token string">'Maximum Margin Hyperplan'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输出的图形如下所示，其中带有x标记的点即为支持向量，它保存在模型的 <code>support_vector</code></p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200701095026364.png" alt="image-20200701095026364"></p>
+<p>此处需要注意的是 <code>plot_hyperplane()</code> 函数，其主要功能是画出样本点，同时画出分类区间。它的主要原理是使用 <code>numpy.meshgrid()</code> 生成一个坐标矩阵，最后用 <code>contourf()</code> 函数为坐标矩阵中不同类别的点填充不同的颜色。其中，<code>contourf()</code>函数是画等高线并填充颜色的函数。</p>
+<p>接着来看另外一个例子。我们生成一个有两个特征、包含三种类别的数据集，然后分别构造出4个SVM算法来拟合数据集，分别是线性核函数、三阶多项式核函数、gamma=0.5的高斯核函数，以及gamma=0.1的高斯核函数。最后把这4个SVM算法拟合出来的分隔超平面画出来。</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> sklearn <span class="token keyword">import</span> svm
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>datasets <span class="token keyword">import</span> make_blobs
+
+X<span class="token punctuation">,</span> y <span class="token operator">=</span> make_blobs<span class="token punctuation">(</span>n_samples<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">,</span> centers<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">,</span> 
+                  random_state<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span> cluster_std<span class="token operator">=</span><span class="token number">0.8</span><span class="token punctuation">)</span>
+clf_linear <span class="token operator">=</span> svm<span class="token punctuation">.</span>SVC<span class="token punctuation">(</span>C<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> kernel<span class="token operator">=</span><span class="token string">'linear'</span><span class="token punctuation">)</span>
+clf_poly <span class="token operator">=</span> svm<span class="token punctuation">.</span>SVC<span class="token punctuation">(</span>C<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> kernel<span class="token operator">=</span><span class="token string">'poly'</span><span class="token punctuation">,</span> degree<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">)</span>
+clf_rbf <span class="token operator">=</span> svm<span class="token punctuation">.</span>SVC<span class="token punctuation">(</span>C<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> kernel<span class="token operator">=</span><span class="token string">'rbf'</span><span class="token punctuation">,</span> gamma<span class="token operator">=</span><span class="token number">0.5</span><span class="token punctuation">)</span>
+clf_rbf2 <span class="token operator">=</span> svm<span class="token punctuation">.</span>SVC<span class="token punctuation">(</span>C<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> kernel<span class="token operator">=</span><span class="token string">'rbf'</span><span class="token punctuation">,</span> gamma<span class="token operator">=</span><span class="token number">0.1</span><span class="token punctuation">)</span>
+
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dpi<span class="token operator">=</span><span class="token number">144</span><span class="token punctuation">)</span>
+
+clfs <span class="token operator">=</span> <span class="token punctuation">[</span>clf_linear<span class="token punctuation">,</span> clf_poly<span class="token punctuation">,</span> clf_rbf<span class="token punctuation">,</span> clf_rbf2<span class="token punctuation">]</span>
+titles <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'Linear Kernel'</span><span class="token punctuation">,</span> 
+          <span class="token string">'Polynomial Kernel with Degree=3'</span><span class="token punctuation">,</span> 
+          <span class="token string">'Gaussian Kernel with $\gamma=0.5$'</span><span class="token punctuation">,</span> 
+          <span class="token string">'Gaussian Kernel with $\gamma=0.1$'</span><span class="token punctuation">]</span>
+<span class="token keyword">for</span> clf<span class="token punctuation">,</span> i <span class="token keyword">in</span> zip<span class="token punctuation">(</span>clfs<span class="token punctuation">,</span> range<span class="token punctuation">(</span>len<span class="token punctuation">(</span>clfs<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    clf<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>subplot<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span>
+    plot_hyperplane<span class="token punctuation">(</span>clf<span class="token punctuation">,</span> X<span class="token punctuation">,</span> y<span class="token punctuation">,</span> title<span class="token operator">=</span>titles<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输出的图形如下所示，其中带有 x 标记的点即为支持向量。</p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_2.jpg" alt="image-20200701101406980"></p>
+<p>左上角是线性核函数，它只能拟合出直线分隔超平面。右上角是三阶多项式核函数，它能拟合出复杂曲线分隔超平面。左下角是 <code>gamma=0.5</code> 的高斯核函数，右下角是 <code>gamma=0.1</code> 的高斯核函数，通过调整参数 <code>gamma</code> 的值，可以调整分隔超平面的形状。典型地，<code>gamma</code>值太大，越容易造成过拟合，<code>gamma</code> 值太小，高斯核函数会退化成线性核函数。我们把代码中的 <code>gamma</code>值 改为 100 和 0.01 后看一下输出图形是什么样的。</p>
+<p>思考：左下角 gamma=0.5 的高斯核函数的图片，带有 x 标记的点是支持向量。我们之前介绍过，离分隔超平面最近的点是支持向量，为什么很多离分隔超平面很远的点，也是支持向量呢？</p>
+<p>原因是高斯核函数把输入特征向量映射到了无限维的向量空间里，在映射后的高维向量空间里，这些点其实是离分隔超平面最近的点。当回到二维向量空间中时，这些点“看起来”就不像是距离分隔超平面最近的点了，但实际上它们就是支持向量。</p>
+<h2 id="4-示例：乳腺癌检测"><a href="#4-示例：乳腺癌检测" class="headerlink" title="4.示例：乳腺癌检测"></a>4.示例：乳腺癌检测</h2><p>之前我们使用逻辑回归算法进行过乳腺癌检测模型的学习和训练。这里我们再使用支持向量机算法来解决这个问题。首先我们载入数据：</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
+<span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>model_selection <span class="token keyword">import</span> train_test_split
+<span class="token comment" spellcheck="true"># 载入数据</span>
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>datasets <span class="token keyword">import</span> load_breast_cancer
+cancer <span class="token operator">=</span> load_breast_cancer<span class="token punctuation">(</span><span class="token punctuation">)</span>
+X <span class="token operator">=</span> cancer<span class="token punctuation">.</span>data
+y <span class="token operator">=</span> cancer<span class="token punctuation">.</span>target
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'data shape: {0}; no. positive: {1}; no. negative: {2}'</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span>
+    X<span class="token punctuation">.</span>shape<span class="token punctuation">,</span> y<span class="token punctuation">[</span>y<span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> y<span class="token punctuation">[</span>y<span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+X_train<span class="token punctuation">,</span> X_test<span class="token punctuation">,</span> y_train<span class="token punctuation">,</span> y_test <span class="token operator">=</span> train_test_split<span class="token punctuation">(</span>X<span class="token punctuation">,</span> y<span class="token punctuation">,</span> test_size<span class="token operator">=</span><span class="token number">0.2</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输出如下：</p>
+<pre class="line-numbers language-kotlin"><code class="language-kotlin"><span class="token keyword">data</span> shape<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token number">569</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span> no<span class="token punctuation">.</span> positive<span class="token operator">:</span> <span class="token number">357</span><span class="token punctuation">;</span> no<span class="token punctuation">.</span> negative<span class="token operator">:</span> <span class="token number">212</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以看出，我们的数据集很小。高斯核函数太复杂，容易造成过拟合，模型效果应该不会太好。我们先用高斯核函数来试一下，看与我们的猜测是否一致。</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>svm <span class="token keyword">import</span> SVC
+clf <span class="token operator">=</span> SVC<span class="token punctuation">(</span>C<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> kernel<span class="token operator">=</span><span class="token string">'rbf'</span><span class="token punctuation">,</span> gamma<span class="token operator">=</span><span class="token number">0.1</span><span class="token punctuation">)</span>
+clf<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X_train<span class="token punctuation">,</span> y_train<span class="token punctuation">)</span>
+train_score <span class="token operator">=</span> clf<span class="token punctuation">.</span>score<span class="token punctuation">(</span>X_train<span class="token punctuation">,</span> y_train<span class="token punctuation">)</span>
+test_score <span class="token operator">=</span> clf<span class="token punctuation">.</span>score<span class="token punctuation">(</span>X_test<span class="token punctuation">,</span> y_test<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'train score: {0}; test score: {1}'</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span>train_score<span class="token punctuation">,</span> test_score<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输出如下：</p>
+<pre class="line-numbers language-python"><code class="language-python">train score<span class="token punctuation">:</span> <span class="token number">1.0</span><span class="token punctuation">;</span> test score<span class="token punctuation">:</span> <span class="token number">0.6491228070175439</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>训练数据集分数为1.0，交叉验证数据集分数只有0.65，这是典型的过拟合现象。这里 gamma=0.1，这个值相对已经比较小了。我们可以把gamma改的更小如0.0001看看什么结果。</p>
+<p>当然，我们完全可以使用前面介绍过的 <code>GridSearchCV</code> 来自动选择最优参数。我们看看如果使用高斯模型，最优的gamma参数值是多少，其对应的模型交叉验证评分是多少。</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>model_selection <span class="token keyword">import</span> GridSearchCV
+<span class="token keyword">from</span> utils <span class="token keyword">import</span> plot_param_curve
+ gammas <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0.0003</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span>
+param_grid <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'gamma'</span><span class="token punctuation">:</span> gammas<span class="token punctuation">}</span>
+ clf <span class="token operator">=</span> GridSearchCV<span class="token punctuation">(</span>SVC<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> param_grid<span class="token punctuation">,</span> cv<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span>return_train_score<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+clf<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"best param: {0}\nbest score: {1}"</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span>clf<span class="token punctuation">.</span>best_params_<span class="token punctuation">,</span>clf<span class="token punctuation">.</span>best_score_<span class="token punctuation">)</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dpi<span class="token operator">=</span><span class="token number">144</span><span class="token punctuation">)</span>
+plot_param_curve<span class="token punctuation">(</span>plt<span class="token punctuation">,</span> gammas<span class="token punctuation">,</span> clf<span class="token punctuation">.</span>cv_results_<span class="token punctuation">,</span> xlabel<span class="token operator">=</span><span class="token string">'gamma'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输出如下：</p>
+<pre class="line-numbers language-python"><code class="language-python">best param<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token string">'gamma'</span><span class="token punctuation">:</span> <span class="token number">0.00011379310344827585</span><span class="token punctuation">}</span>
+best score<span class="token punctuation">:</span> <span class="token number">0.9367334264865704</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200701101406980.png" alt="image-20200701102906477"></p>
+<p>由此可见，即使在最好的 gamma 参数下，其平均最优得分也只是0.9367311072056239。我们选择在gamma为0.01时，画出学习曲线，更直观地观察模型拟合情况。</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> time
+<span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>model_selection <span class="token keyword">import</span> ShuffleSplit
+cv <span class="token operator">=</span> ShuffleSplit<span class="token punctuation">(</span>n_splits<span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">,</span> test_size<span class="token operator">=</span><span class="token number">0.2</span><span class="token punctuation">,</span> random_state<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+title <span class="token operator">=</span> <span class="token string">'Learning Curves for Gaussian Kernel'</span>
+start <span class="token operator">=</span> time<span class="token punctuation">.</span>clock<span class="token punctuation">(</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dpi<span class="token operator">=</span><span class="token number">144</span><span class="token punctuation">)</span>
+plot_learning_curve<span class="token punctuation">(</span>plt<span class="token punctuation">,</span> SVC<span class="token punctuation">(</span>C<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> kernel<span class="token operator">=</span><span class="token string">'rbf'</span><span class="token punctuation">,</span> gamma<span class="token operator">=</span><span class="token number">0.01</span><span class="token punctuation">)</span><span class="token punctuation">,</span> title<span class="token punctuation">,</span> X<span class="token punctuation">,</span> y<span class="token punctuation">,</span> ylim<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">0.5</span><span class="token punctuation">,</span> <span class="token number">1.01</span><span class="token punctuation">)</span><span class="token punctuation">,</span> cv<span class="token operator">=</span>cv<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'elaspe: {0:.6f}'</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span>time<span class="token punctuation">.</span>clock<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span>start<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输出如下：</p>
+<pre class="line-numbers language-python"><code class="language-python">elaspe<span class="token punctuation">:</span> <span class="token number">0.687500</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>画出来的图形如下所示：</p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_7.png" alt="image-20200701103141555"></p>
+<p>这是明显的过拟合现象，交叉验证数据集的评分非常低，且离训练数据集评分非常远。</p>
+<hr>
+<p><strong>接下来换一个模型，使用二阶多项式核函数的SVM来拟合模型，看看结果如何。</strong></p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>svm <span class="token keyword">import</span> SVC
+clf <span class="token operator">=</span> SVC<span class="token punctuation">(</span>C<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> kernel<span class="token operator">=</span><span class="token string">'poly'</span><span class="token punctuation">,</span> degree<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span>
+clf<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X_train<span class="token punctuation">,</span> y_train<span class="token punctuation">)</span>
+train_score <span class="token operator">=</span> clf<span class="token punctuation">.</span>score<span class="token punctuation">(</span>X_train<span class="token punctuation">,</span> y_train<span class="token punctuation">)</span>
+test_score <span class="token operator">=</span> clf<span class="token punctuation">.</span>score<span class="token punctuation">(</span>X_test<span class="token punctuation">,</span> y_test<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'train score: {0}; test score: {1}'</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span>train_score<span class="token punctuation">,</span> test_score<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输出如下：</p>
+<pre class="line-numbers language-python"><code class="language-python">train score<span class="token punctuation">:</span> <span class="token number">0.9098901098901099</span><span class="token punctuation">;</span> test score<span class="token punctuation">:</span> <span class="token number">0.9210526315789473</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>看起来结果好多了。作为对比，我们画出一阶多项式核函数的SVM和二阶多项式核函数的SVM的学习曲线，观察模型的拟合情况。</p>
+<pre class="line-numbers language-go"><code class="language-go"><span class="token keyword">import</span> time
+from sklearn<span class="token punctuation">.</span>model_selection <span class="token keyword">import</span> ShuffleSplit
+cv <span class="token operator">=</span> <span class="token function">ShuffleSplit</span><span class="token punctuation">(</span>n_splits<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span> test_size<span class="token operator">=</span><span class="token number">0.2</span><span class="token punctuation">,</span> random_state<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+title <span class="token operator">=</span> <span class="token string">'Learning Curves with degree={0}'</span>
+degrees <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">]</span>
+start <span class="token operator">=</span> time<span class="token punctuation">.</span><span class="token function">clock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span><span class="token function">figure</span><span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dpi<span class="token operator">=</span><span class="token number">144</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> i in <span class="token keyword">range</span><span class="token punctuation">(</span><span class="token function">len</span><span class="token punctuation">(</span>degrees<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    plt<span class="token punctuation">.</span><span class="token function">subplot</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token function">len</span><span class="token punctuation">(</span>degrees<span class="token punctuation">)</span><span class="token punctuation">,</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token function">plot_learning_curve</span><span class="token punctuation">(</span>plt<span class="token punctuation">,</span> <span class="token function">SVC</span><span class="token punctuation">(</span>C<span class="token operator">=</span><span class="token number">1.0</span><span class="token punctuation">,</span> kernel<span class="token operator">=</span><span class="token string">'poly'</span><span class="token punctuation">,</span> degree<span class="token operator">=</span>degrees<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        title<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>degrees<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> X<span class="token punctuation">,</span> y<span class="token punctuation">,</span> ylim<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">0.8</span><span class="token punctuation">,</span> <span class="token number">1.01</span><span class="token punctuation">)</span><span class="token punctuation">,</span> cv<span class="token operator">=</span>cv<span class="token punctuation">,</span> n_jobs<span class="token operator">=</span><span class="token number">4</span><span class="token punctuation">)</span>
+<span class="token function">print</span><span class="token punctuation">(</span><span class="token string">'elaspe: {0:.6f}'</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span>time<span class="token punctuation">.</span><span class="token function">clock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span>start<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输出如下：</p>
+<pre class="line-numbers language-css"><code class="language-css"><span class="token property">elaspe</span><span class="token punctuation">:</span> <span class="token number">0.281250</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>输出的图形如下所示：</p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200701102906477.png" alt="image-20200701103641519"></p>
+<p>前面我们使用逻辑回归算法来处理乳腺癌检测问题时，使用二阶多项式增加特征，同时使用L1范数作为正则项，其拟合效果比这里的支持向量机效果好。更重要的是，逻辑回归算法的运算效率远远高于二阶多项式核函数的支持向量机算法。当然，这里的支持向量机算法的效果还是比使用L2范数作为正则项的逻辑回归算法好的。由此可见，模型选择和模型参数调优，在工程实践中有着非常重要的作用的。</p>
+<h2 id="5-拓展SVM的理解"><a href="#5-拓展SVM的理解" class="headerlink" title="5. 拓展SVM的理解"></a>5. 拓展SVM的理解</h2><h3 id="什么是-SVM-？"><a href="#什么是-SVM-？" class="headerlink" title="什么是 SVM ？"></a>什么是 SVM ？</h3><p>Support Vector Machine, 一个普通的 SVM 就是一条直线罢了，用来完美划分 linearly separable 的两类。但这又不是一条普通的直线，这是无数条可以分类的直线当中最完美的，因为它恰好在两个类的中间，距离两个类的点都一样远。而所谓的 Support vector 就是这些离分界线最近的『点』。如果去掉这些点，直线多半是要改变位置的。可以说是这些 vectors （主，点点） support （谓，定义）了 machine （宾，分类器）…</p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_8.png" alt="k_2" title="k_2"></p>
+<p>所以谜底就在谜面上啊朋友们，只要找到了这些最靠近的点不就找到了 SVM 了嘛。</p>
+<p>如果是高维的点，SVM 的分界线就是平面或者超平面。其实没有差，都是一刀切两块，我就统统叫直线了。</p>
+<h3 id="怎么求解-SVM-？"><a href="#怎么求解-SVM-？" class="headerlink" title="怎么求解 SVM ？"></a>怎么求解 SVM ？</h3><p>关于这条直线，我们知道 </p>
+<p>(1)它离两边一样远，(2)最近距离就是到support vector的距离，其他距离只能更远。</p>
+<p>于是自然而然可以得到重要表达 <b>I. direct representation</b></p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200701103141555.png" alt="k_7" title="k_7"></p>
+<p>（可以把 margin 看作是 boundary 的函数，并且想要找到使得是使得 margin 最大化的boundary，而 margin(*) 这个函数是: 输入一个 boundary ，计算（正确分类的）所有苹果和香蕉中，到 boundary 的最小距离。）</p>
+<p>又有最大又有最小看起来好矛盾。实际上『最大』是对这个整体使用不同 boundary 层面的最大，『最小』是在比较『点』的层面上的最小。外层在比较 boundary 找最大的 margin ，内层在比较点点找最小的距离。</p>
+<p>其中距离，说白了就是点到直线的距离；只要定义带正负号的距离，是 {苹果+1} 面为正 {香蕉-1} 面为负的距离，互相乘上各自的 label <img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200701103641519.png" alt="k_8" title="k_8"> ，就和谐统一民主富强了。</p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_9.png" alt="k_9" title="k_9"></p>
+<p>到这里为止已经说完了所有关于SVM的直观了解，如果不想看求解，可以跳过下面一大段直接到 objective function 。</p>
+<p>直接表达虽然清楚但是求解无从下手。做一些简单地等价变换（分母倒上来）可以得到 <b>II. canonical representation </b> （敲黑板）</p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_10.png" alt="k_10" title="k_10"></p>
+<p>要得到 <b>III. dual representation</b> 之前需要大概知道一下拉格朗日乘子法 (method of lagrange multiplier)，它是用在有各种约束条件(各种 “subject to” )下的目标函数，也就是直接可以求导可以引出 dual representation（怎么还没完摔）</p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_11.png" alt="k_11" title="k_11"></p>
+<p>稍微借用刚刚数学表达里面的内容看个有趣的东西: </p>
+<p>还记得我们怎么预测一个新的水果是苹果还是香蕉吗？我们代入到分界的直线里，然后通过符号来判断。</p>
+<p>刚刚w已经被表达出来了也就是说这个直线现在变成了:  <img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_12.png" alt="k_12" title="k_12"></p>
+<p>看似仿佛用到了所有的训练水果，但是其中 <img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_13.png" alt="k_13" title="k_13"> 的水果都没有起到作用，剩下的就是小部分靠边边的 Support vectors 呀。</p>
+<p><b>III. dual representation</b></p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_14.png" alt="k_14" title="k_14"></p>
+<p><b>如果香蕉和苹果不能用直线分割呢？</b></p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_15.png" alt="k_3" title="k_3"></p>
+<p>Kernel trick. </p>
+<p>其实用直线分割的时候我们已经使用了 kernel ，那就是线性 kernel , <img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_3.jpg" alt="k_15" title="k_15"></p>
+<p>如果要替换 kernel 那么把目标函数里面的内积全部替换成新的 kernel function 就好了，就是这么简单。</p>
+<p>第一个武侠大师的比喻已经说得很直观了，低维非线性的分界线其实在高维是可以线性分割的，可以理解为——『你们是虫子！』分得开个p…（大雾）</p>
+<p><b>如果香蕉和苹果有交集呢？</b></p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_4.jpg" alt="k_4" title="k_4"></p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_16.png" alt="k_16" title="k_16"></p>
+<p><b>如果还有梨呢？</b></p>
+<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/k_5.jpg" alt="k_5" title="k_5"></p>
+<p>可以每个类别做一次 SVM: 是苹果还是不是苹果？是香蕉还是不是香蕉？是梨子还是不是梨子？从中选出可能性最大的。这是 one-versus-the-rest approach。</p>
+<p>也可以两两做一次 SVM: 是苹果还是香蕉？是香蕉还是梨子？是梨子还是苹果？最后三个分类器投票决定。这是 one-versus-one approace。</p>
+<p>但这其实都多多少少有问题，比如苹果特别多，香蕉特别少，我就无脑判断为苹果也不会错太多；多个分类器要放到一个台面上，万一他们的 scale 没有在一个台面上也未可知。</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">DongZhou</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://dongzhougu.github.io/2020/07/01/scikit-learn-xi-lie-liu-svm/">https://dongzhougu.github.io/2020/07/01/scikit-learn-xi-lie-liu-svm/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">DongZhou</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/ML%E7%AE%97%E6%B3%95/">
+                                    <span class="chip bg-color">ML算法</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+        <style>
+    .valine-card {
+        margin: 1.5rem auto;
+    }
+
+    .valine-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #vcomments textarea {
+        box-sizing: border-box;
+        background: url("/medias/comment_bg.png") 100% 100% no-repeat;
+    }
+
+    #vcomments p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+
+    #vcomments blockquote p {
+        text-indent: 0.2rem;
+    }
+
+    #vcomments a {
+        padding: 0 2px;
+        color: #4cbf30;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    #vcomments img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #vcomments ol li {
+        list-style-type: decimal;
+    }
+
+    #vcomments ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+
+    #vcomments ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+
+    #vcomments ul li {
+        list-style-type: disc;
+    }
+
+    #vcomments ul ul li {
+        list-style-type: circle;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    #vcomments table, th, td {
+        border: 0;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+
+    #vcomments h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+
+    #vcomments h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+
+    #vcomments h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    #vcomments h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+
+    #vcomments h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    #vcomments p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    #vcomments hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+
+    #vcomments blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+
+    #vcomments pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+
+    #vcomments code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+
+    #vcomments pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+
+    #vcomments pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+
+    #vcomments code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+
+    #vcomments b,
+    strong {
+        font-weight: bold;
+    }
+
+    #vcomments dfn {
+        font-style: italic;
+    }
+
+    #vcomments small {
+        font-size: 85%;
+    }
+
+    #vcomments cite {
+        font-style: normal;
+    }
+
+    #vcomments mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+
+    #vcomments table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+
+    #vcomments table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+
+    #vcomments table td {
+        min-width: 80px;
+    }
+
+    #vcomments [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+</style>
+
+<div class="card valine-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="vcomments" class="card-content" style="display: grid">
+    </div>
+</div>
+
+<script src="/libs/valine/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/valine/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'RPCuj0HNm1eqAREO6c5T7nSJ-gzGzoHsz',
+        appKey: 'laCdQbWLFWOWdkXVM3RxoXGe',
+        notify: 'false' === 'true',
+        verify: 'false' === 'true',
+        visitor: 'true' === 'true',
+        avatar: 'mm',
+        pageSize: '10',
+        lang: 'zh-cn',
+        placeholder: '快来留言吧'
+    });
+</script>
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/medias/featureimages/19.jpg" class="responsive-img" alt="scikit-learn系列七：朴素贝叶斯">
+                        
+                        <span class="card-title">scikit-learn系列七：朴素贝叶斯</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            实现朴素贝叶斯算法，原理解释+文档分类
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-02
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                    机器学习
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/ML%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">ML算法</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/06/30/scikit-learn-xi-lie-wu-jue-ce-shu/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="scikit-learn系列五：决策树">
+                        
+                        <span class="card-title">scikit-learn系列五：决策树</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            实现决策树算法，原理解释+titanic辛存者
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-30
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                    机器学习
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/ML%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">ML算法</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
+    });
+</script>
+
+
+
+<footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2020</span>
+            <a href="/about" target="_blank">DongZhou</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">117.5k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2020";
+                    var startMonth = "6";
+                    var startDate = "27";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/DongZhouGu" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:gdz678@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1596586942" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1596586942" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+<script src=" https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/materialize/materialize.min.js"></script>
+<script src=" https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+<script src=" https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/aos/aos.js"></script>
+<script src=" https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src=" https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src=" /js/matery.js"></script>
+
+<!-- Baidu Analytics -->
+
+<!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+
+<script src=" https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/others/clicklove.js" async="async"></script>
+
+
+<script async src=" https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/others/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src=" https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/libs/instantpage/instantpage.js" type="module"></script>
+
+
+<script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=o;var i=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function o(){i&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,e,a=0;a<r.length;a++)t=r[a],e=void 0,0<=(e=t.getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(n.innerHeight||document.documentElement.clientHeight)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}o(),n.addEventListener("scroll",function(){var t,e;t=o,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body>
+
+</html>
