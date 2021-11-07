@@ -866,10 +866,10 @@ y_pred <span class="token operator">=</span> model<span class="token punctuation
 <pre class="line-numbers language-python"><code class="language-python"><span class="token comment" spellcheck="true"># 预测概率：找出预测概率低于 90% 的样本</span>
 y_pred_proba <span class="token operator">=</span> model<span class="token punctuation">.</span>predict_proba<span class="token punctuation">(</span>X_test<span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># 计算每个测试样本的预测概率</span>
 <span class="token comment" spellcheck="true"># 找出第一列，即预测为阴性的概率大于 0.1 的样本，保存在 result 里</span>
-y_pred_proba_0 <span class="token operator">=</span> y_pred_proba<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">></span> <span class="token number">0.1</span>
+y_pred_proba_0 <span class="token operator">=</span> y_pred_proba<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">&gt;</span> <span class="token number">0.1</span>
 result <span class="token operator">=</span> y_pred_proba<span class="token punctuation">[</span>y_pred_proba_0<span class="token punctuation">]</span>
 <span class="token comment" spellcheck="true"># 在 result 结果集里，找出第二列，即预测为阳性的概率大于 0.1 的样本</span>
-y_pred_proba_1 <span class="token operator">=</span> result<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">></span> <span class="token number">0.1</span>
+y_pred_proba_1 <span class="token operator">=</span> result<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">&gt;</span> <span class="token number">0.1</span>
 <span class="token keyword">print</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span>y_pred_proba_1<span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>输出如下：</p>
 <pre class="line-numbers language-python"><code class="language-python"><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0.29623162</span> <span class="token number">0.70376838</span><span class="token punctuation">]</span>
@@ -1723,7 +1723,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">128.6k</span>&nbsp;字
+                class="white-color">129.2k</span>&nbsp;字
             
             
             
