@@ -825,20 +825,20 @@ sudo service ssh start
 #端口转发60601是我们定的端口号，通过宿主机的60601端口号监听容器中22端口号（SSH默认端口号）
 sudo lxc config device add <container> proxy0 proxy listen=tcp:172.22.24.126:60601 connect=tcp:10.152.210.183:22 bind=host
 #此时就可以使用校园网访问
-ssh ubuntu@172.22.24.126 -p 60601<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></container></code></pre>
+ssh ubuntu@172.22.24.126 -p 60601<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="3-2、配置共享目录和-GPU"><a href="#3-2、配置共享目录和-GPU" class="headerlink" title="3.2、配置共享目录和 GPU"></a>3.2、配置共享目录和 GPU</h3><p>配置共享目录</p>
-<pre class="line-numbers language-sh"><code class="language-sh">sudo lxc config set <yourcontainername> security.privileged true
-sudo lxc config device add <yourcontainername> <sharename> disk source=path1 path=path2
+<pre class="line-numbers language-sh"><code class="language-sh">sudo lxc config set <yourContainerName> security.privileged true
+sudo lxc config device add <yourContainerName> <shareName> disk source=path1 path=path2
 #举例
 sudo lxc config device add tiger father disk source=/home/gdz path=/father
-# path1为宿主机路径，path2为容器内路径<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></sharename></yourcontainername></yourcontainername></code></pre>
+# path1为宿主机路径，path2为容器内路径<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>配置GPU</p>
 <pre class="line-numbers language-sh"><code class="language-sh">#为容器添加所有GPU:
-sudo lxc config device add <yourcontainername> gpu gpu
+sudo lxc config device add <yourContainerName> gpu gpu
 #添加指定GPU： 
-sudo lxc config device add <yourcontainername> gpu0 gpu id=0
+sudo lxc config device add <yourContainerName> gpu0 gpu id=0
 # 安装驱动：在容器中显卡驱动不需要安装内核文件，安装宿主机显卡驱动的版本，通过共享目录传至容器中
-sudo sh /NVIDIA-Linux-x86_64-xxx.xx.run --no-kernel-module <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></yourcontainername></yourcontainername></code></pre>
+sudo sh /NVIDIA-Linux-x86_64-xxx.xx.run --no-kernel-module <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>挂载 <code>nvidia-uvm</code></p>
 <p>①如果宿主机没有<code>/dev/nvidia-uvm</code>设备，需要通过以下命令挂载设备：</p>
 <pre class="line-numbers language-sh"><code class="language-sh">/sbin/modprobe nvidia-uvm
@@ -1677,7 +1677,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">129.2k</span>&nbsp;字
+                class="white-color">131.2k</span>&nbsp;字
             
             
             

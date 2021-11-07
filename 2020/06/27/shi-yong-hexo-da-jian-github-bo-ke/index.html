@@ -1006,15 +1006,15 @@ gulp.task<span class="token punctuation">(</span><span class="token string">"com
 // 压缩public目录下的html文件
 gulp.task<span class="token punctuation">(</span><span class="token string">"compressHtml"</span>, <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     var cleanOptions <span class="token operator">=</span> <span class="token punctuation">{</span>
-        protect: /<span class="token operator">&lt;</span>\<span class="token operator">!</span>--%fooTemplate\b.*?%--<span class="token operator">&gt;</span>/g, //忽略处理
-        unprotect: /<span class="token operator">&lt;</span>script <span class="token punctuation">[</span>^<span class="token operator">&gt;</span><span class="token punctuation">]</span>*\btype<span class="token operator">=</span><span class="token string">"text\/x-handlebars-template"</span><span class="token punctuation">[</span>\s\S<span class="token punctuation">]</span>+?<span class="token operator">&lt;</span>\/script<span class="token operator">&gt;</span>/gi //特殊处理
+        protect: /<span class="token operator">&lt;</span>\<span class="token operator">!</span>--%fooTemplate\b.*?%--<span class="token operator">></span>/g, //忽略处理
+        unprotect: /<span class="token operator">&lt;</span>script <span class="token punctuation">[</span>^<span class="token operator">></span><span class="token punctuation">]</span>*\btype<span class="token operator">=</span><span class="token string">"text\/x-handlebars-template"</span><span class="token punctuation">[</span>\s\S<span class="token punctuation">]</span>+?<span class="token operator">&lt;</span>\/script<span class="token operator">></span>/gi //特殊处理
     <span class="token punctuation">}</span><span class="token punctuation">;</span>
     var minOption <span class="token operator">=</span> <span class="token punctuation">{</span>
         collapseWhitespace: true, //压缩HTML
-        collapseBooleanAttributes: true, //省略布尔属性的值 <span class="token operator">&lt;</span>input checked<span class="token operator">=</span><span class="token string">"true"</span>/<span class="token operator">&gt;</span> <span class="token operator">==</span><span class="token operator">&gt;</span> <span class="token operator">&lt;</span>input /<span class="token operator">&gt;</span>
-        removeEmptyAttributes: true, //删除所有空格作属性值 <span class="token operator">&lt;</span>input id<span class="token operator">=</span><span class="token string">""</span> /<span class="token operator">&gt;</span> <span class="token operator">==</span><span class="token operator">&gt;</span> <span class="token operator">&lt;</span>input /<span class="token operator">&gt;</span>
-        removeScriptTypeAttributes: true, //删除<span class="token operator">&lt;</span>script<span class="token operator">&gt;</span>的type<span class="token operator">=</span><span class="token string">"text/javascript"</span>
-        removeStyleLinkTypeAttributes: true, //删除<span class="token operator">&lt;</span>style<span class="token operator">&gt;</span>和<span class="token operator">&lt;</span>link<span class="token operator">&gt;</span>的type<span class="token operator">=</span><span class="token string">"text/css"</span>
+        collapseBooleanAttributes: true, //省略布尔属性的值 <span class="token operator">&lt;</span>input checked<span class="token operator">=</span><span class="token string">"true"</span>/<span class="token operator">></span> <span class="token operator">==</span><span class="token operator">></span> <span class="token operator">&lt;</span>input /<span class="token operator">></span>
+        removeEmptyAttributes: true, //删除所有空格作属性值 <span class="token operator">&lt;</span>input id<span class="token operator">=</span><span class="token string">""</span> /<span class="token operator">></span> <span class="token operator">==</span><span class="token operator">></span> <span class="token operator">&lt;</span>input /<span class="token operator">></span>
+        removeScriptTypeAttributes: true, //删除<span class="token operator">&lt;</span>script<span class="token operator">></span>的type<span class="token operator">=</span><span class="token string">"text/javascript"</span>
+        removeStyleLinkTypeAttributes: true, //删除<span class="token operator">&lt;</span>style<span class="token operator">></span>和<span class="token operator">&lt;</span>link<span class="token operator">></span>的type<span class="token operator">=</span><span class="token string">"text/css"</span>
         removeComments: true, //清除HTML注释
         minifyJS: true, //压缩页面JS
         minifyCSS: true, //压缩页面CSS
@@ -1809,7 +1809,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">129.2k</span>&nbsp;字
+                class="white-color">131.2k</span>&nbsp;字
             
             
             
