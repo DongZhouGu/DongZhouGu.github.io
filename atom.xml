@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://dongzhougu.github.io/"/>
-  <updated>2021-11-07T15:59:37.864Z</updated>
+  <updated>2021-11-07T15:58:30.471Z</updated>
   <id>https://dongzhougu.github.io/</id>
   
   <author>
@@ -15,81 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>实验室gpu管理</title>
-    <link href="https://dongzhougu.github.io/2021/11/07/shu-lxd-gpu/"/>
-    <id>https://dongzhougu.github.io/2021/11/07/shu-lxd-gpu/</id>
-    <published>2021-11-07T15:47:10.154Z</published>
-    <updated>2021-11-07T15:59:37.864Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;p&gt;&lt;strong&gt;&lt;span class=&quot;github-emoji&quot; style=&quot;color: transparent;background:no-repeat
-        
-      
-    
-    </summary>
-    
-    
-      <category term="开源项目" scheme="https://dongzhougu.github.io/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"/>
-    
-    
-      <category term="Linux" scheme="https://dongzhougu.github.io/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>还分不清 Cookie、Session、Token、JWT？</title>
-    <link href="https://dongzhougu.github.io/2021/11/07/yuque/huan-fen-bu-qing-cookie-session-token-jwt/"/>
-    <id>https://dongzhougu.github.io/2021/11/07/yuque/huan-fen-bu-qing-cookie-session-token-jwt/</id>
-    <published>2021-11-07T06:51:44.000Z</published>
-    <updated>2021-11-07T15:59:53.213Z</updated>
-    
-    <summary type="html">
-    
-      &lt;p&gt;​&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="计算机网络" scheme="https://dongzhougu.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
-    
-    
-      <category term="网络" scheme="https://dongzhougu.github.io/tags/%E7%BD%91%E7%BB%9C/"/>
-    
-      <category term="面试" scheme="https://dongzhougu.github.io/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hexo+travis+语雀 自动部署博客</title>
-    <link href="https://dongzhougu.github.io/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/"/>
-    <id>https://dongzhougu.github.io/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/</id>
-    <published>2021-11-03T16:13:43.000Z</published>
-    <updated>2021-11-07T15:59:52.982Z</updated>
-    
-    <summary type="html">
-    
-      &lt;p&gt;​&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="教程" scheme="https://dongzhougu.github.io/categories/%E6%95%99%E7%A8%8B/"/>
-    
-    
-      <category term="Hexo" scheme="https://dongzhougu.github.io/tags/Hexo/"/>
-    
-      <category term="博客搭建" scheme="https://dongzhougu.github.io/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/"/>
-    
-      <category term="自动化" scheme="https://dongzhougu.github.io/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/"/>
-    
-  </entry>
   
   <entry>
     <title>抢学术章的的辛酸泪</title>
@@ -114,9 +39,9 @@
       <category term="开源项目" scheme="https://dongzhougu.github.io/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"/>
     
     
-      <category term="网络" scheme="https://dongzhougu.github.io/tags/%E7%BD%91%E7%BB%9C/"/>
-    
       <category term="自动化" scheme="https://dongzhougu.github.io/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/"/>
+    
+      <category term="网络" scheme="https://dongzhougu.github.io/tags/%E7%BD%91%E7%BB%9C/"/>
     
   </entry>
   
@@ -144,27 +69,6 @@
     
     
       <category term="注意力机制" scheme="https://dongzhougu.github.io/tags/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>论文-PD-Net(2020)</title>
-    <link href="https://dongzhougu.github.io/2020/12/24/yuque/lun-wen-pd-net-2020/"/>
-    <id>https://dongzhougu.github.io/2020/12/24/yuque/lun-wen-pd-net-2020/</id>
-    <published>2020-12-24T13:15:50.000Z</published>
-    <updated>2021-11-07T15:59:53.233Z</updated>
-    
-    <summary type="html">
-    
-      &lt;p&gt;​&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="科研" scheme="https://dongzhougu.github.io/categories/%E7%A7%91%E7%A0%94/"/>
-    
-    
-      <category term="HOI人物交互检测" scheme="https://dongzhougu.github.io/tags/HOI%E4%BA%BA%E7%89%A9%E4%BA%A4%E4%BA%92%E6%A3%80%E6%B5%8B/"/>
     
   </entry>
   
@@ -249,6 +153,33 @@
     
     
       <category term="HOI人物交互检测" scheme="https://dongzhougu.github.io/tags/HOI%E4%BA%BA%E7%89%A9%E4%BA%A4%E4%BA%92%E6%A3%80%E6%B5%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>实验室gpu管理</title>
+    <link href="https://dongzhougu.github.io/2020/12/09/shu-lxd-gpu/"/>
+    <id>https://dongzhougu.github.io/2020/12/09/shu-lxd-gpu/</id>
+    <published>2020-12-09T07:57:44.000Z</published>
+    <updated>2021-11-07T16:03:12.075Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;&lt;strong&gt;&lt;span class=&quot;github-emoji&quot; style=&quot;color: transparent;background:no-repeat
+        
+      
+    
+    </summary>
+    
+    
+      <category term="开源项目" scheme="https://dongzhougu.github.io/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+      <category term="Linux" scheme="https://dongzhougu.github.io/tags/Linux/"/>
     
   </entry>
   
@@ -421,60 +352,6 @@
   </entry>
   
   <entry>
-    <title>论文-时空双流Two Stream及衍生方法</title>
-    <link href="https://dongzhougu.github.io/2020/10/29/yuque/lun-wen-shi-kong-shuang-liu-two-stream-ji-yan-sheng-fang-fa/"/>
-    <id>https://dongzhougu.github.io/2020/10/29/yuque/lun-wen-shi-kong-shuang-liu-two-stream-ji-yan-sheng-fang-fa/</id>
-    <published>2020-10-29T13:15:50.000Z</published>
-    <updated>2021-11-07T15:59:53.264Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
-
-&lt;p&gt;&lt;img src=&quot;/medias/loading.gif&quot;
-        
-      
-    
-    </summary>
-    
-    
-      <category term="科研" scheme="https://dongzhougu.github.io/categories/%E7%A7%91%E7%A0%94/"/>
-    
-    
-      <category term="动作识别" scheme="https://dongzhougu.github.io/tags/%E5%8A%A8%E4%BD%9C%E8%AF%86%E5%88%AB/"/>
-    
-      <category term="Two Stream" scheme="https://dongzhougu.github.io/tags/Two-Stream/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>论文-3D卷积 C3D 及衍生方法</title>
-    <link href="https://dongzhougu.github.io/2020/10/28/yuque/lun-wen-3d-juan-ji-c3d-ji-yan-sheng-fang-fa/"/>
-    <id>https://dongzhougu.github.io/2020/10/28/yuque/lun-wen-3d-juan-ji-c3d-ji-yan-sheng-fang-fa/</id>
-    <published>2020-10-28T13:15:50.000Z</published>
-    <updated>2021-11-07T15:59:53.305Z</updated>
-    
-    <summary type="html">
-    
-      &lt;p&gt;​&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="科研" scheme="https://dongzhougu.github.io/categories/%E7%A7%91%E7%A0%94/"/>
-    
-    
-      <category term="3D卷积" scheme="https://dongzhougu.github.io/tags/3D%E5%8D%B7%E7%A7%AF/"/>
-    
-      <category term="动作识别" scheme="https://dongzhougu.github.io/tags/%E5%8A%A8%E4%BD%9C%E8%AF%86%E5%88%AB/"/>
-    
-  </entry>
-  
-  <entry>
     <title>SSM框架整合</title>
     <link href="https://dongzhougu.github.io/2020/10/21/ssm-kuang-jia-zheng-he/"/>
     <id>https://dongzhougu.github.io/2020/10/21/ssm-kuang-jia-zheng-he/</id>
@@ -519,7 +396,7 @@
         
         
           &lt;hr&gt;
-&lt;p&gt;下面是根据开源项目 &lt;a href=&quot;https://github.com/jaywcjlove/mysql-tutorial/blob/master/21-minutes-MySQL-basic-entry.md&quot; target=&quot;_blank&quot;
+&lt;p&gt;下面是根据开源项目 &lt;a href=&quot;https://github.com/jaywcjlove/mysql-tutorial/blob/master/21-minutes-MySQL-basic-entry.md&quot;&gt;21分钟MySQL基础入门&lt;/a&gt;
         
       
     
@@ -548,7 +425,7 @@
         
           &lt;hr&gt;
 &lt;blockquote&gt;
-&lt;p&gt;此笔记是观看 &lt;a href=&quot;https://www.bilibili.com/video/BV11J411c7sB?from=search&amp;amp;seid=4044749892780872620&quot; target=&quot;_blank&quot;
+&lt;p&gt;此笔记是观看 &lt;a href=&quot;https://www.bilibili.com/video/BV11J411c7sB?from=search&amp;amp;seid=4044749892780872620&quot;&gt;此视频&lt;/a&gt; 
         
       
     
@@ -559,6 +436,141 @@
     
     
       <category term="JDBC" scheme="https://dongzhougu.github.io/tags/JDBC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>机器学习算法实现</title>
+    <link href="https://dongzhougu.github.io/2020/07/16/ji-qi-xue-xi-suan-fa-shi-xian/"/>
+    <id>https://dongzhougu.github.io/2020/07/16/ji-qi-xue-xi-suan-fa-shi-xian/</id>
+    <published>2020-07-16T07:57:44.000Z</published>
+    <updated>2021-11-07T15:59:03.057Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h3 id=&quot;机器学习算法实现&quot;&gt;&lt;a href=&quot;#机器学习算法实现&quot; class=&quot;headerlink&quot; title=&quot;机器学习算法实现&quot;&gt;&lt;/a&gt;机器学习算法实现&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/medias/loading.gif&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="开源项目" scheme="https://dongzhougu.github.io/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>scikit-learn系列九：K-均值</title>
+    <link href="https://dongzhougu.github.io/2020/07/16/scikit-learn-xi-lie-jiu-k-jun-zhi/"/>
+    <id>https://dongzhougu.github.io/2020/07/16/scikit-learn-xi-lie-jiu-k-jun-zhi/</id>
+    <published>2020-07-16T07:57:44.000Z</published>
+    <updated>2021-11-07T15:49:32.238Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;项目地址传送门，欢迎-star-和-fork-！&quot;&gt;&lt;a href=&quot;#项目地址传送门，欢迎-star-和-fork-！&quot; class=&quot;headerlink&quot; title=&quot;项目地址传送门，欢迎 star 和 fork ！&quot;&gt;&lt;/a&gt;项目地址&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://dongzhougu.github.io/categories/Python/"/>
+    
+    
+      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>scikit-learn系列八：PCA</title>
+    <link href="https://dongzhougu.github.io/2020/07/15/scikit-learn-xi-lie-ba-pca/"/>
+    <id>https://dongzhougu.github.io/2020/07/15/scikit-learn-xi-lie-ba-pca/</id>
+    <published>2020-07-15T07:57:44.000Z</published>
+    <updated>2021-11-07T15:49:25.609Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;项目地址传送门，欢迎-star-和-fork-！&quot;&gt;&lt;a href=&quot;#项目地址传送门，欢迎-star-和-fork-！&quot; class=&quot;headerlink&quot; title=&quot;项目地址传送门，欢迎 star 和 fork ！&quot;&gt;&lt;/a&gt;项目地址&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://dongzhougu.github.io/categories/Python/"/>
+    
+    
+      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>scikit-learn系列七：朴素贝叶斯</title>
+    <link href="https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/"/>
+    <id>https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/</id>
+    <published>2020-07-02T07:57:44.000Z</published>
+    <updated>2021-11-07T15:49:39.092Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;项目地址传送门，欢迎-star-和-fork-！&quot;&gt;&lt;a href=&quot;#项目地址传送门，欢迎-star-和-fork-！&quot; class=&quot;headerlink&quot; title=&quot;项目地址传送门，欢迎 star 和 fork ！&quot;&gt;&lt;/a&gt;项目地址&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://dongzhougu.github.io/categories/Python/"/>
+    
+    
+      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>scikit-learn系列六：SVM</title>
+    <link href="https://dongzhougu.github.io/2020/07/01/scikit-learn-xi-lie-liu-svm/"/>
+    <id>https://dongzhougu.github.io/2020/07/01/scikit-learn-xi-lie-liu-svm/</id>
+    <published>2020-07-01T07:57:44.000Z</published>
+    <updated>2021-11-07T15:49:35.680Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;项目地址传送门，欢迎-star-和-fork-！&quot;&gt;&lt;a href=&quot;#项目地址传送门，欢迎-star-和-fork-！&quot; class=&quot;headerlink&quot; title=&quot;项目地址传送门，欢迎 star 和 fork ！&quot;&gt;&lt;/a&gt;项目地址&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="https://dongzhougu.github.io/categories/Python/"/>
+    
+    
+      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
