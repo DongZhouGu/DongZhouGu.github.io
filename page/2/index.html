@@ -5,14 +5,14 @@
 <meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
 <meta property="og:description" content="技术、效率、摄影">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="og:image" content="https://dongzhougu.github.io/img/avatar.png">
 <meta property="article:author" content="DongZhou">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/page/2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://dongzhougu.github.io/img/avatar.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/page/2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="NdIUXAOVyGnnBhcrip0ksCawbdAzT0hlBZDE9u4jx6k"/><meta name="msvalidate.01" content="567E47D75E8DCF1282B9623AD914701E"/><meta name="baidu-site-verification" content="code-pE5rnuxcfD"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
   noticeOutdate: undefined,
   highlight: undefined,
   copy: {
@@ -21,10 +21,10 @@
     noSupport: '浏览器不支持'
   },
   relativeDate: {
-    homepage: false,
-    post: false
+    homepage: true,
+    post: true
   },
-  runtime: '',
+  runtime: '天',
   date_suffix: {
     just: '刚刚',
     min: '分钟前',
@@ -32,7 +32,7 @@
     day: '天前',
     month: '个月前'
   },
-  copyright: undefined,
+  copyright: {"limitCount":150,"languages":{"author":"作者: DongZhou","link":"链接: ","source":"来源: 欢迎来到，TWOTO 的博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
   lightbox: 'fancybox',
   Snackbar: undefined,
   source: {
@@ -47,15 +47,15 @@
     }
   },
   isPhotoFigcaption: false,
-  islazyload: false,
-  isanchor: false
+  islazyload: true,
+  isanchor: true
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: '欢迎来到，TWOTO 的博客',
   isPost: false,
   isHome: true,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2021-11-15 23:32:28'
+  postUpdate: '2021-11-15 23:37:25'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -126,8 +126,27 @@
       }
       const t = saveToLocal.get('theme')
     
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
         
       const asideStatus = saveToLocal.get('aside-status')
       if (asideStatus !== undefined) {
@@ -138,13 +157,18 @@
         }
       }
     
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
     const detectApple = () => {
       if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
         document.documentElement.classList.add('apple')
       }
     }
     detectApple()
-    })(window)</script><style type="text/css" lang="css">
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">.card-announcement .social-button{margin: .6rem 0 0 0; text-align: center;}.card-announcement .social-button a{display: block; margin: 0.2rem 0;background-color: var(--btn-bg); color: var(--btn-color); line-height: 1.6rem; transition: all .3s; position: relative; z-index: 1;}</style><style type="text/css" lang="css">
     #loading-container{
         position: fixed;
         top: 0;
@@ -286,7 +310,7 @@
          <div></div> 
          <div></div>
      </div>
- </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">欢迎来到，TWOTO 的博客</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/09/yuque/springboot-quan-ju-yi-chang-chu-li/" title="SpringBoot-全局异常处理">SpringBoot-全局异常处理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-09T07:29:09.000Z" title="发表于 2021-11-09 15:29:09">2021-11-09</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span></div><div class="content">
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/index.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">欢迎来到，TWOTO 的博客</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="mailto:gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/09/yuque/springboot-quan-ju-yi-chang-chu-li/" title="SpringBoot-全局异常处理">SpringBoot-全局异常处理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-09T07:29:09.000Z" title="发表于 2021-11-09 15:29:09">2021-11-09</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2021/11/09/yuque/springboot-quan-ju-yi-chang-chu-li/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">
 为什么需要全局异常处理？在日常开发中，为了不抛出异常堆栈信息给前端页面，每次编写 Controller 层代码都要尽可能的 catch 住所有 service 层、dao 层等异常，代码耦合性较高，且不美观，不利于后期维护。这时就需要进行统一的异常处理。为解决该问题，计划将 Controller 层异常信息统一封装处理，且能区分对待 Controller 层方法返回给前端的 String、Map、JSONObject、ModelAndView 等结果类型。​
 Springboot 默认是如何做的？Spring Boot 提供了一套默认的异常处理机制，一旦程序中出现了异常，Spring Boot 会自动识别客户端的类型（浏览器客户端或机器客户端），并根据客户端的不同，以不同的形式展示异常信息。
 
@@ -297,7 +321,7 @@ Springboot 默认是如何做的？Spring Boot 提供了一套默认的异常处
 对于机器客户端而言，Spring Boot 将生成 JSON 响应，来展示异常消息：
 
 {
-  "timestamp": "2021-07-12T07:0 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/09/yuque/springboot-can-shu-xiao-yan-validator/" title="SpringBoot-参数校验Validator">SpringBoot-参数校验Validator</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-09T07:26:23.000Z" title="发表于 2021-11-09 15:26:23">2021-11-09</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span></div><div class="content">数据校验是在平时的编码过程中常做的工作，在系统的各个层可能都要去实现一些校验逻辑，再去做业务处理。这些繁琐的校验与我们的业务代码在一块就会显得臃肿。而且这些校验通常是业务无关的。Bean Validation 2.0（JSR 380）定义了用于实体和方法验证的元数据模型和 API，Hibernate Validator 是目前最好的实现，下面整理具体使用。
+  "timestamp": "2021-07-12T07:0 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/09/yuque/springboot-can-shu-xiao-yan-validator/" title="SpringBoot-参数校验Validator">SpringBoot-参数校验Validator</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-09T07:26:23.000Z" title="发表于 2021-11-09 15:26:23">2021-11-09</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2021/11/09/yuque/springboot-can-shu-xiao-yan-validator/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">数据校验是在平时的编码过程中常做的工作，在系统的各个层可能都要去实现一些校验逻辑，再去做业务处理。这些繁琐的校验与我们的业务代码在一块就会显得臃肿。而且这些校验通常是业务无关的。Bean Validation 2.0（JSR 380）定义了用于实体和方法验证的元数据模型和 API，Hibernate Validator 是目前最好的实现，下面整理具体使用。
 依赖如果是 Spring Boot2.3 之前的项目，那么 spring-boot-starter-web 中就已经依赖 hibernate-validator 了
 &lt;dependency>
     &lt;groupId>org.springframework.boot&lt;/groupId>
@@ -305,7 +329,7 @@ Springboot 默认是如何做的？Spring Boot 提供了一套默认的异常处
 &lt;/dependency>
 否则可以添加 hibernate-validator 依赖
 &lt;dependency>
-    &lt;groupId>org.hibernate.validator&lt;/g ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/09/yuque/springboot-zi-ding-yi-zhu-jie-qie-mian-aop/" title="SpringBoot-自定义注解切面AOP">SpringBoot-自定义注解切面AOP</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-09T07:24:03.000Z" title="发表于 2021-11-09 15:24:03">2021-11-09</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span></div><div class="content">​
+    &lt;groupId>org.hibernate.validator&lt;/g ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/09/yuque/springboot-zi-ding-yi-zhu-jie-qie-mian-aop/" title="SpringBoot-自定义注解切面AOP">SpringBoot-自定义注解切面AOP</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-09T07:24:03.000Z" title="发表于 2021-11-09 15:24:03">2021-11-09</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2021/11/09/yuque/springboot-zi-ding-yi-zhu-jie-qie-mian-aop/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">​
 
 
 简介在做博客项目的时候需要记录用户操作日志，这时候需要自定义注解与切面来实现。
@@ -324,7 +348,7 @@ import java.lang.annotation.Target;
 /**
  * 定义一个Log的日志注解，用在方法上
  */
-@Target(E ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/09/yuque/yi-ge-ji-chu-de-springboot-xiang-mu-gai-bao-han-na-xie-dong-xi/" title="一个基础的SpringBoot 项目该包含哪些东西？">一个基础的SpringBoot 项目该包含哪些东西？</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-09T02:14:37.000Z" title="发表于 2021-11-09 10:14:37">2021-11-09</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span></div><div class="content">​
+@Target(E ...</div></div></div><div class="recent-post-item ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="ca-pub-8919908724705274" data-ad-slot="1538867630"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/09/yuque/yi-ge-ji-chu-de-springboot-xiang-mu-gai-bao-han-na-xie-dong-xi/" title="一个基础的SpringBoot 项目该包含哪些东西？">一个基础的SpringBoot 项目该包含哪些东西？</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-09T02:14:37.000Z" title="发表于 2021-11-09 10:14:37">2021-11-09</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2021/11/09/yuque/yi-ge-ji-chu-de-springboot-xiang-mu-gai-bao-han-na-xie-dong-xi/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">​
 
 
 前言建立一个全新的项目，或者把旧的庞大的项目，进行拆分成多个项目。在建立新的项目中，经常需要做一些重复的工作，比如说拷贝一下常用的工具类，通用代码等等。所以就可以做一个基础的项目方便使用，在经历新项目的时候，直接在基础项目上进行简单配置就可以开发业务代码了。
@@ -346,7 +370,7 @@ Swagger写接口文档通常是一件比较头疼的事情，然而 swagger 就�
 常用的 Swagger 注解
 @Api用于Controller
 @ApiOperation用于Controller内的方法。
-@ApiResponses用于标识接口返回数据 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/07/yuque/redis-yi-shu-ju-jie-gou-yu-mo-ban-lei/" title="Redis(一): 数据结构与模板类">Redis(一): 数据结构与模板类</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-07T15:44:02.000Z" title="发表于 2021-11-07 23:44:02">2021-11-07</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></span></div><div class="content">​
+@ApiResponses用于标识接口返回数据 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/07/yuque/redis-yi-shu-ju-jie-gou-yu-mo-ban-lei/" title="Redis(一): 数据结构与模板类">Redis(一): 数据结构与模板类</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-07T15:44:02.000Z" title="发表于 2021-11-07 23:44:02">2021-11-07</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2021/11/07/yuque/redis-yi-shu-ju-jie-gou-yu-mo-ban-lei/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">​
 
 
 1. Redis 有多少种数据结构？主要有 5 种 Redis 对象，分别是 String、List、Hash、Set、Zset，这里的对象都指的是 Value 部分。底层实现依托于 sds、ziplist、skiplist、dict 等更基础的数据结构。
@@ -356,7 +380,7 @@ Swagger写接口文档通常是一件比较头疼的事情，然而 swagger 就�
 如果字符串长度超过 1MB 时，每次扩容时只会扩展 1MB 的空间。
 
 这样既保证了内存空间够用，还不至于造成内存的浪费，字符串最大长度为**512MB**。分析一下 SDS 的数据结构：
-struct SD ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/07/yuque/huan-fen-bu-qing-cookie-session-token-jwt/" title="还分不清 Cookie、Session、Token、JWT？">还分不清 Cookie、Session、Token、JWT？</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-07T06:51:44.000Z" title="发表于 2021-11-07 14:51:44">2021-11-07</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content">​
+struct SD ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/11/07/yuque/huan-fen-bu-qing-cookie-session-token-jwt/" title="还分不清 Cookie、Session、Token、JWT？">还分不清 Cookie、Session、Token、JWT？</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-07T06:51:44.000Z" title="发表于 2021-11-07 14:51:44">2021-11-07</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2021/11/07/yuque/huan-fen-bu-qing-cookie-session-token-jwt/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">​
 
 
 背景早期互联网只是用来访问查看，不需要关心谁在访问查看。HTTP 是一种无状态的协议，每个请求都是完全独立的，服务端无法确认当前访问者的身份信息，为了标示用户，就出现了 Cookie，而 Cookie、Token、JWT 都是用来标示用户的。
@@ -379,7 +403,7 @@ struct SD ...</div></div></div><div class="recent-post-item"><div class="recent-
 实现授权的方式有：cookie、session、token、OAuth
 
 什么是凭证（Credentials）
-实现认证和授权的前提是需要一种媒介（证书）  ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/" title="Hexo+travis+语雀 自动部署博客">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hexo+travis+语雀 自动部署博客"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/" title="Hexo+travis+语雀 自动部署博客">Hexo+travis+语雀 自动部署博客</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-03T16:13:43.000Z" title="发表于 2021-11-04 00:13:43">2021-11-04</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%95%99%E7%A8%8B/">教程</a></span></div><div class="content">​
+实现认证和授权的前提是需要一种媒介（证书）  ...</div></div></div><div class="recent-post-item ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="ca-pub-8919908724705274" data-ad-slot="1538867630"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/" title="Hexo+travis+语雀 自动部署博客">     <img class="post_bg" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hexo+travis+语雀 自动部署博客"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/" title="Hexo+travis+语雀 自动部署博客">Hexo+travis+语雀 自动部署博客</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-03T16:13:43.000Z" title="发表于 2021-11-04 00:13:43">2021-11-04</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%95%99%E7%A8%8B/">教程</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">​
 
 
 修改自：https://www.yuque.com/u46795/blog/dlloc7yuque-hexo:https://github.com/x-cold/yuque-hexo
@@ -395,7 +419,7 @@ hexo + github = 高大上
 如何编写 markdown 文件？
 
 相信很多人都在使用本地编辑器来写博客，那体验，真心蛋疼，比如说 vscode，可视化插件一般般，图片还不能复制黏贴，想插入个图片还要先保存成文件放在本地，然后再引用，啥？你说七牛云存储？哪有复制黏贴爽呀~当然，博客源码可以使用 travis-ci 来做持续集成，想写博客或者换个电脑，clone 一下源仓库，写完 push 一下，就可以不用管了。but，比起独立站点的博客，如 wordpress，还是觉得写作体验有点不爽。
-3. 脑洞大开：偶然间，朋友安利了语雀这个文档写作平台，觉 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/10/13/qiang-xue-zhu-zhang-de-xin-suan-lei/" title="抢学术章的的辛酸泪">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="抢学术章的的辛酸泪"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/10/13/qiang-xue-zhu-zhang-de-xin-suan-lei/" title="抢学术章的的辛酸泪">抢学术章的的辛酸泪</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-10-13T04:15:50.000Z" title="发表于 2021-10-13 12:15:50">2021-10-13</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/">开源项目</a></span></div><div class="content">前言
+3. 脑洞大开：偶然间，朋友安利了语雀这个文档写作平台，觉 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/10/13/qiang-xue-zhu-zhang-de-xin-suan-lei/" title="抢学术章的的辛酸泪">     <img class="post_bg" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="抢学术章的的辛酸泪"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/10/13/qiang-xue-zhu-zhang-de-xin-suan-lei/" title="抢学术章的的辛酸泪">抢学术章的的辛酸泪</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-10-13T04:15:50.000Z" title="发表于 2021-10-13 12:15:50">2021-10-13</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/">开源项目</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2021/10/13/qiang-xue-zhu-zhang-de-xin-suan-lei/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">前言
 2021-10-10更新，增加对人工认证的处理，重构代码
 
 由于问卷星更新了，里面加了阿里云智能验证的接口，所以之前的方法使用 selnium 不行了。
@@ -413,12 +437,12 @@ pypuppter(https://github.com/miyakogi/pyppeteer)
 python3 -m pip install pyppeteer -i https://pypi.tuna.tsinghua.edu.cn/simple也可以直接在 Pycharm 中安装此包
 安装包完成后，接着，修改下图所示的
 
-的  pyppeteer/_init_. ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/01/14/zhu-yi-li-ji-zhi/" title="注意力机制-Attention">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="注意力机制-Attention"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/01/14/zhu-yi-li-ji-zhi/" title="注意力机制-Attention">注意力机制-Attention</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-01-14T12:33:00.000Z" title="发表于 2021-01-14 20:33:00">2021-01-14</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a></span></div><div class="content">注意力机制-Attention今天从四个方面来介绍注意力机制。首先是我们为什么要引入注意力机制，深度学习对于特征提取近年来取得了巨大的成功，但是他还有什么不足呢? 其次，我将从Encoder-Decoder框架（一种深度学习领域的研究模式，应用场景异常广泛）来介绍注意力机制；接着，总结一下目前注意力机制研究的的分类与应用；最后，切入到计算机视觉CV领域来介绍注意力机制。
+的  pyppeteer/_init_. ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/01/14/zhu-yi-li-ji-zhi/" title="注意力机制-Attention">     <img class="post_bg" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="注意力机制-Attention"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/01/14/zhu-yi-li-ji-zhi/" title="注意力机制-Attention">注意力机制-Attention</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-01-14T12:33:00.000Z" title="发表于 2021-01-14 20:33:00">2021-01-14</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2021/01/14/zhu-yi-li-ji-zhi/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">注意力机制-Attention今天从四个方面来介绍注意力机制。首先是我们为什么要引入注意力机制，深度学习对于特征提取近年来取得了巨大的成功，但是他还有什么不足呢? 其次，我将从Encoder-Decoder框架（一种深度学习领域的研究模式，应用场景异常广泛）来介绍注意力机制；接着，总结一下目前注意力机制研究的的分类与应用；最后，切入到计算机视觉CV领域来介绍注意力机制。
 为什么要引入注意力机制？我们知道深度学习近年来在计算机视觉，自然语言处理等领域取得了巨大的成功，使用多层的深度神经网络逐层进行特征提取，获取更加高级的语义特征。但这样，伴随着两个缺陷
 • 计算能力的限制：当要记住很多“信息“，模型就要变得更复杂，然而目前计算能力依然是限制神经网络发展的瓶颈
 • 优化算法的限制：虽然局部连接、权重共享以及pooling等优化操作可以让神经网络变得简单一些，有效缓解模型复杂度和表达能力之间的矛盾；但是，如循环神经网络中的长距离以来问题，信息“记忆”能力并不高。卷积神经网络中，虽然能通过堆叠卷积层来获得更大的感受野，但不断地池化也会丢失长距离依赖的语义信息。
 
-因此，注意力机制的出现就是为了 ...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2020/12/24/yuque/lun-wen-pd-net-2020/" title="论文-PD-Net(2020)">论文-PD-Net(2020)</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-24T13:15:50.000Z" title="发表于 2020-12-24 21:15:50">2020-12-24</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a></span></div><div class="content">​
+因此，注意力机制的出现就是为了 ...</div></div></div><div class="recent-post-item ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="ca-pub-8919908724705274" data-ad-slot="1538867630"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2020/12/24/yuque/lun-wen-pd-net-2020/" title="论文-PD-Net(2020)">论文-PD-Net(2020)</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-24T13:15:50.000Z" title="发表于 2020-12-24 21:15:50">2020-12-24</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2020/12/24/yuque/lun-wen-pd-net-2020/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">​
 
 
 Polysemy Deciphering Network for Human-Object Interaction Detection
@@ -426,10 +450,10 @@ Polysemy Deciphering Network for Human-Object Interaction Detection
 关键词：
 源码: https://github.com/MuchHair/PD-Net
 
-主要贡献现有模型假设同一动词在不同的 HOI 范畴中具有相似的视觉特征，忽略了动词的不同语义（在不同的场景下，相同的动作的视觉特征有很大差别，如下图所示，对于不同的物体，动词可以呈现实质上不同的语义和视觉特征。这种语义差异可能非常大，导致同一类型视觉特征的重要性随着感兴趣物体的变化而发生巨大变化）。本文提出一种多义词解码网络 PDNet，通过 3 种方式对动词的视觉多义进行解码以进行 HOI 检测。首先，PDNet 利用语言先验信息增强人类的姿态和空间特征进行 HOI 检测，使动词分类器能够接收到减少同一动词类内变异的语言提示。其次，提出了一种新的多义注意模块（PAM），该模块可以指导 PDNet 根据语言优先级对更重要的特征类型进行决策。最后，将上述两种策略应用于动词识别的两种分类，即 SH-VCM 和 SP-VCM（object-shared  ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/12/19/maskrcnn/" title="Mask R-CNN 演变笔记">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Mask R-CNN 演变笔记"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/19/maskrcnn/" title="Mask R-CNN 演变笔记">Mask R-CNN 演变笔记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-19T12:33:00.000Z" title="发表于 2020-12-19 20:33:00">2020-12-19</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a></span></div><div class="content">前言目标检测分为两种方法：一阶段法和两阶段法。一阶段法的代表算法为YOLO,SSD，具有速度快的优势。所谓两阶段法就是先找出图像中的region proposal ，再分别对每个proposal进行回归和分类，它的优势则是精确度高，Mask R-CNN则是这一方法，从一开始的R-CNN到Fast R-CNN再到Faster R-CNN，FPN，到最后的Mask R-CNN，演进过程中的一些方法依旧用于其他的机器视觉任务中，所以这个路线中的网络架构和方法非常值得我们去学习。
+主要贡献现有模型假设同一动词在不同的 HOI 范畴中具有相似的视觉特征，忽略了动词的不同语义（在不同的场景下，相同的动作的视觉特征有很大差别，如下图所示，对于不同的物体，动词可以呈现实质上不同的语义和视觉特征。这种语义差异可能非常大，导致同一类型视觉特征的重要性随着感兴趣物体的变化而发生巨大变化）。本文提出一种多义词解码网络 PDNet，通过 3 种方式对动词的视觉多义进行解码以进行 HOI 检测。首先，PDNet 利用语言先验信息增强人类的姿态和空间特征进行 HOI 检测，使动词分类器能够接收到减少同一动词类内变异的语言提示。其次，提出了一种新的多义注意模块（PAM），该模块可以指导 PDNet 根据语言优先级对更重要的特征类型进行决策。最后，将上述两种策略应用于动词识别的两种分类，即 SH-VCM 和 SP-VCM（object-shared  ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/12/19/maskrcnn/" title="Mask R-CNN 演变笔记">     <img class="post_bg" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-10.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Mask R-CNN 演变笔记"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/19/maskrcnn/" title="Mask R-CNN 演变笔记">Mask R-CNN 演变笔记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-19T12:33:00.000Z" title="发表于 2020-12-19 20:33:00">2020-12-19</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2020/12/19/maskrcnn/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">前言目标检测分为两种方法：一阶段法和两阶段法。一阶段法的代表算法为YOLO,SSD，具有速度快的优势。所谓两阶段法就是先找出图像中的region proposal ，再分别对每个proposal进行回归和分类，它的优势则是精确度高，Mask R-CNN则是这一方法，从一开始的R-CNN到Fast R-CNN再到Faster R-CNN，FPN，到最后的Mask R-CNN，演进过程中的一些方法依旧用于其他的机器视觉任务中，所以这个路线中的网络架构和方法非常值得我们去学习。
 Sliding windows
 这是目标检测的最早期的算法——滑动窗口法，很好理解，就是固定一个窗口(不同的size 和长宽比)从左向右，从上到下的去滑动，对每个窗口的图像进行目标识别与分类。这种方法可想而知，非常耗时。
-R-CNN2014年的时候随着深度学习的兴起，R-CNN横空出世了。与滑动窗口法不同，这里使用selective search 这种 region proposal method 来提取图像的RoIs (感兴趣区域)。这里我们可以看下这种方法的思想，相似的像素、纹理或者是灰度等会被归为一个区域，并得 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/12/13/er-cha-shu-de-gou-zao/" title="Leetcode总结—二叉树的构造">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Leetcode总结—二叉树的构造"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/13/er-cha-shu-de-gou-zao/" title="Leetcode总结—二叉树的构造">Leetcode总结—二叉树的构造</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-13T04:15:50.000Z" title="发表于 2020-12-13 12:15:50">2020-12-13</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/leetcode/">leetcode</a></span></div><div class="content">二叉树是面试中常见的题目类型，这里，针对leetcode前200道题中的二叉树相关问题进行总结与思考，力求烂熟于心，能根据题目名回忆起题目的具体描述，进而用简洁的语言描述出算法的核心。具体的题目答案可打开leetcode查看历史提交记录。
+R-CNN2014年的时候随着深度学习的兴起，R-CNN横空出世了。与滑动窗口法不同，这里使用selective search 这种 region proposal method 来提取图像的RoIs (感兴趣区域)。这里我们可以看下这种方法的思想，相似的像素、纹理或者是灰度等会被归为一个区域，并得 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/12/13/er-cha-shu-de-gou-zao/" title="Leetcode总结—二叉树的构造">     <img class="post_bg" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Leetcode总结—二叉树的构造"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/12/13/er-cha-shu-de-gou-zao/" title="Leetcode总结—二叉树的构造">Leetcode总结—二叉树的构造</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-13T04:15:50.000Z" title="发表于 2020-12-13 12:15:50">2020-12-13</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/leetcode/">leetcode</a></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-comments"></i><a class="twikoo-count" href="/2020/12/13/er-cha-shu-de-gou-zao/#post-comment"></a><span class="article-meta-label"> 条评论</span></span></div><div class="content">二叉树是面试中常见的题目类型，这里，针对leetcode前200道题中的二叉树相关问题进行总结与思考，力求烂熟于心，能根据题目名回忆起题目的具体描述，进而用简洁的语言描述出算法的核心。具体的题目答案可打开leetcode查看历史提交记录。
 二叉树的遍历是上一篇的内容，可先回顾；本篇主要整理二叉树的构造相关题目和思路。
 二叉树的构造（binary-tree-traversal）
 给定二叉树特定遍历下的结果，构造出原本的二叉树。
@@ -439,15 +463,262 @@ R-CNN2014年的时候随着深度学习的兴起，R-CNN横空出世了。与滑
 解决方案1(复杂度高)： 先序遍历的顺序是根节点，左子树，右子树。中序遍历的顺序是左子树，根节点，右子树。
 所以我们只需要根据先序遍历得到根节点，然后在中序遍历中找到根节点的位置，它的左边就是左子树的节点，右边就是右子树的节点。生成左子树和右子树就可以递归的进行了。
 
-public TreeNode buildTree(int[] preorder, int[]  ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#content-inner">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#content-inner">5</a><a class="extend next" rel="next" href="/page/3/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+public TreeNode buildTree(int[] preorder, int[]  ...</div></div></div><div class="recent-post-item ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="ca-pub-8919908724705274" data-ad-slot="1538867630"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#content-inner">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#content-inner">5</a><a class="extend next" rel="next" href="/page/3/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><i class="fab fa-github"></i><span>主題 GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">如果你在使用中遇到問題，請到 <a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly/issues" style="color:#49b1f5">Github Issues</a> 或者 <a href="/messageboard/" style="color:#49b1f5">留言板</a> 進行反饋，你也可以加入 QQ 群（由於 QQ 群只能有500人，會定時清理潛水的人）<div class="social-button"> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=KU9105XR" target="_blank">QQ 1 群 👍</a> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=r1nK0DQz" target="_blank">QQ 2 群 👍</a> <a class="button--animated" href="https://t.me/bu2fly" target="_blank">Telegram 👍</a> </div></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div><div class="card-widget ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8919908724705274" data-ad-slot="8108145410" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="card-widget" id="card-newest-comments"><div class="item-headline"><i class="fas fa-comment-dots"></i><span>最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div><div class="card-widget card-categories"><div class="item-headline">
             <i class="fas fa-folder-open"></i>
             <span>分类</span>
-            <a class="card-more-btn" href="/categories/" title="查看更多">
-    <i class="fas fa-angle-right"></i></a>
+            
             </div>
             <ul class="card-category-list" id="aside-cat-list">
-            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Python/"><span class="card-category-list-name">Python</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/leetcode/"><span class="card-category-list-name">leetcode</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="card-category-list-name">中间件</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%A4%87%E5%BF%98%E5%BD%95/"><span class="card-category-list-name">备忘录</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"><span class="card-category-list-name">开源项目</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%95%99%E7%A8%8B/"><span class="card-category-list-name">教程</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="card-category-list-name">数据库</span><span class="card-category-list-count">5</span></a></li>
-            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/3D%E5%8D%B7%E7%A7%AF/" style="font-size: 1.1em; color: #999">3D卷积</a> <a href="/tags/HOI%E4%BA%BA%E7%89%A9%E4%BA%A4%E4%BA%92%E6%A3%80%E6%B5%8B/" style="font-size: 1.23em; color: #999ea6">HOI人物交互检测</a> <a href="/tags/Hexo/" style="font-size: 1.3em; color: #99a1ac">Hexo</a> <a href="/tags/JDBC/" style="font-size: 1.1em; color: #999">JDBC</a> <a href="/tags/Linux/" style="font-size: 1.23em; color: #999ea6">Linux</a> <a href="/tags/Mybatis/" style="font-size: 1.43em; color: #99a6b9">Mybatis</a> <a href="/tags/Mybatis-plus/" style="font-size: 1.17em; color: #999c9f">Mybatis-plus</a> <a href="/tags/Mysql/" style="font-size: 1.1em; color: #999">Mysql</a> <a href="/tags/Redis/" style="font-size: 1.17em; color: #999c9f">Redis</a> <a href="/tags/SSM/" style="font-size: 1.1em; color: #999">SSM</a> <a href="/tags/SpringBoot/" style="font-size: 1.37em; color: #99a4b2">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 1.1em; color: #999">SpringMVC</a> <a href="/tags/SpringSecurity/" style="font-size: 1.1em; color: #999">SpringSecurity</a> <a href="/tags/Two-Stream/" style="font-size: 1.1em; color: #999">Two Stream</a> <a href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 1.17em; color: #999c9f">二叉树</a> <a href="/tags/%E5%88%86%E9%A1%B5/" style="font-size: 1.17em; color: #999c9f">分页</a> <a href="/tags/%E5%8A%A8%E4%BD%9C%E8%AF%86%E5%88%AB/" style="font-size: 1.17em; color: #999c9f">动作识别</a> <a href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" style="font-size: 1.1em; color: #999">动态代理</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 1.3em; color: #99a1ac">博客搭建</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 1.5em; color: #99a9bf">机器学习</a> <a href="/tags/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/" style="font-size: 1.1em; color: #999">注意力机制</a> <a href="/tags/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 1.1em; color: #999">消息中间件</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 1.1em; color: #999">深度学习</a> <a href="/tags/%E6%BA%90%E7%A0%81/" style="font-size: 1.23em; color: #999ea6">源码</a> <a href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" style="font-size: 1.1em; color: #999">目标检测</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 1.3em; color: #99a1ac">网络</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" style="font-size: 1.17em; color: #999c9f">自动化</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 1.1em; color: #999">设计模式</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.3em; color: #99a1ac">面试</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/11/"><span class="card-archive-list-date">十一月 2021</span><span class="card-archive-list-count">19</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/10/"><span class="card-archive-list-date">十月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/01/"><span class="card-archive-list-date">一月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/12/"><span class="card-archive-list-date">十二月 2020</span><span class="card-archive-list-count">7</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/11/"><span class="card-archive-list-date">十一月 2020</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/10/"><span class="card-archive-list-date">十月 2020</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/07/"><span class="card-archive-list-date">七月 2020</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/06/"><span class="card-archive-list-date">六月 2020</span><span class="card-archive-list-count">8</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">50</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2021-11-15T15:32:26.724Z"></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Python/"><span class="card-category-list-name">Python</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/leetcode/"><span class="card-category-list-name">leetcode</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="card-category-list-name">中间件</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%A4%87%E5%BF%98%E5%BD%95/"><span class="card-category-list-name">备忘录</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"><span class="card-category-list-name">开源项目</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%95%99%E7%A8%8B/"><span class="card-category-list-name">教程</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="card-category-list-name">数据库</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%A7%91%E7%A0%94/"><span class="card-category-list-name">科研</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><span class="card-category-list-name">计算机网络</span><span class="card-category-list-count">3</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Hexo/" style="font-size: 1.3em; color: rgb(2, 134, 164)">Hexo</a><a href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" style="font-size: 1.3em; color: rgb(159, 105, 68)">博客搭建</a><a href="/tags/Linux/" style="font-size: 1.25em; color: rgb(90, 59, 189)">Linux</a><a href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" style="font-size: 1.15em; color: rgb(111, 181, 155)">目标检测</a><a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 1.15em; color: rgb(14, 168, 15)">深度学习</a><a href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/" style="font-size: 1.2em; color: rgb(20, 151, 56)">二叉树</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" style="font-size: 1.2em; color: rgb(160, 192, 31)">自动化</a><a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 1.3em; color: rgb(155, 166, 38)">网络</a><a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 1.45em; color: rgb(153, 2, 181)">机器学习</a><a href="/tags/HOI%E4%BA%BA%E7%89%A9%E4%BA%A4%E4%BA%92%E6%A3%80%E6%B5%8B/" style="font-size: 1.25em; color: rgb(59, 151, 172)">HOI人物交互检测</a><a href="/tags/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/" style="font-size: 1.15em; color: rgb(13, 57, 66)">注意力机制</a><a href="/tags/Mybatis/" style="font-size: 1.4em; color: rgb(79, 75, 117)">Mybatis</a><a href="/tags/Mybatis-plus/" style="font-size: 1.2em; color: rgb(73, 81, 166)">Mybatis-plus</a><a href="/tags/%E5%88%86%E9%A1%B5/" style="font-size: 1.2em; color: rgb(171, 154, 158)">分页</a><a href="/tags/SpringBoot/" style="font-size: 1.35em; color: rgb(28, 23, 59)">SpringBoot</a><a href="/tags/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 1.15em; color: rgb(195, 81, 2)">消息中间件</a><a href="/tags/3D%E5%8D%B7%E7%A7%AF/" style="font-size: 1.15em; color: rgb(73, 143, 120)">3D卷积</a><a href="/tags/%E5%8A%A8%E4%BD%9C%E8%AF%86%E5%88%AB/" style="font-size: 1.2em; color: rgb(80, 131, 77)">动作识别</a><a href="/tags/Two-Stream/" style="font-size: 1.15em; color: rgb(178, 121, 53)">Two Stream</a><a href="/tags/SSM/" style="font-size: 1.15em; color: rgb(91, 77, 141)">SSM</a><a href="/tags/SpringMVC/" style="font-size: 1.15em; color: rgb(144, 55, 4)">SpringMVC</a><a href="/tags/Mysql/" style="font-size: 1.15em; color: rgb(42, 127, 64)">Mysql</a><a href="/tags/%E6%BA%90%E7%A0%81/" style="font-size: 1.25em; color: rgb(21, 157, 152)">源码</a><a href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" style="font-size: 1.15em; color: rgb(72, 59, 174)">动态代理</a><a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 1.15em; color: rgb(63, 39, 62)">设计模式</a><a href="/tags/Redis/" style="font-size: 1.2em; color: rgb(57, 24, 52)">Redis</a><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.3em; color: rgb(30, 156, 64)">面试</a><a href="/tags/SpringSecurity/" style="font-size: 1.15em; color: rgb(102, 68, 193)">SpringSecurity</a><a href="/tags/JDBC/" style="font-size: 1.15em; color: rgb(155, 165, 79)">JDBC</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/11/"><span class="card-archive-list-date">2021年11月</span><span class="card-archive-list-count">19</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/10/"><span class="card-archive-list-date">2021年10月</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/01/"><span class="card-archive-list-date">2021年01月</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/12/"><span class="card-archive-list-date">2020年12月</span><span class="card-archive-list-count">7</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/11/"><span class="card-archive-list-date">2020年11月</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/10/"><span class="card-archive-list-date">2020年10月</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/07/"><span class="card-archive-list-date">2020年07月</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/06/"><span class="card-archive-list-date">2020年06月</span><span class="card-archive-list-count">8</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">50</div></div><div class="webinfo-item"><div class="item-name">已运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2019-11-12T16:00:00.000Z"></div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">176.8k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2021-11-15T15:37:23.303Z"></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/index.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">簡</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/main.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/tw_cn.min.js?ver=3.8.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/localsearch.min.js?ver=3.8.4"></script><div class="js-pjax"><script>(() => { 
+  const getCommentUrl = () => {
+    const eleGroup = document.querySelectorAll('#recent-posts .article-title')
+    let urlArray = []
+    eleGroup.forEach(i=>{
+      urlArray.push(i.getAttribute('href'))
+    })
+    return urlArray
+  }
+
+  const getCount = () => {
+    const runTwikoo = () => {
+      twikoo.getCommentsCount({
+        envId: 'https://butterfly-twikoo.vercel.app/',
+        region: '',
+        urls: getCommentUrl(),
+        includeReply: false
+      }).then(function (res) {
+        document.querySelectorAll('#recent-posts .twikoo-count').forEach((item,index) => {
+          item.innerText = res[index].count
+        })
+      }).catch(function (err) {
+        console.log(err)
+      })
+    }
+
+      if (typeof twikoo === 'object') {
+        runTwikoo()
+      } else {
+        getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(runTwikoo)
+      }
+  }
+
+  window.pjax ? getCount() : window.addEventListener('load', getCount)
+
+})()</script><script>function subtitleType () {
+  fetch('https://v1.hitokoto.cn')
+    .then(response => response.json())
+    .then(data => {
+      if (true) {
+        var from = '出自 ' + data.from
+        var sub = "今日事&#44;今日畢,Never put off till tomorrow what you can do today".length == 0 ? new Array() : "今日事&#44;今日畢,Never put off till tomorrow what you can do today".split(',')
+        var both = sub.unshift(data.hitokoto, from)
+        var typed = new Typed('#subtitle', {
+          strings: sub,
+          startDelay: 300,
+          typeSpeed: 150,
+          loop: true,
+          backSpeed: 50,
+        })
+      } else {
+        document.getElementById('subtitle').innerHTML = data.hitokoto
+      }
+    })
+}
+
+if (true) {
+  if (typeof Typed === 'function') {
+    subtitleType()
+  } else {
+    getScript('https://cdn.jsdelivr.net/npm/typed.js/lib/typed.min.js').then(subtitleType)
+  }
+} else {
+  subtitleType()
+}
+</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      true && mermaid.init()
+    })
+  }
+}</script></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://butterfly-twikoo.vercel.app/',
+        region: '',
+        pageSize: 6,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 5/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.innerHTML= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}'>${array[i].content}</a>
+        <div class='name'><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom.innerHTML= result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/talking/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,

@@ -5,7 +5,7 @@
 <meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
 <meta property="og:description" content="简介官网：https:&#x2F;&#x2F;spring.io&#x2F;projects&#x2F;spring-security实际应用系统中，为了安全起见，一般都必备用户认证（登录）和权限控制的功能，以识别用户是否合法，以及根据权限来控制用户是否能够执行某项操作。Spring Security 是一个安全相关的框架，能够与 Spring 项目无缝整合，本文主要是介绍 Spring Security 默认的用户认证和权限控制的使">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="og:image" content="https://dongzhougu.github.io/img/avatar.png">
 <meta property="article:published_time" content="2021-11-09T07:30:38.000Z">
 <meta property="article:modified_time" content="2021-11-15T15:09:02.005Z">
 <meta property="article:author" content="DongZhou">
@@ -13,11 +13,11 @@
 <meta property="article:tag" content="源码">
 <meta property="article:tag" content="SpringSecurity">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2021/11/09/yuque/springsecurity-quan-xian-kong-zhi/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://dongzhougu.github.io/img/avatar.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2021/11/09/yuque/springsecurity-quan-xian-kong-zhi/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="NdIUXAOVyGnnBhcrip0ksCawbdAzT0hlBZDE9u4jx6k"/><meta name="msvalidate.01" content="567E47D75E8DCF1282B9623AD914701E"/><meta name="baidu-site-verification" content="code-pE5rnuxcfD"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
   noticeOutdate: undefined,
   highlight: undefined,
   copy: {
@@ -26,10 +26,10 @@
     noSupport: '浏览器不支持'
   },
   relativeDate: {
-    homepage: false,
-    post: false
+    homepage: true,
+    post: true
   },
-  runtime: '',
+  runtime: '天',
   date_suffix: {
     just: '刚刚',
     min: '分钟前',
@@ -37,7 +37,7 @@
     day: '天前',
     month: '个月前'
   },
-  copyright: undefined,
+  copyright: {"limitCount":150,"languages":{"author":"作者: DongZhou","link":"链接: ","source":"来源: 欢迎来到，TWOTO 的博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
   lightbox: 'fancybox',
   Snackbar: undefined,
   source: {
@@ -52,8 +52,8 @@
     }
   },
   isPhotoFigcaption: false,
-  islazyload: false,
-  isanchor: false
+  islazyload: true,
+  isanchor: true
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: 'SpringSecurity-权限控制',
   isPost: true,
@@ -131,8 +131,27 @@
       }
       const t = saveToLocal.get('theme')
     
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
         
       const asideStatus = saveToLocal.get('aside-status')
       if (asideStatus !== undefined) {
@@ -143,13 +162,18 @@
         }
       }
     
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
     const detectApple = () => {
       if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
         document.documentElement.classList.add('apple')
       }
     }
     detectApple()
-    })(window)</script><style type="text/css" lang="css">
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">.card-announcement .social-button{margin: .6rem 0 0 0; text-align: center;}.card-announcement .social-button a{display: block; margin: 0.2rem 0;background-color: var(--btn-bg); color: var(--btn-color); line-height: 1.6rem; transition: all .3s; position: relative; z-index: 1;}</style><style type="text/css" lang="css">
     #loading-container{
         position: fixed;
         top: 0;
@@ -291,7 +315,7 @@
          <div></div> 
          <div></div>
      </div>
- </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SpringSecurity-权限控制</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-11-09T07:30:38.000Z" title="发表于 2021-11-09 15:30:38">2021-11-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-11-15T15:09:02.005Z" title="更新于 2021-11-15 23:09:02">2021-11-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SpringSecurity-权限控制"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633519434602-d2e3e65f-8acd-4745-b88d-19cb3031f1a0.png#clientId=u80eddcb8-b1bd-4&amp;from=paste&amp;id=ud36dbb38&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=330&amp;originWidth=952&amp;originalType=url%E2%88%B6=1&amp;size=71697&amp;status=done&amp;style=none&amp;taskId=u17f8143a-ef63-4124-9f5e-1e15678a885" alt="image.png"></p>
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SpringSecurity-权限控制<a class="post-edit-link" href="https://github.com/jerryc127/butterfly.js.org/edit/main/source/_posts/yuque/SpringSecurity-权限控制.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2021-11-09T07:30:38.000Z" title="undefined 2021-11-09 15:30:38">2021-11-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>19分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SpringSecurity-权限控制"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633519434602-d2e3e65f-8acd-4745-b88d-19cb3031f1a0.png#clientId=u80eddcb8-b1bd-4&amp;from=paste&amp;id=ud36dbb38&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=330&amp;originWidth=952&amp;originalType=url%E2%88%B6=1&amp;size=71697&amp;status=done&amp;style=none&amp;taskId=u17f8143a-ef63-4124-9f5e-1e15678a885" alt="image.png"></p>
 <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>官网：<a target="_blank" rel="noopener" href="https://spring.io/projects/spring-security">https://spring.io/projects/spring-security</a><br>实际应用系统中，为了安全起见，一般都必备用户认证（登录）和权限控制的功能，以识别用户是否合法，以及根据权限来控制用户是否能够执行某项操作。<br>Spring Security 是一个安全相关的框架，能够与 Spring 项目无缝整合，本文主要是介绍 Spring Security 默认的用户认证和权限控制的使用方法和原理，但不涉及到自定义实现。<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44516305/article/details/88868791">Spring Security 用户认证和权限控制（自定义实现）</a>这篇文章专门讲解用户认证和权限控制相关的自定义实现。<br>（1）用户认证指的是：验证某个用户是否为系统中的合法主体，也就是说用户能否访问该系统。用户认证一般要求用户提供用户名和密码。系统通过校验用户名和密码来完成认证过程。<strong>通俗点说就是系统认为用户是否能登录</strong><br>（2）用户授权指的是验证某个用户是否有权限执行某个操作。在一个系统中，不同用户所具有的权限是不同的。比如对一个文件来说，有的用户只能进行读取，而有的用户可以进行修改。一般来说，系统会为不同的用户分配不同的角色，而每个角色则对应一系列的权限。通俗点讲就是系统判断用户是否有权限去做某些事情。</p>
 <h2 id="同款产品对比"><a href="#同款产品对比" class="headerlink" title="同款产品对比"></a>同款产品对比</h2><h3 id="Spring-Security"><a href="#Spring-Security" class="headerlink" title="Spring Security"></a>Spring Security</h3><p>Spring 技术栈的组成部分。通过提供完整可扩展的认证和授权支持保护你的应用程序。<br>SpringSecurity 特点：</p>
 <ul>
@@ -322,9 +346,9 @@
 <h2 id="Security-如何工作"><a href="#Security-如何工作" class="headerlink" title="Security 如何工作"></a>Security 如何工作</h2><h3 id="SpringSecurity-本质"><a href="#SpringSecurity-本质" class="headerlink" title="SpringSecurity 本质"></a>SpringSecurity 本质</h3><blockquote>
 <p>本质是一个过滤器链</p>
 </blockquote>
-<p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633616092529-8983178e-e874-4e52-ae74-e539b5fd8b16.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=uc94af561&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=488&amp;originWidth=1358&amp;originalType=url%E2%88%B6=1&amp;size=286557&amp;status=done&amp;style=none&amp;taskId=u03423407-b3e5-4589-91c3-34f1f6415de" alt="image.png"><br>代码底层流程：<br>重点看三个过滤器：<br><strong>FilterSecurityInterceptor</strong><br><strong>ExceptionTranslationFilter</strong><br><strong>UsernamePasswordAuthenticationFilter</strong><br><strong>FilterSecurityInterceptor</strong>:：是一个方法级的权限过滤器, 基本位于过滤链的最底部<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918746-dfe9e318-ac6c-42a0-a908-6a08df313359.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=ud8178b1f&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=669&amp;originWidth=936&amp;originalType=url%E2%88%B6=1&amp;size=58659&amp;status=done&amp;style=none&amp;taskId=u95307270-3adb-4cb1-80c6-fb7f3fc1a07" alt="image.png"><br><strong>super.beforeInvocation(fi) 表示查看之前的 filter 是否通过。</strong><br><strong>fi.getChain().doFilter(fi.getRequest(), fi.getResponse());表示真正的调用后台的服务。</strong><br><strong>ExceptionTranslationFilter</strong>:：是个异常过滤器，用来处理在认证授权过程中抛出的异常<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918879-207a5e37-e60d-481e-bdc5-7d12e336361f.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=u60b00ecb&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=600&amp;originWidth=900&amp;originalType=url%E2%88%B6=1&amp;size=48502&amp;status=done&amp;style=none&amp;taskId=u1f1076fa-385a-431f-9896-10b1bf648d4" alt="image.png"><br>*<em>UsernamePasswordAuthenticationFilter *</em>：对/login 的 POST 请求做拦截，校验表单中用户 名，密码。<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918859-f792a484-cc20-42ea-abea-c08d301e5016.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=uf15a02c8&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=541&amp;originWidth=792&amp;originalType=url%E2%88%B6=1&amp;size=33593&amp;status=done&amp;style=none&amp;taskId=u39247c52-1d5a-4f6a-85db-4053fcb5324" alt="image.png"></p>
-<h3 id="SpringSecurity-过滤器启动原理"><a href="#SpringSecurity-过滤器启动原理" class="headerlink" title="SpringSecurity 过滤器启动原理"></a>SpringSecurity 过滤器启动原理</h3><p>1.使用 springsecurity 配置过滤器（DelegatingFilterProxy）； 2.该类的 doFilter 方法会通过 initDelegate(wac)先获取到过滤器 bean(FilterChainProxy)，通过他去初始化其他的 filter（delegate.init(this.getFilterConfig());）；<br>3.FilterChainProxy 的 doFilter 方法会通过 getFilters(fwRequest)方法获取到 WebApplicationContext 配置中的所有配置过的的 filter； 4.紧接着开始往后加载其他的 filter<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918901-b1b531d1-64de-4e84-9252-751e7d630a05.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=u40381b78&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=859&amp;originWidth=1373&amp;originalType=url%E2%88%B6=1&amp;size=81025&amp;status=done&amp;style=none&amp;taskId=u6feb09f2-fcd8-4a28-86f0-0afb0da484a" alt="image.png"></p>
-<h3 id="UserDetailsService-接口讲解"><a href="#UserDetailsService-接口讲解" class="headerlink" title="UserDetailsService 接口讲解"></a>UserDetailsService 接口讲解</h3><p>当什么也没有配置的时候，账号和密码是由 Spring Security 定义生成的。而在实际项目中 账号和密码都是从数据库中查询出来的。 所以我们要通过自定义逻辑控制认证逻辑。<br>如果需要自定义逻辑时，只需要实现 UserDetailsService 接口即可。接口定义如下：<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918767-3bfa72b3-1d2b-42ad-937d-88e70c89702b.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=uba774778&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=525&amp;originWidth=1043&amp;originalType=url%E2%88%B6=1&amp;size=47572&amp;status=done&amp;style=none&amp;taskId=u9e5aa64d-a94e-4dd6-a8e6-fe099409746" alt="image.png"><br>​</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633616092529-8983178e-e874-4e52-ae74-e539b5fd8b16.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=uc94af561&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=488&amp;originWidth=1358&amp;originalType=url%E2%88%B6=1&amp;size=286557&amp;status=done&amp;style=none&amp;taskId=u03423407-b3e5-4589-91c3-34f1f6415de" alt="image.png"><br>代码底层流程：<br>重点看三个过滤器：<br><strong>FilterSecurityInterceptor</strong><br><strong>ExceptionTranslationFilter</strong><br><strong>UsernamePasswordAuthenticationFilter</strong><br><strong>FilterSecurityInterceptor</strong>:：是一个方法级的权限过滤器, 基本位于过滤链的最底部<br><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918746-dfe9e318-ac6c-42a0-a908-6a08df313359.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=ud8178b1f&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=669&amp;originWidth=936&amp;originalType=url%E2%88%B6=1&amp;size=58659&amp;status=done&amp;style=none&amp;taskId=u95307270-3adb-4cb1-80c6-fb7f3fc1a07" alt="image.png"><br><strong>super.beforeInvocation(fi) 表示查看之前的 filter 是否通过。</strong><br><strong>fi.getChain().doFilter(fi.getRequest(), fi.getResponse());表示真正的调用后台的服务。</strong><br><strong>ExceptionTranslationFilter</strong>:：是个异常过滤器，用来处理在认证授权过程中抛出的异常<br><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918879-207a5e37-e60d-481e-bdc5-7d12e336361f.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=u60b00ecb&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=600&amp;originWidth=900&amp;originalType=url%E2%88%B6=1&amp;size=48502&amp;status=done&amp;style=none&amp;taskId=u1f1076fa-385a-431f-9896-10b1bf648d4" alt="image.png"><br>*<em>UsernamePasswordAuthenticationFilter *</em>：对/login 的 POST 请求做拦截，校验表单中用户 名，密码。<br><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918859-f792a484-cc20-42ea-abea-c08d301e5016.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=uf15a02c8&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=541&amp;originWidth=792&amp;originalType=url%E2%88%B6=1&amp;size=33593&amp;status=done&amp;style=none&amp;taskId=u39247c52-1d5a-4f6a-85db-4053fcb5324" alt="image.png"></p>
+<h3 id="SpringSecurity-过滤器启动原理"><a href="#SpringSecurity-过滤器启动原理" class="headerlink" title="SpringSecurity 过滤器启动原理"></a>SpringSecurity 过滤器启动原理</h3><p>1.使用 springsecurity 配置过滤器（DelegatingFilterProxy）； 2.该类的 doFilter 方法会通过 initDelegate(wac)先获取到过滤器 bean(FilterChainProxy)，通过他去初始化其他的 filter（delegate.init(this.getFilterConfig());）；<br>3.FilterChainProxy 的 doFilter 方法会通过 getFilters(fwRequest)方法获取到 WebApplicationContext 配置中的所有配置过的的 filter； 4.紧接着开始往后加载其他的 filter<br><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918901-b1b531d1-64de-4e84-9252-751e7d630a05.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=u40381b78&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=859&amp;originWidth=1373&amp;originalType=url%E2%88%B6=1&amp;size=81025&amp;status=done&amp;style=none&amp;taskId=u6feb09f2-fcd8-4a28-86f0-0afb0da484a" alt="image.png"></p>
+<h3 id="UserDetailsService-接口讲解"><a href="#UserDetailsService-接口讲解" class="headerlink" title="UserDetailsService 接口讲解"></a>UserDetailsService 接口讲解</h3><p>当什么也没有配置的时候，账号和密码是由 Spring Security 定义生成的。而在实际项目中 账号和密码都是从数据库中查询出来的。 所以我们要通过自定义逻辑控制认证逻辑。<br>如果需要自定义逻辑时，只需要实现 UserDetailsService 接口即可。接口定义如下：<br><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608918767-3bfa72b3-1d2b-42ad-937d-88e70c89702b.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=uba774778&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=525&amp;originWidth=1043&amp;originalType=url%E2%88%B6=1&amp;size=47572&amp;status=done&amp;style=none&amp;taskId=u9e5aa64d-a94e-4dd6-a8e6-fe099409746" alt="image.png"><br>​</p>
 <p>​</p>
 <p><strong>返回值 UserDetails</strong><br>这个类是系统默认的用户”<strong>主体</strong>“</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 表示获取登录用户所有权限</span>
@@ -341,8 +365,8 @@ String <span class="token function">getUsername</span><span class="token punctua
 <span class="token keyword">boolean</span> <span class="token function">isCredentialsNonExpired</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token comment" spellcheck="true">// 表示当前用户是否可用</span>
 <span class="token keyword">boolean</span> <span class="token function">isEnabled</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608920141-2849e0f0-b48c-4bb3-bd70-241930b49b3c.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=uc110a26e&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=183&amp;originWidth=466&amp;originalType=url%E2%88%B6=1&amp;size=21018&amp;status=done&amp;style=none&amp;taskId=ua88694a9-17ae-4c46-b5ab-c691096eb51" alt="image.png"><br>​</p>
-<p>以后我们只需要使用 User 这个实体类即可!<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608920129-9a0fd7f2-5108-4c5a-8e4b-83b201db289e.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=ue1039596&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=190&amp;originWidth=1265&amp;originalType=url%E2%88%B6=1&amp;size=21083&amp;status=done&amp;style=none&amp;taskId=u34b34006-aa7a-4073-bcc9-952dfcc8e4e" alt="image.png"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608920141-2849e0f0-b48c-4bb3-bd70-241930b49b3c.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=uc110a26e&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=183&amp;originWidth=466&amp;originalType=url%E2%88%B6=1&amp;size=21018&amp;status=done&amp;style=none&amp;taskId=ua88694a9-17ae-4c46-b5ab-c691096eb51" alt="image.png"><br>​</p>
+<p>以后我们只需要使用 User 这个实体类即可!<br><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608920129-9a0fd7f2-5108-4c5a-8e4b-83b201db289e.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=ue1039596&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=190&amp;originWidth=1265&amp;originalType=url%E2%88%B6=1&amp;size=21083&amp;status=done&amp;style=none&amp;taskId=u34b34006-aa7a-4073-bcc9-952dfcc8e4e" alt="image.png"></p>
 <h3 id="PasswordEncoder-接口讲解"><a href="#PasswordEncoder-接口讲解" class="headerlink" title="PasswordEncoder 接口讲解"></a>PasswordEncoder 接口讲解</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 表示把参数按照特定的解析规则进行解析</span>
 String <span class="token function">encode</span><span class="token punctuation">(</span>CharSequence rawPassword<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token comment" spellcheck="true">// 表示验证从存储中获取的编码密码与编码后提交的原始密码是否匹配。如果密码匹</span>
@@ -354,7 +378,7 @@ String <span class="token function">encode</span><span class="token punctuation"
 <span class="token keyword">default</span> <span class="token keyword">boolean</span> <span class="token function">upgradeEncoding</span><span class="token punctuation">(</span>String encodedPassword<span class="token punctuation">)</span> <span class="token punctuation">{</span>
 <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608920269-17f835c9-7a72-4eb1-89a2-04da6dce469f.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=u2e3e505c&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=486&amp;originWidth=1167&amp;originalType=url%E2%88%B6=1&amp;size=83274&amp;status=done&amp;style=none&amp;taskId=u3b295a24-6bbc-48ff-9a95-2d966b798cd" alt="image.png"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633608920269-17f835c9-7a72-4eb1-89a2-04da6dce469f.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=u2e3e505c&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=486&amp;originWidth=1167&amp;originalType=url%E2%88%B6=1&amp;size=83274&amp;status=done&amp;style=none&amp;taskId=u3b295a24-6bbc-48ff-9a95-2d966b798cd" alt="image.png"></p>
 <p><strong>BCryptPasswordEncoder 是 Spring Security 官方推荐的密码解析器，平时多使用这个解析器。</strong><br><strong>BCryptPasswordEncoder 是对 bcrypt 强散列方法的具体实现。是基于 Hash 算法实现的单向加密。可以通过 strength 控制加密强度，默认 10.</strong><br>查用方法演示：</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Test</span>
 <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">test01</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
@@ -374,7 +398,7 @@ String <span class="token function">encode</span><span class="token punctuation"
    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-security<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633610300498-257a8d42-e414-4117-b36d-4e3b43e8feb1.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=u91330602&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1241&amp;originWidth=1368&amp;originalType=url%E2%88%B6=1&amp;size=139468&amp;status=done&amp;style=none&amp;taskId=uae7f1e42-71e5-4bad-9dd6-ced72e67c5f" alt="image.png"><br>使用 Spring Security 为的就是写最少的代码，实现更多的功能，在定制化 Spring Security，核心思路就是：重写某个功能，然后配置。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633610300498-257a8d42-e414-4117-b36d-4e3b43e8feb1.png#clientId=u0fadcac1-10f9-4&amp;from=paste&amp;id=u91330602&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1241&amp;originWidth=1368&amp;originalType=url%E2%88%B6=1&amp;size=139468&amp;status=done&amp;style=none&amp;taskId=uae7f1e42-71e5-4bad-9dd6-ced72e67c5f" alt="image.png"><br>使用 Spring Security 为的就是写最少的代码，实现更多的功能，在定制化 Spring Security，核心思路就是：重写某个功能，然后配置。</p>
 <ul>
 <li>比如你要查自己的用户表做登录，那就实现 UserDetailsService 接口；</li>
 <li>比如前后端分离项目，登录成功和失败后返回 json，那就实现 AuthenticationFailureHandler/AuthenticationSuccessHandler 接口；</li>
@@ -391,7 +415,7 @@ String <span class="token function">encode</span><span class="token punctuation"
         <span class="token keyword">return</span> null<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="2、准备-sql"><a href="#2、准备-sql" class="headerlink" title="2、准备 sql"></a>2、准备 sql</h3><p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1635919934209-76ca691b-2cb1-4d68-bfa0-be2039779cc7.png#clientId=ue4643a22-b1e3-4&amp;from=paste&amp;height=416&amp;id=u2ac59249&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=416&amp;originWidth=592&amp;originalType=binary%E2%88%B6=1&amp;size=25099&amp;status=done&amp;style=none&amp;taskId=uc2701962-8e04-4965-acbb-04b75f9d8a6&amp;width=592" alt="image.png"></p>
+<h3 id="2、准备-sql"><a href="#2、准备-sql" class="headerlink" title="2、准备 sql"></a>2、准备 sql</h3><p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1635919934209-76ca691b-2cb1-4d68-bfa0-be2039779cc7.png#clientId=ue4643a22-b1e3-4&amp;from=paste&amp;height=416&amp;id=u2ac59249&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=416&amp;originWidth=592&amp;originalType=binary%E2%88%B6=1&amp;size=25099&amp;status=done&amp;style=none&amp;taskId=uc2701962-8e04-4965-acbb-04b75f9d8a6&amp;width=592" alt="image.png"></p>
 <pre class="line-numbers language-java"><code class="language-java">SET NAMES utf8mb4<span class="token punctuation">;</span>
 SET FOREIGN_KEY_CHECKS <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 
@@ -959,7 +983,7 @@ SET FOREIGN_KEY_CHECKS <span class="token operator">=</span> <span class="token 
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id=""><a href="#" class="headerlink" title=")"></a><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633871882203-1f44ec9d-4100-45d6-a26b-c1127ba0b44c.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=491&amp;id=u7b8a2c94&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=491&amp;originWidth=813&amp;originalType=binary%E2%88%B6=1&amp;size=41137&amp;status=done&amp;style=none&amp;taskId=u2960e7ed-f42f-409c-ac83-dc359bd7b00&amp;width=813" alt="image.png">)<img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633871958142-006154e0-d4f3-4ef6-b67e-ef0fb52ece98.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=490&amp;id=uc8cbf9ef&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=490&amp;originWidth=837&amp;originalType=binary%E2%88%B6=1&amp;size=41899&amp;status=done&amp;style=none&amp;taskId=ufb751ef2-5880-4457-9fe5-bd0acd84cfd&amp;width=837" alt="image.png"></h3><p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633872189299-969587dc-ec64-4ef0-a9f4-a28a34c08666.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=489&amp;id=u8707c3eb&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=489&amp;originWidth=826&amp;originalType=binary%E2%88%B6=1&amp;size=50868&amp;status=done&amp;style=none&amp;taskId=uf9d386cf-3c9a-4818-bac4-2fe62ffe0c2&amp;width=826" alt="image.png"><br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633872207107-ce09ff59-9791-440b-8d37-42df399644cc.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=504&amp;id=ucfa3831a&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=504&amp;originWidth=835&amp;originalType=binary%E2%88%B6=1&amp;size=50836&amp;status=done&amp;style=none&amp;taskId=u97abb0f3-5e13-4e29-97b4-1f2f5309b11&amp;width=835" alt="image.png"><br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633872309455-1cb33293-0bc5-46ad-948b-5a230093dfa5.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=495&amp;id=u2e0dee20&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=495&amp;originWidth=811&amp;originalType=binary%E2%88%B6=1&amp;size=41421&amp;status=done&amp;style=none&amp;taskId=ud156107e-ade1-4381-b670-5f460a0f2af&amp;width=811" alt="image.png"></p>
+<h3 id=""><a href="#" class="headerlink" title=")"></a><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633871882203-1f44ec9d-4100-45d6-a26b-c1127ba0b44c.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=491&amp;id=u7b8a2c94&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=491&amp;originWidth=813&amp;originalType=binary%E2%88%B6=1&amp;size=41137&amp;status=done&amp;style=none&amp;taskId=u2960e7ed-f42f-409c-ac83-dc359bd7b00&amp;width=813" alt="image.png">)<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633871958142-006154e0-d4f3-4ef6-b67e-ef0fb52ece98.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=490&amp;id=uc8cbf9ef&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=490&amp;originWidth=837&amp;originalType=binary%E2%88%B6=1&amp;size=41899&amp;status=done&amp;style=none&amp;taskId=ufb751ef2-5880-4457-9fe5-bd0acd84cfd&amp;width=837" alt="image.png"></h3><p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633872189299-969587dc-ec64-4ef0-a9f4-a28a34c08666.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=489&amp;id=u8707c3eb&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=489&amp;originWidth=826&amp;originalType=binary%E2%88%B6=1&amp;size=50868&amp;status=done&amp;style=none&amp;taskId=uf9d386cf-3c9a-4818-bac4-2fe62ffe0c2&amp;width=826" alt="image.png"><br><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633872207107-ce09ff59-9791-440b-8d37-42df399644cc.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=504&amp;id=ucfa3831a&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=504&amp;originWidth=835&amp;originalType=binary%E2%88%B6=1&amp;size=50836&amp;status=done&amp;style=none&amp;taskId=u97abb0f3-5e13-4e29-97b4-1f2f5309b11&amp;width=835" alt="image.png"><br><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2021/png/1164521/1633872309455-1cb33293-0bc5-46ad-948b-5a230093dfa5.png#clientId=u4ab21f6f-1dcb-4&amp;from=paste&amp;height=495&amp;id=u2e0dee20&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=495&amp;originWidth=811&amp;originalType=binary%E2%88%B6=1&amp;size=41421&amp;status=done&amp;style=none&amp;taskId=ud156107e-ade1-4381-b670-5f460a0f2af&amp;width=811" alt="image.png"></p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -978,7 +1002,266 @@ SET FOREIGN_KEY_CHECKS <span class="token operator">=</span> <span class="token 
             });
             document.body.appendChild(img);
           });
-      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2021/11/09/yuque/springsecurity-quan-xian-kong-zhi/">https://dongzhougu.github.io/2021/11/09/yuque/springsecurity-quan-xian-kong-zhi/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SpringBoot/">SpringBoot</a><a class="post-meta__tags" href="/tags/%E6%BA%90%E7%A0%81/">源码</a><a class="post-meta__tags" href="/tags/SpringSecurity/">SpringSecurity</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/11/09/yuque/mybatisplus-chi-jiu-hua-kuang-jia/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MybatisPlus-持久化框架</div></div></a></div><div class="next-post pull-right"><a href="/2021/11/09/yuque/springboot-quan-ju-yi-chang-chu-li/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SpringBoot-全局异常处理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-15</div><div class="title">SpringBoot-前后端分离跨域配置</div></div></a></div><div><a href="/2021/11/09/yuque/springboot-quan-ju-yi-chang-chu-li/" title="SpringBoot-全局异常处理"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-09</div><div class="title">SpringBoot-全局异常处理</div></div></a></div><div><a href="/2021/11/09/yuque/springboot-zi-ding-yi-zhu-jie-qie-mian-aop/" title="SpringBoot-自定义注解切面AOP"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-09</div><div class="title">SpringBoot-自定义注解切面AOP</div></div></a></div><div><a href="/2021/11/09/yuque/springboot-can-shu-xiao-yan-validator/" title="SpringBoot-参数校验Validator"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-09</div><div class="title">SpringBoot-参数校验Validator</div></div></a></div><div><a href="/2021/11/09/yuque/yi-ge-ji-chu-de-springboot-xiang-mu-gai-bao-han-na-xie-dong-xi/" title="一个基础的SpringBoot 项目该包含哪些东西？"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-09</div><div class="title">一个基础的SpringBoot 项目该包含哪些东西？</div></div></a></div><div><a href="/2021/11/10/yuque/mybatis-shi-yong-pagehelper-fen-ye/" title="Mybatis-使用PageHelper分页"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-10</div><div class="title">Mybatis-使用PageHelper分页</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E6%AC%BE%E4%BA%A7%E5%93%81%E5%AF%B9%E6%AF%94"><span class="toc-number">2.</span> <span class="toc-text">同款产品对比</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-Security"><span class="toc-number">2.1.</span> <span class="toc-text">Spring Security</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shiro"><span class="toc-number">2.2.</span> <span class="toc-text">Shiro</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Security-%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C"><span class="toc-number">3.</span> <span class="toc-text">Security 如何工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringSecurity-%E6%9C%AC%E8%B4%A8"><span class="toc-number">3.1.</span> <span class="toc-text">SpringSecurity 本质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringSecurity-%E8%BF%87%E6%BB%A4%E5%99%A8%E5%90%AF%E5%8A%A8%E5%8E%9F%E7%90%86"><span class="toc-number">3.2.</span> <span class="toc-text">SpringSecurity 过滤器启动原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UserDetailsService-%E6%8E%A5%E5%8F%A3%E8%AE%B2%E8%A7%A3"><span class="toc-number">3.3.</span> <span class="toc-text">UserDetailsService 接口讲解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PasswordEncoder-%E6%8E%A5%E5%8F%A3%E8%AE%B2%E8%A7%A3"><span class="toc-number">3.4.</span> <span class="toc-text">PasswordEncoder 接口讲解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%86%E6%88%90-Security"><span class="toc-number">4.</span> <span class="toc-text">集成 Security</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91"><span class="toc-number">5.</span> <span class="toc-text">用户登录认证逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89-UserDetailsService"><span class="toc-number">5.1.</span> <span class="toc-text">1、创建自定义 UserDetailsService</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%87%86%E5%A4%87-sql"><span class="toc-number">5.2.</span> <span class="toc-text">2、准备 sql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8-MybatisPlus-%E7%94%9F%E6%88%90%E5%AE%9E%E4%BD%93%E7%B1%BB%E5%92%8C-mapper"><span class="toc-number">5.3.</span> <span class="toc-text">3. 使用 MybatisPlus 生成实体类和 mapper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%88%B6%E4%BD%9C%E7%99%BB%E5%BD%95%E5%AE%9E%E7%8E%B0%E7%B1%BB%E5%92%8C%E8%87%AA%E5%AE%9A%E4%B9%89-UserDetails"><span class="toc-number">5.4.</span> <span class="toc-text">4. 制作登录实现类和自定义 UserDetails</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%85%8D%E7%BD%AE-Spring-Security"><span class="toc-number">5.5.</span> <span class="toc-text">5. 配置 Spring Security</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%B5%8B%E8%AF%95%E8%AE%BF%E9%97%AE"><span class="toc-number">5.6.</span> <span class="toc-text">6. 测试访问</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">5.7.</span> <span class="toc-text">)</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
+      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2021/11/09/yuque/springsecurity-quan-xian-kong-zhi/">https://dongzhougu.github.io/2021/11/09/yuque/springsecurity-quan-xian-kong-zhi/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SpringBoot/">SpringBoot</a><a class="post-meta__tags" href="/tags/%E6%BA%90%E7%A0%81/">源码</a><a class="post-meta__tags" href="/tags/SpringSecurity/">SpringSecurity</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/wechat.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipay.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipayhk.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipayhk.jpg" alt="支付寶香港"/></a><div class="post-qr-code-desc">支付寶香港</div></li></ul></div></div><div class="ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="ca-pub-8919908724705274" data-ad-slot="5978969231"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/11/09/yuque/mybatisplus-chi-jiu-hua-kuang-jia/"><img class="prev-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MybatisPlus-持久化框架</div></div></a></div><div class="next-post pull-right"><a href="/2021/11/09/yuque/springboot-quan-ju-yi-chang-chu-li/"><img class="next-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SpringBoot-全局异常处理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/11/09/yuque/springboot-quan-ju-yi-chang-chu-li/" title="SpringBoot-全局异常处理"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-09</div><div class="title">SpringBoot-全局异常处理</div></div></a></div><div><a href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-15</div><div class="title">SpringBoot-前后端分离跨域配置</div></div></a></div><div><a href="/2021/11/09/yuque/springboot-can-shu-xiao-yan-validator/" title="SpringBoot-参数校验Validator"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-8.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-09</div><div class="title">SpringBoot-参数校验Validator</div></div></a></div><div><a href="/2021/11/09/yuque/springboot-zi-ding-yi-zhu-jie-qie-mian-aop/" title="SpringBoot-自定义注解切面AOP"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-10.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-09</div><div class="title">SpringBoot-自定义注解切面AOP</div></div></a></div><div><a href="/2021/11/09/yuque/yi-ge-ji-chu-de-springboot-xiang-mu-gai-bao-han-na-xie-dong-xi/" title="一个基础的SpringBoot 项目该包含哪些东西？"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-09</div><div class="title">一个基础的SpringBoot 项目该包含哪些东西？</div></div></a></div><div><a href="/2021/11/10/yuque/mybatis-shi-yong-pagehelper-fen-ye/" title="Mybatis-使用PageHelper分页"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-1.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-10</div><div class="title">Mybatis-使用PageHelper分页</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><i class="fab fa-github"></i><span>主題 GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">如果你在使用中遇到問題，請到 <a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly/issues" style="color:#49b1f5">Github Issues</a> 或者 <a href="/messageboard/" style="color:#49b1f5">留言板</a> 進行反饋，你也可以加入 QQ 群（由於 QQ 群只能有500人，會定時清理潛水的人）<div class="social-button"> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=KU9105XR" target="_blank">QQ 1 群 👍</a> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=r1nK0DQz" target="_blank">QQ 2 群 👍</a> <a class="button--animated" href="https://t.me/bu2fly" target="_blank">Telegram 👍</a> </div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E6%AC%BE%E4%BA%A7%E5%93%81%E5%AF%B9%E6%AF%94"><span class="toc-number">2.</span> <span class="toc-text">同款产品对比</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-Security"><span class="toc-number">2.1.</span> <span class="toc-text">Spring Security</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shiro"><span class="toc-number">2.2.</span> <span class="toc-text">Shiro</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Security-%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C"><span class="toc-number">3.</span> <span class="toc-text">Security 如何工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringSecurity-%E6%9C%AC%E8%B4%A8"><span class="toc-number">3.1.</span> <span class="toc-text">SpringSecurity 本质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringSecurity-%E8%BF%87%E6%BB%A4%E5%99%A8%E5%90%AF%E5%8A%A8%E5%8E%9F%E7%90%86"><span class="toc-number">3.2.</span> <span class="toc-text">SpringSecurity 过滤器启动原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UserDetailsService-%E6%8E%A5%E5%8F%A3%E8%AE%B2%E8%A7%A3"><span class="toc-number">3.3.</span> <span class="toc-text">UserDetailsService 接口讲解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PasswordEncoder-%E6%8E%A5%E5%8F%A3%E8%AE%B2%E8%A7%A3"><span class="toc-number">3.4.</span> <span class="toc-text">PasswordEncoder 接口讲解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%86%E6%88%90-Security"><span class="toc-number">4.</span> <span class="toc-text">集成 Security</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91"><span class="toc-number">5.</span> <span class="toc-text">用户登录认证逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89-UserDetailsService"><span class="toc-number">5.1.</span> <span class="toc-text">1、创建自定义 UserDetailsService</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%87%86%E5%A4%87-sql"><span class="toc-number">5.2.</span> <span class="toc-text">2、准备 sql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8-MybatisPlus-%E7%94%9F%E6%88%90%E5%AE%9E%E4%BD%93%E7%B1%BB%E5%92%8C-mapper"><span class="toc-number">5.3.</span> <span class="toc-text">3. 使用 MybatisPlus 生成实体类和 mapper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%88%B6%E4%BD%9C%E7%99%BB%E5%BD%95%E5%AE%9E%E7%8E%B0%E7%B1%BB%E5%92%8C%E8%87%AA%E5%AE%9A%E4%B9%89-UserDetails"><span class="toc-number">5.4.</span> <span class="toc-text">4. 制作登录实现类和自定义 UserDetails</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%85%8D%E7%BD%AE-Spring-Security"><span class="toc-number">5.5.</span> <span class="toc-text">5. 配置 Spring Security</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%B5%8B%E8%AF%95%E8%AE%BF%E9%97%AE"><span class="toc-number">5.6.</span> <span class="toc-text">6. 测试访问</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">5.7.</span> <span class="toc-text">)</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div><div class="card-widget ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8919908724705274" data-ad-slot="8108145410" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png')"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">簡</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/main.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/tw_cn.min.js?ver=3.8.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/localsearch.min.js?ver=3.8.4"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      true && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://butterfly-twikoo.vercel.app/',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'https://butterfly-twikoo.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadDisqus () {
+  var disqus_config = function () {
+    this.page.url = 'https://dongzhougu.github.io/2021/11/09/yuque/springsecurity-quan-xian-kong-zhi/'
+    this.page.identifier = '2021/11/09/yuque/springsecurity-quan-xian-kong-zhi/'
+    this.page.title = 'SpringSecurity-权限控制'
+  };
+
+  window.disqusReset = () => {
+    DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  if (window.DISQUS) disqusReset()
+  else {
+    (function() { 
+      var d = document, s = d.createElement('script');
+      s.src = 'https://demo-jerryc-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  }
+}
+
+if ('Twikoo' === 'Disqus' || !true) {
+  if (true) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+  else loadDisqus()
+} else {
+  function loadOtherComment () {
+    loadDisqus()
+  }
+}
+</script></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://butterfly-twikoo.vercel.app/',
+        region: '',
+        pageSize: 6,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 5/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.innerHTML= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}'>${array[i].content}</a>
+        <div class='name'><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom.innerHTML= result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/talking/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,

@@ -5,17 +5,17 @@
 <meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
 <meta property="og:description" content="项目地址传送门，欢迎 star 和 fork ！1. 朴素贝叶斯概述贝叶斯分类是一类分类算法的总称，这类算法均以贝叶斯定理为基础，故统称为贝叶斯分类。朴素贝叶斯（Naive Bayers）算法是一种基于概率统计的分类方法。它在条件独立假设的基础上，使用贝叶斯定理构建算法，在文本处理领域有广泛的应用。 2. 贝叶斯理论 &amp; 条件概率2.1 贝叶斯理论我们现在有一个数据集，它由两类数据组成，数">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png">
 <meta property="article:published_time" content="2020-07-02T07:57:44.000Z">
 <meta property="article:modified_time" content="2021-11-07T15:49:39.092Z">
 <meta property="article:author" content="DongZhou">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="NdIUXAOVyGnnBhcrip0ksCawbdAzT0hlBZDE9u4jx6k"/><meta name="msvalidate.01" content="567E47D75E8DCF1282B9623AD914701E"/><meta name="baidu-site-verification" content="code-pE5rnuxcfD"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
   noticeOutdate: undefined,
   highlight: undefined,
   copy: {
@@ -24,10 +24,10 @@
     noSupport: '浏览器不支持'
   },
   relativeDate: {
-    homepage: false,
-    post: false
+    homepage: true,
+    post: true
   },
-  runtime: '',
+  runtime: '天',
   date_suffix: {
     just: '刚刚',
     min: '分钟前',
@@ -35,7 +35,7 @@
     day: '天前',
     month: '个月前'
   },
-  copyright: undefined,
+  copyright: {"limitCount":150,"languages":{"author":"作者: DongZhou","link":"链接: ","source":"来源: 欢迎来到，TWOTO 的博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
   lightbox: 'fancybox',
   Snackbar: undefined,
   source: {
@@ -50,8 +50,8 @@
     }
   },
   isPhotoFigcaption: false,
-  islazyload: false,
-  isanchor: false
+  islazyload: true,
+  isanchor: true
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: 'scikit-learn系列七：朴素贝叶斯',
   isPost: true,
@@ -129,8 +129,27 @@
       }
       const t = saveToLocal.get('theme')
     
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
         
       const asideStatus = saveToLocal.get('aside-status')
       if (asideStatus !== undefined) {
@@ -141,13 +160,18 @@
         }
       }
     
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
     const detectApple = () => {
       if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
         document.documentElement.classList.add('apple')
       }
     }
     detectApple()
-    })(window)</script><style type="text/css" lang="css">
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">.card-announcement .social-button{margin: .6rem 0 0 0; text-align: center;}.card-announcement .social-button a{display: block; margin: 0.2rem 0;background-color: var(--btn-bg); color: var(--btn-color); line-height: 1.6rem; transition: all .3s; position: relative; z-index: 1;}</style><style type="text/css" lang="css">
     #loading-container{
         position: fixed;
         top: 0;
@@ -289,9 +313,9 @@
          <div></div> 
          <div></div>
      </div>
- </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">scikit-learn系列七：朴素贝叶斯</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-07-02T07:57:44.000Z" title="发表于 2020-07-02 15:57:44">2020-07-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-11-07T15:49:39.092Z" title="更新于 2021-11-07 23:49:39">2021-11-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python/">Python</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="scikit-learn系列七：朴素贝叶斯"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="项目地址传送门，欢迎-star-和-fork-！"><a href="#项目地址传送门，欢迎-star-和-fork-！" class="headerlink" title="项目地址传送门，欢迎 star 和 fork ！"></a>项目地址<a target="_blank" rel="noopener" href="https://github.com/DongZhouGu/scikit-learn-ml">传送门</a>，欢迎 star 和 fork ！</h2><h2 id="1-朴素贝叶斯概述"><a href="#1-朴素贝叶斯概述" class="headerlink" title="1. 朴素贝叶斯概述"></a>1. 朴素贝叶斯概述</h2><p>贝叶斯分类是一类分类算法的总称，这类算法均以贝叶斯定理为基础，故统称为贝叶斯分类。朴素贝叶斯（Naive Bayers）算法是一种基于概率统计的分类方法。它在条件独立假设的基础上，使用贝叶斯定理构建算法，在文本处理领域有广泛的应用。</p>
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">scikit-learn系列七：朴素贝叶斯<a class="post-edit-link" href="https://github.com/jerryc127/butterfly.js.org/edit/main/source/_posts/scikit-learn系列七：朴素贝叶斯.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2020-07-02T07:57:44.000Z" title="undefined 2020-07-02 15:57:44">2020-07-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python/">Python</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">8.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>31分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="scikit-learn系列七：朴素贝叶斯"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="项目地址传送门，欢迎-star-和-fork-！"><a href="#项目地址传送门，欢迎-star-和-fork-！" class="headerlink" title="项目地址传送门，欢迎 star 和 fork ！"></a>项目地址<a target="_blank" rel="noopener" href="https://github.com/DongZhouGu/scikit-learn-ml">传送门</a>，欢迎 star 和 fork ！</h2><h2 id="1-朴素贝叶斯概述"><a href="#1-朴素贝叶斯概述" class="headerlink" title="1. 朴素贝叶斯概述"></a>1. 朴素贝叶斯概述</h2><p>贝叶斯分类是一类分类算法的总称，这类算法均以贝叶斯定理为基础，故统称为贝叶斯分类。朴素贝叶斯（Naive Bayers）算法是一种基于概率统计的分类方法。它在条件独立假设的基础上，使用贝叶斯定理构建算法，在文本处理领域有广泛的应用。</p>
 <h2 id="2-贝叶斯理论-amp-条件概率"><a href="#2-贝叶斯理论-amp-条件概率" class="headerlink" title="2. 贝叶斯理论 &amp; 条件概率"></a>2. 贝叶斯理论 &amp; 条件概率</h2><h3 id="2-1-贝叶斯理论"><a href="#2-1-贝叶斯理论" class="headerlink" title="2.1 贝叶斯理论"></a>2.1 贝叶斯理论</h3><p>我们现在有一个数据集，它由两类数据组成，数据分布如下图所示: </p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83.png" alt="朴素贝叶斯示例数据分布" title="参数已知的概率分布"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83.png" alt="朴素贝叶斯示例数据分布" title="参数已知的概率分布"></p>
 <p>我们现在用 p1(x,y) 表示数据点 (x,y) 属于类别 1（图中用圆点表示的类别）的概率，用 p2(x,y) 表示数据点 (x,y) 属于类别 2（图中三角形表示的类别）的概率，那么对于一个新数据点 (x,y)，可以用下面的规则来判断它的类别: </p>
 <ul>
 <li>如果 p1(x,y) &gt; p2(x,y) ，那么类别为1</li>
@@ -300,22 +324,22 @@
 <p>也就是说，我们会选择高概率对应的类别。这就是贝叶斯决策理论的核心思想，即选择具有最高概率的决策。</p>
 <h3 id="2-2-条件概率"><a href="#2-2-条件概率" class="headerlink" title="2.2 条件概率"></a>2.2 条件概率</h3><p>如果你对 p(x,y|c1) 符号很熟悉，那么可以跳过本小节。</p>
 <p>有一个装了 7 块石头的罐子，其中 3 块是白色的，4 块是黑色的。如果从罐子中随机取出一块石头，那么是白色石头的可能性是多少？由于取石头有 7 种可能，其中 3 种为白色，所以取出白色石头的概率为 3/7 。那么取到黑色石头的概率又是多少呢？很显然，是 4/7 。我们使用 P(white) 来表示取到白色石头的概率，其概率值可以通过白色石头数目除以总的石头数目来得到。</p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/NB_2.png" alt="包含 7 块石头的集合"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/NB_2.png" alt="包含 7 块石头的集合"></p>
 <p>如果这 7 块石头如下图所示，放在两个桶中，那么上述概率应该如何计算？</p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/NB_5.png" alt="7块石头放入两个桶中"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/NB_5.png" alt="7块石头放入两个桶中"></p>
 <p>计算 P(white) 或者 P(black) ，如果事先我们知道石头所在桶的信息是会改变结果的。这就是所谓的条件概率（conditional probablity）。假定计算的是从 B 桶取到白色石头的概率，这个概率可以记作 P(white|bucketB) ，我们称之为“在已知石头出自 B 桶的条件下，取出白色石头的概率”。很容易得到，P(white|bucketA) 值为 2/4 ，P(white|bucketB) 的值为 1/3 。</p>
 <p>条件概率的计算公式如下: </p>
 <p>P(white|bucketB) = P(white and bucketB) / P(bucketB)</p>
 <p>首先，我们用 B 桶中白色石头的个数除以两个桶中总的石头数，得到 P(white and bucketB) = 1/7 .其次，由于 B 桶中有 3 块石头，而总石头数为 7 ，于是 P(bucketB) 就等于 3/7 。于是又 P(white|bucketB) = P(white and bucketB) / P(bucketB) = (1/7) / (3/7) = 1/3 。</p>
 <p>另外一种有效计算条件概率的方法称为贝叶斯准则。贝叶斯准则告诉我们如何交换条件概率中的条件与结果，即如果已知 P(x|c)，要求 P(c|x)，那么可以使用下面的计算方法: </p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/NB_3.png" alt="计算p(c|x)的方法"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/NB_3.png" alt="计算p(c|x)的方法"></p>
 <h3 id="2-3-使用条件概率来分类"><a href="#2-3-使用条件概率来分类" class="headerlink" title="2.3 使用条件概率来分类"></a>2.3 使用条件概率来分类</h3><p>上面我们提到贝叶斯决策理论要求计算两个概率 p1(x, y) 和 p2(x, y):</p>
 <ul>
 <li>如果 p1(x, y) &gt; p2(x, y), 那么属于类别 1;</li>
 <li>如果 p2(x, y) &gt; p1(X, y), 那么属于类别 2.</li>
 </ul>
 <p>这并不是贝叶斯决策理论的所有内容。使用 p1() 和 p2() 只是为了尽可能简化描述，而真正需要计算和比较的是 p(c1|x, y) 和 p(c2|x, y) .这些符号所代表的具体意义是: 给定某个由 x、y 表示的数据点，那么该数据点来自类别 c1 的概率是多少？数据点来自类别 c2 的概率又是多少？注意这些概率与概率 p(x, y|c1) 并不一样，不过可以使用贝叶斯准则来交换概率中条件与结果。具体地，应用贝叶斯准则得到: </p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/NB_4.png" alt="应用贝叶斯准则"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/NB_4.png" alt="应用贝叶斯准则"></p>
 <p>使用上面这些定义，可以定义贝叶斯分类准则为:</p>
 <ul>
 <li>如果 P(c1|x, y) &gt; P(c2|x, y), 那么属于类别 c1;</li>
@@ -327,7 +351,7 @@
 <p><b>Note:</b> 朴素贝叶斯分类器通常有两种实现方式: 一种基于伯努利模型实现，一种基于多项式模型实现。前者中并不考虑词在文档中出现的次数，只考虑出不出现，因此在这个意义上相当于假设词是等权重的。</p>
 </blockquote>
 <h2 id="3-一个简单的例子"><a href="#3-一个简单的例子" class="headerlink" title="3. 一个简单的例子"></a>3. 一个简单的例子</h2><p>我们先通过一个简单的例子，来看怎样应用朴素贝叶斯分类算法。假设有以下关于驾龄、平均车速和性别的统计数据：</p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-28f863c2b8a241e7.png" alt="img"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-28f863c2b8a241e7.png" alt="img"></p>
 <blockquote>
 <p>现在观察到一个驾龄为2年的人，平均车速为80。问：这个人的性别是什么？</p>
 </blockquote>
@@ -347,15 +371,15 @@
 <p>假设我们的词库大小为 k ，则评论中出现某个词可以看成是一次满足k个类别的类别分布实验。我们知道，一篇评论是由n个词组成的，因此一篇评论可以看出是进行n次类别分布实验后的产物。由此得知，一篇评论服从多项式分布，它是词库里的所有词语出现的次数组合构成的随机向量。</p>
 <p>一般情况下，词库比较大，评论只是由少量词组成，所以这个随机向量是很稀疏的，即大部分元素为0。通过分析预料库，我们容易统计出每个词出现在不文明评论及正常评论的概率，即 $p_{i}$的值。同时针对待预测的评论，我们可以统计词库里的所有词在这篇评论里出现的次数即  $x_{i}$ 的值，及评论的词语个数。代入多项式分布的概率质量函数：<br>$$<br>f(X, n, P)=\frac{n !}{\prod_{i=1}^{k} x_{i} !} \prod_{i=1}^{k} p_{i}^{x_{i}}<br>$$<br>我们可以求出，待预测评论构成的随机向量x，其为不文明评论的相对概率。同理也可以求出其为正常评论的相对概率。通过比较两个相对概率，就可以对这篇评论输出一个预测值。当然，实际应用中，涉及大量的自然语言处理的手段，包括中文分词技术、词的数学表示等，这里不再展开。</p>
 <h3 id="4-3-高斯分布"><a href="#4-3-高斯分布" class="headerlink" title="4.3 高斯分布"></a>4.3 高斯分布</h3><p>在前面的车速和性别预测的例子里，对于平均车速，给出的是离散值，实际上它是一个连续值。这个时候怎么使用贝叶斯算法来处理呢？答案是，可以用区间把连续值转换成离散值。例如，我们可以把平均车速[0,40]作为一个级别，[40-80]，等等。这样就可以把连续值变成离散值，从而使用贝叶斯算法进行处理。另外一个方法，是使用连续随机变量的概率密度函数，把数值转换为一个相对概率。高斯分布就是这样一种方法。</p>
-<p><code>高斯分布（Gaussian Distribution）</code>也称为 <code>正态分布（Normal Distribution）</code>，是最常见的一种分布。例如人的身高满足高斯分布，特别高和特别矮的人出现的相对概率都很低，大部分人身高都处在中间水平。还有人的智商也符合高斯分布，特别聪明的天才和特别笨的人出现的相对概率都很低，大部分人的智力都差不多。高斯分布的概率密度函数为：<br>$$<br>f(x)=\frac{1}{\sqrt{2 \pi \sigma^{2}}} \exp \left(-\frac{(x-\mu)^{2}}{2 \sigma^{2}}\right)<br>$$<br>其中，$x$ 为随机变量的值，$f(x)$ 为随机变量的相对概率，$\mu$为样本的平均值，其决定了高斯分布曲线的位置，<img src="/medias/loading.gif" data-original="https://math.jianshu.com/math?formula=%5Csigma" alt="\sigma">为标准差，其决定了高斯分布的幅度，$\sigma$ 值越大，分布越分散，<img src="/medias/loading.gif" data-original="https://math.jianshu.com/math?formula=%5Csigma" alt="\sigma">$\sigma$值越小，分布越集中。典型的高斯分布如下图所示：</p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-e4f8952fc25052e3.png" alt="img"></p>
+<p><code>高斯分布（Gaussian Distribution）</code>也称为 <code>正态分布（Normal Distribution）</code>，是最常见的一种分布。例如人的身高满足高斯分布，特别高和特别矮的人出现的相对概率都很低，大部分人身高都处在中间水平。还有人的智商也符合高斯分布，特别聪明的天才和特别笨的人出现的相对概率都很低，大部分人的智力都差不多。高斯分布的概率密度函数为：<br>$$<br>f(x)=\frac{1}{\sqrt{2 \pi \sigma^{2}}} \exp \left(-\frac{(x-\mu)^{2}}{2 \sigma^{2}}\right)<br>$$<br>其中，$x$ 为随机变量的值，$f(x)$ 为随机变量的相对概率，$\mu$为样本的平均值，其决定了高斯分布曲线的位置，<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://math.jianshu.com/math?formula=%5Csigma" alt="\sigma">为标准差，其决定了高斯分布的幅度，$\sigma$ 值越大，分布越分散，<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://math.jianshu.com/math?formula=%5Csigma" alt="\sigma">$\sigma$值越小，分布越集中。典型的高斯分布如下图所示：</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-e4f8952fc25052e3.png" alt="img"></p>
 <p>这里需要注意的是：高斯分布的概率密度函数和支持向量机里的高斯核函数的区别。二者的核心数学模型是相同的，但是目的不同。</p>
 <h3 id="4-4-连续值得处理"><a href="#4-4-连续值得处理" class="headerlink" title="4.4 连续值得处理"></a>4.4 连续值得处理</h3><p>假设，有一组身体特征的统计数据如下：</p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-ab2a72e2cf69b3f1.png" alt="img"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-ab2a72e2cf69b3f1.png" alt="img"></p>
 <p>假设某人身高6英尺，体重130榜，脚掌8英寸，请问此人的性别是什么？</p>
 <p>根据朴素贝叶斯公式：<br>$$<br>P\left(C_{k} \mid x\right) \propto P\left(C_{k}\right) \prod_{i=1}^{n} P\left(x_{i} \mid C_{k}\right)<br>$$<br>针对待预测的这个人的数据$x$ ，我们只需要分别求出男性和女性的相对概率<br>$$<br>P(\text {Gender}) \times P(\text {Height} \mid \text {Gender}) \times P(\text {Weight} \mid \text {Gender}) \times P(\text {Feet} \mid \text {Gender})<br>$$<br>然后取相对概率较高的性别为预测值即可。这里的困难在于，所有的特征都是连续变量，无法根据统计数据计算概率。当然，这里我们可以使用区间法，把连续变量变为离散变量，然后再计算概率。但由于数据量较小，这显然不是一个好办法。由于人类身高、体重、脚掌尺寸满足高斯分布，因此更好的办法是使用高斯分布的概率密度函数来求相对概率。</p>
 <p>首先，针对男性和女性，分别求出特征的平均值和方差：</p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-4755f7b16509dc1d.png" alt="img"></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-4755f7b16509dc1d.png" alt="img"></p>
 <p>接着利用高斯分布的概率密度函数，来求解男性身高为6英尺的相对概率：<br>$$<br>P(\text {Height}=6 \mid \text {Male})=\frac{1}{\sqrt{2 \pi \times 0.035033^{2}}} \exp \left(-\frac{(6-5.855)^{2}}{2 \times 0.035033^{2}}\right) \approx 1.5789<br>$$<br>这里的关键是把连续值（身高）作为输入，通过高斯分布的概率密度函数的处理，直接转换为相对概率。注意这里是相对概率，所以其值大于1并未违反概率论规则。</p>
 <h2 id="5-示例：文档分类"><a href="#5-示例：文档分类" class="headerlink" title="5. 示例：文档分类"></a>5. 示例：文档分类</h2><p>在 <code>scikit-learn</code>里，朴素贝叶斯算法在 <code>sklearn.naive_bayes</code> 包里实现，包含本文介绍的几种典型的概率分布算法。其中 <code>GaussianNB</code> 实现了高斯分布的朴素贝叶斯算法，<code>MultinomialNB</code> 实现了多项式分布的朴素贝叶斯算法，<code>BernoulliNB</code>实现了伯努利分布的朴素贝叶斯算法。朴素贝叶斯算法在自然语言处理领域有着广泛的应用，这里我们使用 <code>MultinomialNB</code> 来实现文档的自动分类。</p>
 <h3 id="5-1-获取数据集"><a href="#5-1-获取数据集" class="headerlink" title="5.1 获取数据集"></a>5.1 获取数据集</h3><p>这里使用的数据集来自 mlcomp.org上的20news-18828，可以直接访问<a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=http%3A%2F%2Fmlcomp.org%2Fdatasets%2F379">http://mlcomp.org/datasets/379</a>下载。其目录下包含3个子目录和一个名为metadata的介绍文件，数据集也可在百度网盘下载。，已分享。</p>
@@ -570,7 +594,7 @@ ax<span class="token punctuation">.</span>set_yticklabels<span class="token punc
 plt<span class="token punctuation">.</span>matshow<span class="token punctuation">(</span>cm<span class="token punctuation">,</span>fignum<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span>cmap<span class="token operator">=</span><span class="token string">'gray'</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>colorbar<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>输出图形如下：</p>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200702160731221.png" alt="image-20200702160731221">除对角线外，其他地方颜色越浅，说明此处错误越多。通过这些数据，我们可以详细分析样本数据，找出为什么某种类别会被错误地分类到另一种类别里，从而进一步优化模型。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200702160731221.png" alt="image-20200702160731221">除对角线外，其他地方颜色越浅，说明此处错误越多。通过这些数据，我们可以详细分析样本数据，找出为什么某种类别会被错误地分类到另一种类别里，从而进一步优化模型。</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -589,7 +613,311 @@ plt<span class="token punctuation">.</span>colorbar<span class="token punctuatio
             });
             document.body.appendChild(img);
           });
-      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/">https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/07/15/scikit-learn-xi-lie-ba-pca/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">scikit-learn系列八：PCA</div></div></a></div><div class="next-post pull-right"><a href="/2020/07/01/scikit-learn-xi-lie-liu-svm/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">scikit-learn系列六：SVM</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/07/16/ji-qi-xue-xi-suan-fa-shi-xian/" title="机器学习算法实现"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-16</div><div class="title">机器学习算法实现</div></div></a></div><div><a href="/2020/06/28/scikit-learn-xi-lie-yi-ji-qi-xue-xi-ji-chu/" title="scikit-learn系列一：机器学习基础"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-28</div><div class="title">scikit-learn系列一：机器学习基础</div></div></a></div><div><a href="/2020/07/16/scikit-learn-xi-lie-jiu-k-jun-zhi/" title="scikit-learn系列九：K-均值"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-16</div><div class="title">scikit-learn系列九：K-均值</div></div></a></div><div><a href="/2020/06/30/scikit-learn-xi-lie-san-xian-xing-hui-gui/" title="scikit-learn系列三：线性回归"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-30</div><div class="title">scikit-learn系列三：线性回归</div></div></a></div><div><a href="/2020/06/30/scikit-learn-xi-lie-wu-jue-ce-shu/" title="scikit-learn系列五：决策树"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-30</div><div class="title">scikit-learn系列五：决策树</div></div></a></div><div><a href="/2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/" title="scikit-learn系列二：K-近邻"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-29</div><div class="title">scikit-learn系列二：K-近邻</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%9C%B0%E5%9D%80%E4%BC%A0%E9%80%81%E9%97%A8%EF%BC%8C%E6%AC%A2%E8%BF%8E-star-%E5%92%8C-fork-%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">项目地址传送门，欢迎 star 和 fork ！</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%A6%82%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">1. 朴素贝叶斯概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%90%86%E8%AE%BA-amp-%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87"><span class="toc-number">3.</span> <span class="toc-text">2. 贝叶斯理论 &amp; 条件概率</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%90%86%E8%AE%BA"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 贝叶斯理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87"><span class="toc-number">3.2.</span> <span class="toc-text">2.2 条件概率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87%E6%9D%A5%E5%88%86%E7%B1%BB"><span class="toc-number">3.3.</span> <span class="toc-text">2.3 使用条件概率来分类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="toc-number">4.</span> <span class="toc-text">3. 一个简单的例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83"><span class="toc-number">5.</span> <span class="toc-text">4.概率分布</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%A6%82%E7%8E%87%E7%BB%9F%E8%AE%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">5.1.</span> <span class="toc-text">4.1 概率统计的基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%88%86%E5%B8%83"><span class="toc-number">5.2.</span> <span class="toc-text">4.2 多项式分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E9%AB%98%E6%96%AF%E5%88%86%E5%B8%83"><span class="toc-number">5.3.</span> <span class="toc-text">4.3 高斯分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E8%BF%9E%E7%BB%AD%E5%80%BC%E5%BE%97%E5%A4%84%E7%90%86"><span class="toc-number">5.4.</span> <span class="toc-text">4.4 连续值得处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%A4%BA%E4%BE%8B%EF%BC%9A%E6%96%87%E6%A1%A3%E5%88%86%E7%B1%BB"><span class="toc-number">6.</span> <span class="toc-text">5. 示例：文档分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">6.1.</span> <span class="toc-text">5.1 获取数据集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%96%87%E6%A1%A3%E7%9A%84%E6%95%B0%E5%AD%A6%E8%A1%A8%E8%BE%BE"><span class="toc-number">6.2.</span> <span class="toc-text">5.2 文档的数学表达</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="toc-number">6.3.</span> <span class="toc-text">5.3 模型训练</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BB%B7"><span class="toc-number">6.4.</span> <span class="toc-text">5.4 模型评价</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
+      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/">https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/wechat.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipay.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipayhk.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipayhk.jpg" alt="支付寶香港"/></a><div class="post-qr-code-desc">支付寶香港</div></li></ul></div></div><div class="ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="ca-pub-8919908724705274" data-ad-slot="5978969231"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/07/15/scikit-learn-xi-lie-ba-pca/"><img class="prev-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">scikit-learn系列八：PCA</div></div></a></div><div class="next-post pull-right"><a href="/2020/07/01/scikit-learn-xi-lie-liu-svm/"><img class="next-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-9.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">scikit-learn系列六：SVM</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/07/16/ji-qi-xue-xi-suan-fa-shi-xian/" title="机器学习算法实现"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-16</div><div class="title">机器学习算法实现</div></div></a></div><div><a href="/2020/06/30/scikit-learn-xi-lie-san-xian-xing-hui-gui/" title="scikit-learn系列三：线性回归"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-9.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-30</div><div class="title">scikit-learn系列三：线性回归</div></div></a></div><div><a href="/2020/06/28/scikit-learn-xi-lie-yi-ji-qi-xue-xi-ji-chu/" title="scikit-learn系列一：机器学习基础"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-9.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-28</div><div class="title">scikit-learn系列一：机器学习基础</div></div></a></div><div><a href="/2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/" title="scikit-learn系列二：K-近邻"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-29</div><div class="title">scikit-learn系列二：K-近邻</div></div></a></div><div><a href="/2020/07/16/scikit-learn-xi-lie-jiu-k-jun-zhi/" title="scikit-learn系列九：K-均值"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-10.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-16</div><div class="title">scikit-learn系列九：K-均值</div></div></a></div><div><a href="/2020/06/30/scikit-learn-xi-lie-wu-jue-ce-shu/" title="scikit-learn系列五：决策树"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-30</div><div class="title">scikit-learn系列五：决策树</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><i class="fab fa-github"></i><span>主題 GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">如果你在使用中遇到問題，請到 <a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly/issues" style="color:#49b1f5">Github Issues</a> 或者 <a href="/messageboard/" style="color:#49b1f5">留言板</a> 進行反饋，你也可以加入 QQ 群（由於 QQ 群只能有500人，會定時清理潛水的人）<div class="social-button"> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=KU9105XR" target="_blank">QQ 1 群 👍</a> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=r1nK0DQz" target="_blank">QQ 2 群 👍</a> <a class="button--animated" href="https://t.me/bu2fly" target="_blank">Telegram 👍</a> </div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%9C%B0%E5%9D%80%E4%BC%A0%E9%80%81%E9%97%A8%EF%BC%8C%E6%AC%A2%E8%BF%8E-star-%E5%92%8C-fork-%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">项目地址传送门，欢迎 star 和 fork ！</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%A6%82%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">1. 朴素贝叶斯概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%90%86%E8%AE%BA-amp-%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87"><span class="toc-number">3.</span> <span class="toc-text">2. 贝叶斯理论 &amp; 条件概率</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%90%86%E8%AE%BA"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 贝叶斯理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87"><span class="toc-number">3.2.</span> <span class="toc-text">2.2 条件概率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87%E6%9D%A5%E5%88%86%E7%B1%BB"><span class="toc-number">3.3.</span> <span class="toc-text">2.3 使用条件概率来分类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="toc-number">4.</span> <span class="toc-text">3. 一个简单的例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83"><span class="toc-number">5.</span> <span class="toc-text">4.概率分布</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%A6%82%E7%8E%87%E7%BB%9F%E8%AE%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">5.1.</span> <span class="toc-text">4.1 概率统计的基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%88%86%E5%B8%83"><span class="toc-number">5.2.</span> <span class="toc-text">4.2 多项式分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E9%AB%98%E6%96%AF%E5%88%86%E5%B8%83"><span class="toc-number">5.3.</span> <span class="toc-text">4.3 高斯分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E8%BF%9E%E7%BB%AD%E5%80%BC%E5%BE%97%E5%A4%84%E7%90%86"><span class="toc-number">5.4.</span> <span class="toc-text">4.4 连续值得处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%A4%BA%E4%BE%8B%EF%BC%9A%E6%96%87%E6%A1%A3%E5%88%86%E7%B1%BB"><span class="toc-number">6.</span> <span class="toc-text">5. 示例：文档分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">6.1.</span> <span class="toc-text">5.1 获取数据集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%96%87%E6%A1%A3%E7%9A%84%E6%95%B0%E5%AD%A6%E8%A1%A8%E8%BE%BE"><span class="toc-number">6.2.</span> <span class="toc-text">5.2 文档的数学表达</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="toc-number">6.3.</span> <span class="toc-text">5.3 模型训练</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BB%B7"><span class="toc-number">6.4.</span> <span class="toc-text">5.4 模型评价</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div><div class="card-widget ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8919908724705274" data-ad-slot="8108145410" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png')"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">簡</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/main.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/tw_cn.min.js?ver=3.8.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/localsearch.min.js?ver=3.8.4"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      true && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://butterfly-twikoo.vercel.app/',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'https://butterfly-twikoo.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadDisqus () {
+  var disqus_config = function () {
+    this.page.url = 'https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/'
+    this.page.identifier = '2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/'
+    this.page.title = 'scikit-learn系列七：朴素贝叶斯'
+  };
+
+  window.disqusReset = () => {
+    DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  if (window.DISQUS) disqusReset()
+  else {
+    (function() { 
+      var d = document, s = d.createElement('script');
+      s.src = 'https://demo-jerryc-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  }
+}
+
+if ('Twikoo' === 'Disqus' || !true) {
+  if (true) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+  else loadDisqus()
+} else {
+  function loadOtherComment () {
+    loadDisqus()
+  }
+}
+</script></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://butterfly-twikoo.vercel.app/',
+        region: '',
+        pageSize: 6,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 5/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.innerHTML= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}'>${array[i].content}</a>
+        <div class='name'><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom.innerHTML= result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/talking/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,

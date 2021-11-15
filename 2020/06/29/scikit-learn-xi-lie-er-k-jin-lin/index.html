@@ -5,17 +5,17 @@
 <meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
 <meta property="og:description" content="项目地址传送门，欢迎 star 和 fork ！KNN 概述KNN（K-Nearest Neighbor，K-近邻算法）算法是一种有监督的机器学习算法，可以解决分类问题，也可以解决回归问题。  一句话总结: 近朱者赤近墨者黑！   k -近邻算法的输入为实例的特征向量，对应于特征空间的点；输出为实例的类别，可以取多类。k 近邻算法假设给定一个训练数据集，其中的实例类别已定。分类时，对新的实例，根据">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png">
 <meta property="article:published_time" content="2020-06-29T02:57:44.000Z">
 <meta property="article:modified_time" content="2021-11-07T15:49:28.933Z">
 <meta property="article:author" content="DongZhou">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="NdIUXAOVyGnnBhcrip0ksCawbdAzT0hlBZDE9u4jx6k"/><meta name="msvalidate.01" content="567E47D75E8DCF1282B9623AD914701E"/><meta name="baidu-site-verification" content="code-pE5rnuxcfD"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
   noticeOutdate: undefined,
   highlight: undefined,
   copy: {
@@ -24,10 +24,10 @@
     noSupport: '浏览器不支持'
   },
   relativeDate: {
-    homepage: false,
-    post: false
+    homepage: true,
+    post: true
   },
-  runtime: '',
+  runtime: '天',
   date_suffix: {
     just: '刚刚',
     min: '分钟前',
@@ -35,7 +35,7 @@
     day: '天前',
     month: '个月前'
   },
-  copyright: undefined,
+  copyright: {"limitCount":150,"languages":{"author":"作者: DongZhou","link":"链接: ","source":"来源: 欢迎来到，TWOTO 的博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
   lightbox: 'fancybox',
   Snackbar: undefined,
   source: {
@@ -50,8 +50,8 @@
     }
   },
   isPhotoFigcaption: false,
-  islazyload: false,
-  isanchor: false
+  islazyload: true,
+  isanchor: true
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: 'scikit-learn系列二：K-近邻',
   isPost: true,
@@ -129,8 +129,27 @@
       }
       const t = saveToLocal.get('theme')
     
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
         
       const asideStatus = saveToLocal.get('aside-status')
       if (asideStatus !== undefined) {
@@ -141,13 +160,18 @@
         }
       }
     
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
     const detectApple = () => {
       if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
         document.documentElement.classList.add('apple')
       }
     }
     detectApple()
-    })(window)</script><style type="text/css" lang="css">
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">.card-announcement .social-button{margin: .6rem 0 0 0; text-align: center;}.card-announcement .social-button a{display: block; margin: 0.2rem 0;background-color: var(--btn-bg); color: var(--btn-color); line-height: 1.6rem; transition: all .3s; position: relative; z-index: 1;}</style><style type="text/css" lang="css">
     #loading-container{
         position: fixed;
         top: 0;
@@ -289,7 +313,7 @@
          <div></div> 
          <div></div>
      </div>
- </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">scikit-learn系列二：K-近邻</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-06-29T02:57:44.000Z" title="发表于 2020-06-29 10:57:44">2020-06-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-11-07T15:49:28.933Z" title="更新于 2021-11-07 23:49:28">2021-11-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python/">Python</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="scikit-learn系列二：K-近邻"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="项目地址传送门，欢迎-star-和-fork-！"><a href="#项目地址传送门，欢迎-star-和-fork-！" class="headerlink" title="项目地址传送门，欢迎 star 和 fork ！"></a>项目地址<a target="_blank" rel="noopener" href="https://github.com/DongZhouGu/scikit-learn-ml">传送门</a>，欢迎 star 和 fork ！</h2><h2 id="KNN-概述"><a href="#KNN-概述" class="headerlink" title="KNN 概述"></a>KNN 概述</h2><p>KNN（K-Nearest Neighbor，K-近邻算法）算法是一种<strong>有监督</strong>的机器学习算法，可以解决分类问题，也可以解决回归问题。</p>
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">scikit-learn系列二：K-近邻<a class="post-edit-link" href="https://github.com/jerryc127/butterfly.js.org/edit/main/source/_posts/scikit-learn系列二：K-近邻.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2020-06-29T02:57:44.000Z" title="undefined 2020-06-29 10:57:44">2020-06-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python/">Python</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>19分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="scikit-learn系列二：K-近邻"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="项目地址传送门，欢迎-star-和-fork-！"><a href="#项目地址传送门，欢迎-star-和-fork-！" class="headerlink" title="项目地址传送门，欢迎 star 和 fork ！"></a>项目地址<a target="_blank" rel="noopener" href="https://github.com/DongZhouGu/scikit-learn-ml">传送门</a>，欢迎 star 和 fork ！</h2><h2 id="KNN-概述"><a href="#KNN-概述" class="headerlink" title="KNN 概述"></a>KNN 概述</h2><p>KNN（K-Nearest Neighbor，K-近邻算法）算法是一种<strong>有监督</strong>的机器学习算法，可以解决分类问题，也可以解决回归问题。</p>
 <blockquote>
 <p><strong>一句话总结: 近朱者赤近墨者黑！</strong> </p>
 </blockquote>
@@ -343,7 +367,7 @@ c <span class="token operator">=</span> np<span class="token punctuation">.</spa
 plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>X<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span>X<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>c<span class="token operator">=</span>y<span class="token punctuation">,</span>s<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">,</span>cmap<span class="token operator">=</span><span class="token string">'cool'</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>c<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span>c<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>s<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">,</span>marker<span class="token operator">=</span><span class="token string">'*'</span><span class="token punctuation">,</span>c<span class="token operator">=</span><span class="token string">'black'</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200628191906466.png">
+<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200628191906466.png">
 
 <p>这些点的分布情况在坐标轴上一目了然，其中五角星的点即各个类别的中心点。</p>
 <h4 id="rainbow-训练算法"><a href="#rainbow-训练算法" class="headerlink" title=":rainbow: 训练算法"></a>:rainbow: 训练算法</h4><p>使用 <code>KNeighborsClassifier</code> 来对算法进行训练，我们选择的参数是 <code>K=5</code></p>
@@ -369,7 +393,7 @@ plt<span class="token punctuation">.</span>scatter<span class="token punctuation
 <span class="token keyword">for</span> i <span class="token keyword">in</span> neighbors<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
     plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span><span class="token punctuation">[</span>X<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span>X_sample<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">[</span>X<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>X_sample<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token string">'k--'</span><span class="token punctuation">,</span>linewidth<span class="token operator">=</span><span class="token number">0.6</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200628204257514.png" alt=""></p>
+<p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200628204257514.png" alt=""></p>
 <h3 id="案例2-使用KNN算法进行回归拟合"><a href="#案例2-使用KNN算法进行回归拟合" class="headerlink" title="案例2: 使用KNN算法进行回归拟合"></a>案例2: 使用KNN算法进行回归拟合</h3><p>分类问题的预测值是离散的，我们也可以使用 KNN 算法对连续区间内的数值进行预测，即进行回归拟合。在<code>scikit-learn</code>里面，使用KNN算法进行回归拟合的实现是 <code>sklearn.neighbors.KNeighborsRegressor</code> 类。</p>
 <h4 id="rainbow-生成数据集-1"><a href="#rainbow-生成数据集-1" class="headerlink" title=":rainbow:  生成数据集"></a>:rainbow:  生成数据集</h4><p>在余弦曲线的基础上加入了噪声：</p>
 <pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
@@ -402,7 +426,7 @@ plt<span class="token punctuation">.</span>axis<span class="token punctuation">(
 plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">'KNeighborsRegressor (k = %i)'</span> <span class="token operator">%</span> k<span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>最终生成的拟合曲线和训练样本数据如图，拟合出来确实和 cos 曲线相似。</p>
-<img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200628223010274.png" style="zoom: 67%;">
+<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200628223010274.png" style="zoom: 67%;">
 
 
 
@@ -501,7 +525,7 @@ plt<span class="token punctuation">.</span>figure<span class="token punctuation"
 plot_learning_curve<span class="token punctuation">(</span>plt<span class="token punctuation">,</span> knn<span class="token punctuation">,</span> <span class="token string">"Learn Curve for KNN Diabetes"</span><span class="token punctuation">,</span> 
                     X<span class="token punctuation">,</span> Y<span class="token punctuation">,</span> ylim<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">0.0</span><span class="token punctuation">,</span> <span class="token number">1.01</span><span class="token punctuation">)</span><span class="token punctuation">,</span> cv<span class="token operator">=</span>cv<span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200629101150911.png" style="zoom:67%;">
+<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200629101150911.png" style="zoom:67%;">
 
 <p>从图中可以看出来，训练样本评分较低，且测试样本与训练样本距离较大，这是典型的欠拟合现象。KNN算法没有更好的措施来解决欠拟合问题，我们学完本书的其他章节后，可以试着用其他算法（如逻辑回归算法、支持向量机等）来对比不同模型的准确性情况。</p>
 <h4 id="rainbow-特征选择及数据可视化"><a href="#rainbow-特征选择及数据可视化" class="headerlink" title=":rainbow:特征选择及数据可视化"></a>:rainbow:特征选择及数据可视化</h4><p>那有没有直观的方法，来揭示出为什么KNN算法不是针对这一问题的好模型？一个办法是把数据画出来，可是我们有8个特征，无法在这么高的维度里画出数据，并直观地观察。一个解决办法是特征选择，即只选择2个与输出值相关性最大的特征，这样就可以在二维平面上画出输入特征值与输出值的关系了。</p>
@@ -533,7 +557,7 @@ plt<span class="token punctuation">.</span>ylabel<span class="token punctuation"
 plt<span class="token punctuation">.</span>xlabel<span class="token punctuation">(</span><span class="token string">"Glucose"</span><span class="token punctuation">)</span>
 plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>X_new<span class="token punctuation">[</span>Y<span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> X_new<span class="token punctuation">[</span>Y<span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">=</span><span class="token string">'r'</span><span class="token punctuation">,</span> s<span class="token operator">=</span><span class="token number">20</span><span class="token punctuation">,</span> marker<span class="token operator">=</span><span class="token string">'o'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">#画出样本</span>
 plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>X_new<span class="token punctuation">[</span>Y<span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> X_new<span class="token punctuation">[</span>Y<span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">=</span><span class="token string">'g'</span><span class="token punctuation">,</span> s<span class="token operator">=</span><span class="token number">20</span><span class="token punctuation">,</span> marker<span class="token operator">=</span><span class="token string">'^'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">#画出样本</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200629102028938.png" style="zoom:67%;">
+<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/image-20200629102028938.png" style="zoom:67%;">
 
 <p>横坐标是血糖值 Glucose，纵坐标是BMI值，反映身体肥胖情况。从图中可以看出，在中间数据集密集的区域，阳性样本和阴性样本几乎重叠在一起了。假设现在有一个待预测的样本在中间密集区域，它的阳性邻居多还是阴性邻居多呢？这真的很难说。这样就可以直观地看到，KNN算法在这个糖尿病预测问题上，无法达到很高的预测准确性。</p>
 <h3 id="拓展阅读"><a href="#拓展阅读" class="headerlink" title="拓展阅读"></a>拓展阅读</h3><p>这里再继续再介绍一下特征选择时，计算相关性大小的 <code>SelectKBest()</code> 函数背后的统计学知识。</p>
@@ -541,18 +565,18 @@ plt<span class="token punctuation">.</span>scatter<span class="token punctuation
 <p>为了解决这个问题，一种叫<code>K-D Tree</code> 的数据结构被发明出来。为了避免每次都重新计算一遍距离，算法会把距离信息保存在一棵树里，这样在计算之前从树里查询距离信息，尽量避免重新计算。其基本原理是，如果A和B距离很远，B和C距离很近，那么A和C的距离也很远。有了这个信息，就可以在合适的时候跳过距离远的点。这样优化后的算法复杂度可降低到$O(DNlog(N))$。感兴趣的读者可参阅论文：Bentley, J.L., Communications of the ACM (1975)。</p>
 <p>1989年，另外一种称为<code>Ball Tree</code>的算法，在<code>K-D Tree</code>的基础上对性能进一步进行了优化。感兴趣的读者可以搜索Five balltree construction algorithms来了解详细的算法信息。</p>
 <h4 id="相关性测试"><a href="#相关性测试" class="headerlink" title="相关性测试"></a>相关性测试</h4><p>先通过一个简单的例子来看假设检验问题，即判断假设的结论是否成立或成立的概率有多高。假设，在一个城市随机采样到程序员和性别的关系的数据：</p>
-<img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-0c82f9f4005936fa.png" style="zoom:50%;">
+<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-0c82f9f4005936fa.png" style="zoom:50%;">
 
 <p>假设，我们的结论是程序员和性别无关，这个假设称为原假设（null hypothesis）。问：通过我们随机采样观测到的数据，原假设是否成立，或者说原假设成立的概率有多高？</p>
 <p><code>卡方检验（chi-squared test）</code>是检测假设成立与否的一个常用的工具。它的计算公式是：</p>
-<img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-3a52b648ce9e2196.png" style="zoom:50%;">
+<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-3a52b648ce9e2196.png" style="zoom:50%;">
 
 <p>其中，卡方检验的值记为 ,  $O$ 是观测值，$E$  是期望值。针对我们的例子，如果原假设成立，即程序员职业和性别无关，那么我们期望的男程序员数量应该为(14/489) * 242=6.928，女程序员数量应该为(14/489) * 247=7.072，同理可得到我们的期望值如下：</p>
-<img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-9f2c88dc6a7eeb66.png" style="zoom:50%;">
+<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-9f2c88dc6a7eeb66.png" style="zoom:50%;">
 
 
 <p> 根据卡方检验的公式，可以算出卡方值为：</p>
-<img src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-bf0dbd2fd6c8db0c.png" style="zoom:50%;">
+<img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://cdn.jsdelivr.net/gh/dongzhougu/imageuse1/17634123-bf0dbd2fd6c8db0c.png" style="zoom:50%;">
 
 <p> 算出卡方值后，怎么判断原假设成立的概率是多少呢？这里还涉及到自由度和卡方分布的概念。简单地讲，自由度是$(r-1)×(c-1)$，其中 r 是行数，c 是列数，针对我们的问题，其自由度为1。卡方分布是指，若n个相互独立的随机变量均服从正态分布，则这 n 个随机变量的平方和构成一新的随机变量，其分布规律称为卡方分布。卡方分布的密度函数和自由度相关，知道了自由度和目标概率，我们就能求出卡方值。</p>
 <p>针对我们的问题，可以查表得到，自由度为1的卡方分布，在99%处的卡方值为6.63。我们计算出来的卡方值为7.670。由于7.67&gt;6.63，故有99%的把握可以推翻原假设。换个说法，如果原假设成立，即程序员职业和性别无关，那么我们随机采样到的数据出现的概率将低于1%。我们可以搜索<code>“卡方表”</code>或<code>“Chi Squared Table”</code>找到不同自由度对应的卡方值。</p>
@@ -575,7 +599,311 @@ plt<span class="token punctuation">.</span>scatter<span class="token punctuation
             });
             document.body.appendChild(img);
           });
-      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/">https://dongzhougu.github.io/2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/06/30/scikit-learn-xi-lie-san-xian-xing-hui-gui/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">scikit-learn系列三：线性回归</div></div></a></div><div class="next-post pull-right"><a href="/2020/06/28/scikit-learn-xi-lie-yi-ji-qi-xue-xi-ji-chu/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">scikit-learn系列一：机器学习基础</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/07/16/ji-qi-xue-xi-suan-fa-shi-xian/" title="机器学习算法实现"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-16</div><div class="title">机器学习算法实现</div></div></a></div><div><a href="/2020/06/28/scikit-learn-xi-lie-yi-ji-qi-xue-xi-ji-chu/" title="scikit-learn系列一：机器学习基础"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-28</div><div class="title">scikit-learn系列一：机器学习基础</div></div></a></div><div><a href="/2020/07/16/scikit-learn-xi-lie-jiu-k-jun-zhi/" title="scikit-learn系列九：K-均值"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-16</div><div class="title">scikit-learn系列九：K-均值</div></div></a></div><div><a href="/2020/06/30/scikit-learn-xi-lie-san-xian-xing-hui-gui/" title="scikit-learn系列三：线性回归"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-30</div><div class="title">scikit-learn系列三：线性回归</div></div></a></div><div><a href="/2020/06/30/scikit-learn-xi-lie-wu-jue-ce-shu/" title="scikit-learn系列五：决策树"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-30</div><div class="title">scikit-learn系列五：决策树</div></div></a></div><div><a href="/2020/07/01/scikit-learn-xi-lie-liu-svm/" title="scikit-learn系列六：SVM"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-01</div><div class="title">scikit-learn系列六：SVM</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%9C%B0%E5%9D%80%E4%BC%A0%E9%80%81%E9%97%A8%EF%BC%8C%E6%AC%A2%E8%BF%8E-star-%E5%92%8C-fork-%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">项目地址传送门，欢迎 star 和 fork ！</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KNN-%E6%A6%82%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">KNN 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KNN%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">KNN算法原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KNN-%E9%A1%B9%E7%9B%AE%E6%A1%88%E4%BE%8B"><span class="toc-number">4.</span> <span class="toc-text">KNN 项目案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B1-%E4%BD%BF%E7%94%A8KNN%E7%AE%97%E6%B3%95%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB"><span class="toc-number">4.1.</span> <span class="toc-text">案例1: 使用KNN算法进行分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">4.1.1.</span> <span class="toc-text">:rainbow:   生成数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E8%AE%AD%E7%BB%83%E7%AE%97%E6%B3%95"><span class="toc-number">4.1.2.</span> <span class="toc-text">:rainbow: 训练算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E5%AF%B9%E6%A0%B7%E6%9C%AC%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B"><span class="toc-number">4.1.3.</span> <span class="toc-text">:rainbow:  对样本进行预测</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E6%A0%87%E8%AE%B0%E6%9C%80%E8%BF%91%E7%9A%845%E4%B8%AA%E7%82%B9"><span class="toc-number">4.1.4.</span> <span class="toc-text">:rainbow:  标记最近的5个点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B2-%E4%BD%BF%E7%94%A8KNN%E7%AE%97%E6%B3%95%E8%BF%9B%E8%A1%8C%E5%9B%9E%E5%BD%92%E6%8B%9F%E5%90%88"><span class="toc-number">4.2.</span> <span class="toc-text">案例2: 使用KNN算法进行回归拟合</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86-1"><span class="toc-number">4.2.1.</span> <span class="toc-text">:rainbow:  生成数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E8%AE%AD%E7%BB%83%E7%AE%97%E6%B3%95-1"><span class="toc-number">4.2.2.</span> <span class="toc-text">:rainbow:  训练算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E5%9B%9E%E5%BD%92%E6%8B%9F%E5%90%88"><span class="toc-number">4.2.3.</span> <span class="toc-text">:rainbow:  回归拟合</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B3-%E4%BD%BF%E7%94%A8KNN%E7%AE%97%E6%B3%95%E9%A2%84%E6%B5%8B%E7%B3%96%E5%B0%BF%E7%97%85"><span class="toc-number">4.3.</span> <span class="toc-text">案例3: 使用KNN算法预测糖尿病</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">4.3.1.</span> <span class="toc-text">:rainbow:加载数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">4.3.2.</span> <span class="toc-text">:rainbow: 处理数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E6%A8%A1%E5%9E%8B%E6%AF%94%E8%BE%83"><span class="toc-number">4.3.3.</span> <span class="toc-text">:rainbow: 模型比较</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E5%8F%8A%E5%88%86%E6%9E%90"><span class="toc-number">4.3.4.</span> <span class="toc-text">:rainbow:模型训练及分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-number">4.3.5.</span> <span class="toc-text">:rainbow:特征选择及数据可视化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95%E9%98%85%E8%AF%BB"><span class="toc-number">4.4.</span> <span class="toc-text">拓展阅读</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98KNN%E7%AE%97%E6%B3%95%E7%9A%84%E8%BF%90%E7%AE%97%E6%95%88%E7%8E%87"><span class="toc-number">4.4.1.</span> <span class="toc-text">如何提高KNN算法的运算效率</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E6%80%A7%E6%B5%8B%E8%AF%95"><span class="toc-number">4.4.2.</span> <span class="toc-text">相关性测试</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
+      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/">https://dongzhougu.github.io/2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/wechat.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipay.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipayhk.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipayhk.jpg" alt="支付寶香港"/></a><div class="post-qr-code-desc">支付寶香港</div></li></ul></div></div><div class="ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="ca-pub-8919908724705274" data-ad-slot="5978969231"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/06/30/scikit-learn-xi-lie-san-xian-xing-hui-gui/"><img class="prev-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-9.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">scikit-learn系列三：线性回归</div></div></a></div><div class="next-post pull-right"><a href="/2020/06/28/scikit-learn-xi-lie-yi-ji-qi-xue-xi-ji-chu/"><img class="next-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-9.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">scikit-learn系列一：机器学习基础</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/07/16/ji-qi-xue-xi-suan-fa-shi-xian/" title="机器学习算法实现"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-16</div><div class="title">机器学习算法实现</div></div></a></div><div><a href="/2020/06/30/scikit-learn-xi-lie-san-xian-xing-hui-gui/" title="scikit-learn系列三：线性回归"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-9.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-30</div><div class="title">scikit-learn系列三：线性回归</div></div></a></div><div><a href="/2020/06/28/scikit-learn-xi-lie-yi-ji-qi-xue-xi-ji-chu/" title="scikit-learn系列一：机器学习基础"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-9.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-28</div><div class="title">scikit-learn系列一：机器学习基础</div></div></a></div><div><a href="/2020/07/16/scikit-learn-xi-lie-jiu-k-jun-zhi/" title="scikit-learn系列九：K-均值"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-10.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-16</div><div class="title">scikit-learn系列九：K-均值</div></div></a></div><div><a href="/2020/06/30/scikit-learn-xi-lie-wu-jue-ce-shu/" title="scikit-learn系列五：决策树"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-30</div><div class="title">scikit-learn系列五：决策树</div></div></a></div><div><a href="/2020/07/01/scikit-learn-xi-lie-liu-svm/" title="scikit-learn系列六：SVM"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-9.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-01</div><div class="title">scikit-learn系列六：SVM</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><i class="fab fa-github"></i><span>主題 GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">如果你在使用中遇到問題，請到 <a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly/issues" style="color:#49b1f5">Github Issues</a> 或者 <a href="/messageboard/" style="color:#49b1f5">留言板</a> 進行反饋，你也可以加入 QQ 群（由於 QQ 群只能有500人，會定時清理潛水的人）<div class="social-button"> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=KU9105XR" target="_blank">QQ 1 群 👍</a> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=r1nK0DQz" target="_blank">QQ 2 群 👍</a> <a class="button--animated" href="https://t.me/bu2fly" target="_blank">Telegram 👍</a> </div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%9C%B0%E5%9D%80%E4%BC%A0%E9%80%81%E9%97%A8%EF%BC%8C%E6%AC%A2%E8%BF%8E-star-%E5%92%8C-fork-%EF%BC%81"><span class="toc-number">1.</span> <span class="toc-text">项目地址传送门，欢迎 star 和 fork ！</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KNN-%E6%A6%82%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">KNN 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KNN%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">KNN算法原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KNN-%E9%A1%B9%E7%9B%AE%E6%A1%88%E4%BE%8B"><span class="toc-number">4.</span> <span class="toc-text">KNN 项目案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B1-%E4%BD%BF%E7%94%A8KNN%E7%AE%97%E6%B3%95%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB"><span class="toc-number">4.1.</span> <span class="toc-text">案例1: 使用KNN算法进行分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">4.1.1.</span> <span class="toc-text">:rainbow:   生成数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E8%AE%AD%E7%BB%83%E7%AE%97%E6%B3%95"><span class="toc-number">4.1.2.</span> <span class="toc-text">:rainbow: 训练算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E5%AF%B9%E6%A0%B7%E6%9C%AC%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B"><span class="toc-number">4.1.3.</span> <span class="toc-text">:rainbow:  对样本进行预测</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E6%A0%87%E8%AE%B0%E6%9C%80%E8%BF%91%E7%9A%845%E4%B8%AA%E7%82%B9"><span class="toc-number">4.1.4.</span> <span class="toc-text">:rainbow:  标记最近的5个点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B2-%E4%BD%BF%E7%94%A8KNN%E7%AE%97%E6%B3%95%E8%BF%9B%E8%A1%8C%E5%9B%9E%E5%BD%92%E6%8B%9F%E5%90%88"><span class="toc-number">4.2.</span> <span class="toc-text">案例2: 使用KNN算法进行回归拟合</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86-1"><span class="toc-number">4.2.1.</span> <span class="toc-text">:rainbow:  生成数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E8%AE%AD%E7%BB%83%E7%AE%97%E6%B3%95-1"><span class="toc-number">4.2.2.</span> <span class="toc-text">:rainbow:  训练算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E5%9B%9E%E5%BD%92%E6%8B%9F%E5%90%88"><span class="toc-number">4.2.3.</span> <span class="toc-text">:rainbow:  回归拟合</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B3-%E4%BD%BF%E7%94%A8KNN%E7%AE%97%E6%B3%95%E9%A2%84%E6%B5%8B%E7%B3%96%E5%B0%BF%E7%97%85"><span class="toc-number">4.3.</span> <span class="toc-text">案例3: 使用KNN算法预测糖尿病</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">4.3.1.</span> <span class="toc-text">:rainbow:加载数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">4.3.2.</span> <span class="toc-text">:rainbow: 处理数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E6%A8%A1%E5%9E%8B%E6%AF%94%E8%BE%83"><span class="toc-number">4.3.3.</span> <span class="toc-text">:rainbow: 模型比较</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E5%8F%8A%E5%88%86%E6%9E%90"><span class="toc-number">4.3.4.</span> <span class="toc-text">:rainbow:模型训练及分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rainbow-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E5%8F%8A%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-number">4.3.5.</span> <span class="toc-text">:rainbow:特征选择及数据可视化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95%E9%98%85%E8%AF%BB"><span class="toc-number">4.4.</span> <span class="toc-text">拓展阅读</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98KNN%E7%AE%97%E6%B3%95%E7%9A%84%E8%BF%90%E7%AE%97%E6%95%88%E7%8E%87"><span class="toc-number">4.4.1.</span> <span class="toc-text">如何提高KNN算法的运算效率</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E6%80%A7%E6%B5%8B%E8%AF%95"><span class="toc-number">4.4.2.</span> <span class="toc-text">相关性测试</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div><div class="card-widget ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8919908724705274" data-ad-slot="8108145410" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png')"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">簡</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/main.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/tw_cn.min.js?ver=3.8.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/localsearch.min.js?ver=3.8.4"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      true && mermaid.init()
+    })
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://butterfly-twikoo.vercel.app/',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'https://butterfly-twikoo.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadDisqus () {
+  var disqus_config = function () {
+    this.page.url = 'https://dongzhougu.github.io/2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/'
+    this.page.identifier = '2020/06/29/scikit-learn-xi-lie-er-k-jin-lin/'
+    this.page.title = 'scikit-learn系列二：K-近邻'
+  };
+
+  window.disqusReset = () => {
+    DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  if (window.DISQUS) disqusReset()
+  else {
+    (function() { 
+      var d = document, s = d.createElement('script');
+      s.src = 'https://demo-jerryc-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  }
+}
+
+if ('Twikoo' === 'Disqus' || !true) {
+  if (true) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+  else loadDisqus()
+} else {
+  function loadOtherComment () {
+    loadDisqus()
+  }
+}
+</script></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://butterfly-twikoo.vercel.app/',
+        region: '',
+        pageSize: 6,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 5/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.innerHTML= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}'>${array[i].content}</a>
+        <div class='name'><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom.innerHTML= result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/talking/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
             window.imageLazyLoadSetting = {
                 isSPA: false,
                 processImages: null,
