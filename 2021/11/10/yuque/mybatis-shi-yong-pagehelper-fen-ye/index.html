@@ -1,0 +1,707 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mybatis-使用PageHelper分页 | 欢迎来到，TWOTO 的博客</title><meta name="keywords" content="Mybatis,分页,源码"><meta name="author" content="DongZhou"><meta name="copyright" content="DongZhou"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1、引入依赖只引入 PageHelper 不会自动适配 SpringBoot 失效，还需要整合依赖 pagehelper-spring-boot-autoconfigure &lt;!--pagehelper分页插件 --&gt; &lt;dependency&gt;    &lt;groupId&gt;com.github.pagehelper&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;pag">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis-使用PageHelper分页">
+<meta property="og:url" content="https://dongzhougu.github.io/2021/11/10/yuque/mybatis-shi-yong-pagehelper-fen-ye/index.html">
+<meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
+<meta property="og:description" content="1、引入依赖只引入 PageHelper 不会自动适配 SpringBoot 失效，还需要整合依赖 pagehelper-spring-boot-autoconfigure &lt;!--pagehelper分页插件 --&gt; &lt;dependency&gt;    &lt;groupId&gt;com.github.pagehelper&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;pag">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2021-11-10T13:26:06.000Z">
+<meta property="article:modified_time" content="2021-11-15T15:09:01.698Z">
+<meta property="article:author" content="DongZhou">
+<meta property="article:tag" content="Mybatis">
+<meta property="article:tag" content="分页">
+<meta property="article:tag" content="源码">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2021/11/10/yuque/mybatis-shi-yong-pagehelper-fen-ye/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Mybatis-使用PageHelper分页',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-11-15 23:09:01'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><style type="text/css" lang="css">
+    #loading-container{
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-height: 100vh;
+        width: 100vw;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #FFF;
+        text-align: center;
+        /* loader页面消失采用渐隐的方式*/
+        -webkit-transition: opacity 1s ease;
+        -moz-transition: opacity 1s ease;
+        -o-transition: opacity 1s ease;
+        transition: opacity 1s ease;
+    }
+    .loading-image{
+        width: 120px;
+        height: 50px;
+        transform: translate(-50%);
+    }
+    
+    .loading-image div:nth-child(2) {
+        -webkit-animation: pacman-balls 1s linear 0s infinite;
+        animation: pacman-balls 1s linear 0s infinite
+    }
+
+    .loading-image div:nth-child(3) {
+        -webkit-animation: pacman-balls 1s linear .33s infinite;
+        animation: pacman-balls 1s linear .33s infinite
+    }
+
+    .loading-image div:nth-child(4) {
+        -webkit-animation: pacman-balls 1s linear .66s infinite;
+        animation: pacman-balls 1s linear .66s infinite
+    }
+
+    .loading-image div:nth-child(5) {
+        -webkit-animation: pacman-balls 1s linear .99s infinite;
+        animation: pacman-balls 1s linear .99s infinite
+    }
+    
+   .loading-image div:first-of-type {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_up .5s 0s infinite;
+        animation: rotate_pacman_half_up .5s 0s infinite;
+    }
+    .loading-image div:nth-child(2) {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_down .5s 0s infinite;
+        animation: rotate_pacman_half_down .5s 0s infinite;
+        margin-top: -50px;
+    }
+    @-webkit-keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @-webkit-keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+
+    @keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+    
+    @-webkit-keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+
+    @keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+    
+   
+    .loading-image div:nth-child(3),
+    .loading-image div:nth-child(4),
+    .loading-image div:nth-child(5),
+    .loading-image div:nth-child(6){
+        background-color: #49b1f5;
+        width: 15px;
+        height: 15px;
+        border-radius: 100%;
+        margin: 2px;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        transform: translateY(-6.25px);
+        top: 25px;
+        left: 100px;
+    }
+    .loading-text{
+        margin-bottom: 20vh;
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2rem;
+        box-sizing: border-box;
+        padding: 0 10px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    @media only screen and (max-width: 500px) {
+         .loading-text{
+            font-size: 1.5rem;
+         }
+    }
+    .fadeout {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    /* logo出现动画 */
+    @-webkit-keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}100%{opacity:1;-webkit-transform:none;transform:none}}
+    @keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);}}
+ </style>
+ <script>
+(function () {
+    const loaded = function(){
+       setTimeout(function(){
+            const loader = document.getElementById("loading-container");
+            loader.className="fadeout" ;//使用渐隐的方法淡出loading page
+            // document.getElementById("body-wrap").style.display="flex";
+            setTimeout(function(){
+                loader.style.display="none";
+            },1000); 
+        },1000);//强制显示loading page 1s  
+    };
+    loaded();
+})()
+ </script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="欢迎来到，TWOTO 的博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+ <div id="loading-container">
+     <p class="loading-text">玩命加载中 . . . </p> 
+     <div class="loading-image">
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div> 
+         <div></div>
+     </div>
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Mybatis-使用PageHelper分页</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-11-10T13:26:06.000Z" title="发表于 2021-11-10 21:26:06">2021-11-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-11-15T15:09:01.698Z" title="更新于 2021-11-15 23:09:01">2021-11-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Mybatis-使用PageHelper分页"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1、引入依赖"><a href="#1、引入依赖" class="headerlink" title="1、引入依赖"></a>1、引入依赖</h2><p>只引入 PageHelper 不会自动适配 SpringBoot 失效，还需要整合依赖 pagehelper-spring-boot-autoconfigure</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token comment" spellcheck="true">&lt;!--pagehelper分页插件 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.github.pagehelper<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>pagehelper-spring-boot-starter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>1.3.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+<span class="token comment" spellcheck="true">&lt;!-- Mybatis-plus --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.baomidou<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>mybatis-plus-boot-starter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>3.2.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="2、配置文件配置相应的参数"><a href="#2、配置文件配置相应的参数" class="headerlink" title="2、配置文件配置相应的参数"></a>2、配置文件配置相应的参数</h2><h3 id="application-yml"><a href="#application-yml" class="headerlink" title="application.yml"></a>application.yml</h3><pre class="line-numbers language-yaml"><code class="language-yaml"><span class="token key atrule">pagehelper</span><span class="token punctuation">:</span>
+  <span class="token key atrule">auto-dialect</span><span class="token punctuation">:</span> on
+  <span class="token key atrule">reasonable</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">support-methods-arguments</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">page-size-zero</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+  <span class="token key atrule">params</span><span class="token punctuation">:</span> count=countSql<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="application-properties"><a href="#application-properties" class="headerlink" title="application.properties"></a>application.properties</h3><pre class="line-numbers language-yaml"><code class="language-yaml"><span class="token comment" spellcheck="true">#分页插件会自动检测当前的数据库链接，自动选择合适的分页方式。 你可以配置helperDialect 属性来指定分页插件是否开启断言。</span>
+pagehelper.helper<span class="token punctuation">-</span>dialect=on
+<span class="token comment" spellcheck="true">#分页合理化参数，默认值为 false 。当该参数设置为 true 时， pageNum&lt;=0 时会查询第一页， pageNum>pages （超过总数时），会查询最后一页。</span>
+pagehelper.reasonable=true
+<span class="token comment" spellcheck="true">#支持通过Mapper接口参数传递page参数,默认值为falset</span>
+pagehelper.support<span class="token punctuation">-</span>methods<span class="token punctuation">-</span>arguments=true
+<span class="token comment" spellcheck="true">#默认值为 false ，当该参数设置为 true 时，如果 pageSize=0 或者 RowBounds.limit =0 就会查询出全部的结果（相当于没有执行分页查询，但是返回结果仍然是 Page 类型）。</span>
+pagehelper.pageSizeZero=true
+<span class="token comment" spellcheck="true">#为了支持 startPage(Object params) 方法，增加了该参数来配置参数映射，用于从对象中根据属性名取值</span>
+pagehelper.params=count=countSql<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="3、使用"><a href="#3、使用" class="headerlink" title="3、使用"></a>3、使用</h2><pre class="line-numbers language-java"><code class="language-java"> <span class="token comment" spellcheck="true">/**
+     * 查看后台文章
+     *
+     * @param conditionVO 条件
+     * @return {@link ApiResponse&lt;PageResult&lt;ArticleBackDTO>>} 后台文章列表
+     */</span>
+<span class="token annotation punctuation">@ApiOperation</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"查看后台文章"</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/admin/articles"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> ApiResponse<span class="token operator">&lt;</span>PageResult<span class="token operator">&lt;</span>ArticleBackDTO<span class="token operator">>></span> <span class="token function">listArticleBacks</span><span class="token punctuation">(</span>ConditionVO conditionVO<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> ApiResponse<span class="token punctuation">.</span><span class="token function">ok</span><span class="token punctuation">(</span>articleService<span class="token punctuation">.</span><span class="token function">listArticleBacks</span><span class="token punctuation">(</span>conditionVO<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> PageResult<span class="token operator">&lt;</span>ArticleBackDTO<span class="token operator">></span> <span class="token function">listArticleBacks</span><span class="token punctuation">(</span>ConditionVO condition<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 查询文章总量</span>
+    Integer count <span class="token operator">=</span> articleMapper<span class="token punctuation">.</span><span class="token function">countArticleBacks</span><span class="token punctuation">(</span>condition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>count <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">PageResult</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// 查询后台文章</span>
+    PageHelper<span class="token punctuation">.</span><span class="token function">startPage</span><span class="token punctuation">(</span>condition<span class="token punctuation">.</span><span class="token function">getCurrent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> condition<span class="token punctuation">.</span><span class="token function">getSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    List<span class="token operator">&lt;</span>ArticleBackDTO<span class="token operator">></span> articleBackDTOList <span class="token operator">=</span> articleMapper<span class="token punctuation">.</span><span class="token function">listArticleBacks</span><span class="token punctuation">(</span>condition<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 查询文章点赞量和浏览量</span>
+    Map<span class="token operator">&lt;</span>Object<span class="token punctuation">,</span> Double<span class="token operator">></span> viewsCountMap <span class="token operator">=</span> redisService<span class="token punctuation">.</span><span class="token function">zAllScore</span><span class="token punctuation">(</span>ARTICLE_VIEWS_COUNT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Object<span class="token operator">></span> likeCountMap <span class="token operator">=</span> redisService<span class="token punctuation">.</span><span class="token function">hGetAll</span><span class="token punctuation">(</span>ARTICLE_LIKE_COUNT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 封装点赞量和浏览量</span>
+    articleBackDTOList<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>item <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
+        Double viewsCount <span class="token operator">=</span> viewsCountMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>Objects<span class="token punctuation">.</span><span class="token function">nonNull</span><span class="token punctuation">(</span>viewsCount<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            item<span class="token punctuation">.</span><span class="token function">setViewsCount</span><span class="token punctuation">(</span>viewsCount<span class="token punctuation">.</span><span class="token function">intValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        item<span class="token punctuation">.</span><span class="token function">setLikeCount</span><span class="token punctuation">(</span><span class="token punctuation">(</span>Integer<span class="token punctuation">)</span> likeCountMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">PageResult</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span>articleBackDTOList<span class="token punctuation">,</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="4、使用提示"><a href="#4、使用提示" class="headerlink" title="4、使用提示"></a>4、使用提示</h2><ul>
+<li>只有紧跟在<code>PageHelper.startPage()</code>方法后的第一个 Mybatis 的查询（Select）方法会被分页。</li>
+<li>请不要在系统中配置多个分页插件(使用 Spring 时,mybatis-config.xml 和 Spring 配置方式，请选择其中一种，不要同时配置多个分页插件)！</li>
+<li>对于带有 for update 的 sql，会抛出运行时异常，对于这样的 sql 建议手动分页，毕竟这样的 sql 需要重视。</li>
+<li>由于嵌套结果方式会导致结果集被折叠，因此分页查询的结果在折叠后总数会减少，所以无法保证分页结果数量正确。</li>
+</ul>
+<p>​</p>
+<h2 id="5-源码分析"><a href="#5-源码分析" class="headerlink" title="5. 源码分析"></a>5. 源码分析</h2><p>我们先来看看 startPage 方法。进入此方法，发现一堆方法重载，最后进入真正的 <code>startPage</code> 方法，有 5 个参数，如下所示：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+     * 开始分页
+     *
+     * @param pageNum      页码
+     * @param pageSize     每页显示数量
+     * @param count        是否进行count查询
+     * @param reasonable   分页合理化,null时用默认配置
+     * @param pageSizeZero true且pageSize=0时返回全部结果，false时分页,null时用默认配置
+     */</span>
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token operator">&lt;</span>E<span class="token operator">></span> Page<span class="token operator">&lt;</span>E<span class="token operator">></span> <span class="token function">startPage</span><span class="token punctuation">(</span><span class="token keyword">int</span> pageNum<span class="token punctuation">,</span> <span class="token keyword">int</span> pageSize<span class="token punctuation">,</span> <span class="token keyword">boolean</span> count<span class="token punctuation">,</span> Boolean reasonable<span class="token punctuation">,</span> Boolean pageSizeZero<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Page<span class="token operator">&lt;</span>E<span class="token operator">></span> page <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Page</span><span class="token operator">&lt;</span>E<span class="token operator">></span><span class="token punctuation">(</span>pageNum<span class="token punctuation">,</span> pageSize<span class="token punctuation">,</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    page<span class="token punctuation">.</span><span class="token function">setReasonable</span><span class="token punctuation">(</span>reasonable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    page<span class="token punctuation">.</span><span class="token function">setPageSizeZero</span><span class="token punctuation">(</span>pageSizeZero<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//当已经执行过orderBy的时候</span>
+    Page<span class="token operator">&lt;</span>E<span class="token operator">></span> oldPage <span class="token operator">=</span> <span class="token function">getLocalPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>oldPage <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> oldPage<span class="token punctuation">.</span><span class="token function">isOrderByOnly</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        page<span class="token punctuation">.</span><span class="token function">setOrderBy</span><span class="token punctuation">(</span>oldPage<span class="token punctuation">.</span><span class="token function">getOrderBy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">setLocalPage</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> page<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>getLocalPage</code> 和<code>setLocalPage</code> 方法做了什么操作？</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * 基础分页方法
+ *
+ * @author liuzh
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">PageMethod</span> <span class="token punctuation">{</span>
+    <span class="token keyword">protected</span> <span class="token keyword">static</span> <span class="token keyword">final</span> ThreadLocal<span class="token operator">&lt;</span>Page<span class="token operator">></span> LOCAL_PAGE <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ThreadLocal</span><span class="token operator">&lt;</span>Page<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">protected</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> DEFAULT_COUNT <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 设置 Page 参数
+     *
+     * @param page
+     */</span>
+    <span class="token keyword">protected</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">setLocalPage</span><span class="token punctuation">(</span>Page page<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOCAL_PAGE<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 获取 Page 参数
+     *
+     * @return
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token operator">&lt;</span>T<span class="token operator">></span> Page<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token function">getLocalPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> LOCAL_PAGE<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 移除本地变量
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">clearPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        LOCAL_PAGE<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * 获取任意查询方法的count总数
+     *
+     * @param select
+     * @return
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">long</span> <span class="token function">count</span><span class="token punctuation">(</span>ISelect select<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Page<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> page <span class="token operator">=</span> <span class="token function">startPage</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        select<span class="token punctuation">.</span><span class="token function">doSelect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> page<span class="token punctuation">.</span><span class="token function">getTotal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>原来是将 page 放入了 <code>ThreadLocal&lt;Page&gt;</code> 中。<code>ThreadLocal</code>是每个线程独有的变量，与其他线程不影响，是放置 page 的好地方。<code>setLocalPage</code>之后，一定有地方 <code>getLocalPage</code></p>
+<h3 id="Spring-Boot-为我们做了什么"><a href="#Spring-Boot-为我们做了什么" class="headerlink" title="Spring Boot 为我们做了什么"></a>Spring Boot 为我们做了什么</h3><p>我们找到 PageHelper 的自动配置类</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token annotation punctuation">@ConditionalOnBean</span><span class="token punctuation">(</span>SqlSessionFactory<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@EnableConfigurationProperties</span><span class="token punctuation">(</span>PageHelperProperties<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@AutoConfigureAfter</span><span class="token punctuation">(</span>MybatisAutoConfiguration<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PageHelperAutoConfiguration</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>SqlSessionFactory<span class="token operator">></span> sqlSessionFactoryList<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@PostConstruct</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addPageInterceptor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        PageInterceptor interceptor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PageInterceptor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Properties properties <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//先把一般方式配置的属性放进去</span>
+        properties<span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span><span class="token function">pageHelperProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//在把特殊配置放进去，由于close-conn 利用上面方式时，属性名就是 close-conn 而不是 closeConn，所以需要额外的一步</span>
+        properties<span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>properties<span class="token punctuation">.</span><span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        interceptor<span class="token punctuation">.</span><span class="token function">setProperties</span><span class="token punctuation">(</span>properties<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>SqlSessionFactory sqlSessionFactory <span class="token operator">:</span> sqlSessionFactoryList<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 添加inteceptor到 mybatis 中</span>
+            sqlSessionFactory<span class="token punctuation">.</span><span class="token function">getConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addInterceptor</span><span class="token punctuation">(</span>interceptor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们会发现，Spring Boot 在启动的时候会调用 <code>addPageInterceptor()</code>方法，为所有的 <code>SqlSessionFactory</code>添加 PageHelper 的拦截器。<br>分页插件的使用，首先是在 Mybatis 里面配置了分页拦截器（PageInterceptor），即在执行相关 SQL 之前会拦截做一点事情，所以应该就是在执行<code>selectList</code>的时候，会自动为 SQL 加上<code>limit 1,8</code>。</p>
+<h3 id="PageHelper-实际拦截-SQL"><a href="#PageHelper-实际拦截-SQL" class="headerlink" title="PageHelper 实际拦截 SQL"></a>PageHelper 实际拦截 SQL</h3><p>Mybatis 拦截器可以对下面 4 种对象进行拦截：</p>
+<table>
+<thead>
+<tr>
+<th><strong>拦截对象</strong></th>
+<th><strong>拦截方法</strong></th>
+<th><strong>方法作用</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Executor</strong></td>
+<td>update</td>
+<td>对应 insert,delete,update 语句</td>
+</tr>
+<tr>
+<td></td>
+<td>query</td>
+<td>对应 select 语句</td>
+</tr>
+<tr>
+<td></td>
+<td>flushStatements</td>
+<td>刷新 Statement</td>
+</tr>
+<tr>
+<td></td>
+<td>commit</td>
+<td>提交事务</td>
+</tr>
+<tr>
+<td></td>
+<td>rollback</td>
+<td>回滚事务</td>
+</tr>
+<tr>
+<td></td>
+<td>getTransaction</td>
+<td>获取事务</td>
+</tr>
+<tr>
+<td></td>
+<td>close</td>
+<td>关闭事务</td>
+</tr>
+<tr>
+<td></td>
+<td>isClosed</td>
+<td>判断事务是否关闭</td>
+</tr>
+<tr>
+<td><strong>StatementHandler</strong></td>
+<td>prepare</td>
+<td>预编译 SQL</td>
+</tr>
+<tr>
+<td></td>
+<td>parameterize</td>
+<td>设置参数</td>
+</tr>
+<tr>
+<td></td>
+<td>batch</td>
+<td>批处理</td>
+</tr>
+<tr>
+<td></td>
+<td>update</td>
+<td>对应 insert,delete,update 语句</td>
+</tr>
+<tr>
+<td></td>
+<td>query</td>
+<td>对应 select 语句</td>
+</tr>
+<tr>
+<td><strong>ParameterHandler</strong></td>
+<td>getParameterObject</td>
+<td>获取参数</td>
+</tr>
+<tr>
+<td></td>
+<td>setParameters</td>
+<td>设置参数</td>
+</tr>
+<tr>
+<td><strong>ResultSetHandler</strong></td>
+<td>handleResultSets</td>
+<td>处理结果集</td>
+</tr>
+<tr>
+<td></td>
+<td>handleOutputParameters</td>
+<td>处理存储过程出参</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Executor：mybatis 的内部执行器，作为调度核心负责调用 StatementHandler 操作数据库，并把结果集通过 ResultSetHandler 进行自动映射</li>
+<li>StatementHandler： 封装了 JDBC Statement 操作，是 sql 语法的构建器，负责和数据库进行交互执行 sql 语句</li>
+<li>ParameterHandler：作为处理 sql 参数设置的对象，主要实现读取参数和对 PreparedStatement 的参数进行赋值</li>
+<li>ResultSetHandler：处理 Statement 执行完成后返回结果集的接口对象，mybatis 通过它把 ResultSet 集合映射成实体对象</li>
+</ul>
+<p>而 PageHelper 就是拦截 Excutor 的 query 方法，来看一下在 stater 中自动加载的 PageInterceptor interceptor = new PageInterceptor();分页拦截器源码</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Intercepts</span><span class="token punctuation">(</span>
+        <span class="token punctuation">{</span>
+                <span class="token annotation punctuation">@Signature</span><span class="token punctuation">(</span>type <span class="token operator">=</span> Executor<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> method <span class="token operator">=</span> <span class="token string">"query"</span><span class="token punctuation">,</span> args <span class="token operator">=</span> <span class="token punctuation">{</span>MappedStatement<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> Object<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> RowBounds<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> ResultHandler<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                <span class="token annotation punctuation">@Signature</span><span class="token punctuation">(</span>type <span class="token operator">=</span> Executor<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> method <span class="token operator">=</span> <span class="token string">"query"</span><span class="token punctuation">,</span> args <span class="token operator">=</span> <span class="token punctuation">{</span>MappedStatement<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> Object<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> RowBounds<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> ResultHandler<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> CacheKey<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> BoundSql<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PageInterceptor</span> <span class="token keyword">implements</span> <span class="token class-name">Interceptor</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">volatile</span> Dialect dialect<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> String countSuffix <span class="token operator">=</span> <span class="token string">"_COUNT"</span><span class="token punctuation">;</span>
+    <span class="token keyword">protected</span> Cache<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> MappedStatement<span class="token operator">></span> msCountMap <span class="token operator">=</span> null<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> String default_dialect_class <span class="token operator">=</span> <span class="token string">"com.github.pagehelper.PageHelper"</span><span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> Object <span class="token function">intercept</span><span class="token punctuation">(</span>Invocation invocation<span class="token punctuation">)</span> <span class="token keyword">throws</span> Throwable <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            Object<span class="token punctuation">[</span><span class="token punctuation">]</span> args <span class="token operator">=</span> invocation<span class="token punctuation">.</span><span class="token function">getArgs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            MappedStatement ms <span class="token operator">=</span> <span class="token punctuation">(</span>MappedStatement<span class="token punctuation">)</span> args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            Object parameter <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            RowBounds rowBounds <span class="token operator">=</span> <span class="token punctuation">(</span>RowBounds<span class="token punctuation">)</span> args<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            ResultHandler resultHandler <span class="token operator">=</span> <span class="token punctuation">(</span>ResultHandler<span class="token punctuation">)</span> args<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            Executor executor <span class="token operator">=</span> <span class="token punctuation">(</span>Executor<span class="token punctuation">)</span> invocation<span class="token punctuation">.</span><span class="token function">getTarget</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            CacheKey cacheKey<span class="token punctuation">;</span>
+            BoundSql boundSql<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//由于逻辑关系，只会进入一次</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>args<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//4 个参数时</span>
+                boundSql <span class="token operator">=</span> ms<span class="token punctuation">.</span><span class="token function">getBoundSql</span><span class="token punctuation">(</span>parameter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                cacheKey <span class="token operator">=</span> executor<span class="token punctuation">.</span><span class="token function">createCacheKey</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">,</span> boundSql<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//6 个参数时</span>
+                cacheKey <span class="token operator">=</span> <span class="token punctuation">(</span>CacheKey<span class="token punctuation">)</span> args<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+                boundSql <span class="token operator">=</span> <span class="token punctuation">(</span>BoundSql<span class="token punctuation">)</span> args<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token function">checkDialectExists</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//对 boundSql 的拦截处理</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>dialect <span class="token keyword">instanceof</span> <span class="token class-name">BoundSqlInterceptor<span class="token punctuation">.</span>Chain</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                boundSql <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>BoundSqlInterceptor<span class="token punctuation">.</span>Chain<span class="token punctuation">)</span> dialect<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">doBoundSql</span><span class="token punctuation">(</span>BoundSqlInterceptor<span class="token punctuation">.</span>Type<span class="token punctuation">.</span>ORIGINAL<span class="token punctuation">,</span> boundSql<span class="token punctuation">,</span> cacheKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            List resultList<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//调用方法判断是否需要进行分页，如果不需要，直接返回结果</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>dialect<span class="token punctuation">.</span><span class="token function">skip</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//判断是否需要进行 count 查询</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>dialect<span class="token punctuation">.</span><span class="token function">beforeCount</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">//查询总数</span>
+                    Long count <span class="token operator">=</span> <span class="token function">count</span><span class="token punctuation">(</span>executor<span class="token punctuation">,</span> ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">,</span> null<span class="token punctuation">,</span> boundSql<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">//处理查询总数，返回 true 时继续分页查询，false 时直接返回</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>dialect<span class="token punctuation">.</span><span class="token function">afterCount</span><span class="token punctuation">(</span>count<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">//当查询总数为 0 时，直接返回空的结果</span>
+                        <span class="token keyword">return</span> dialect<span class="token punctuation">.</span><span class="token function">afterPage</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                resultList <span class="token operator">=</span> ExecutorUtil<span class="token punctuation">.</span><span class="token function">pageQuery</span><span class="token punctuation">(</span>dialect<span class="token punctuation">,</span> executor<span class="token punctuation">,</span>
+                        ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">,</span> resultHandler<span class="token punctuation">,</span> boundSql<span class="token punctuation">,</span> cacheKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//rowBounds用参数值，不使用分页插件处理时，仍然支持默认的内存分页</span>
+                resultList <span class="token operator">=</span> executor<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">,</span> resultHandler<span class="token punctuation">,</span> cacheKey<span class="token punctuation">,</span> boundSql<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> dialect<span class="token punctuation">.</span><span class="token function">afterPage</span><span class="token punctuation">(</span>resultList<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>dialect <span class="token operator">!=</span> null<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                dialect<span class="token punctuation">.</span><span class="token function">afterAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中<code>resultList = ExecutorUtil.pageQuery(。。。);</code>是关键代码，继续看<br>转到 ExecutorUtil 抽象类的<code>pageQuery</code>方法</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token operator">&lt;</span>E<span class="token operator">></span> List<span class="token operator">&lt;</span>E<span class="token operator">></span> <span class="token function">pageQuery</span><span class="token punctuation">(</span>Dialect dialect<span class="token punctuation">,</span> Executor executor<span class="token punctuation">,</span> MappedStatement ms<span class="token punctuation">,</span> Object parameter<span class="token punctuation">,</span> RowBounds rowBounds<span class="token punctuation">,</span> ResultHandler resultHandler<span class="token punctuation">,</span> BoundSql boundSql<span class="token punctuation">,</span> CacheKey cacheKey<span class="token punctuation">)</span> <span class="token keyword">throws</span> SQLException <span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>dialect<span class="token punctuation">.</span><span class="token function">beforePage</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> executor<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> RowBounds<span class="token punctuation">.</span>DEFAULT<span class="token punctuation">,</span> resultHandler<span class="token punctuation">,</span> cacheKey<span class="token punctuation">,</span> boundSql<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        parameter <span class="token operator">=</span> dialect<span class="token punctuation">.</span><span class="token function">processParameterObject</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> boundSql<span class="token punctuation">,</span> cacheKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String pageSql <span class="token operator">=</span> dialect<span class="token punctuation">.</span><span class="token function">getPageSql</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> boundSql<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> rowBounds<span class="token punctuation">,</span> cacheKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        BoundSql pageBoundSql <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BoundSql</span><span class="token punctuation">(</span>ms<span class="token punctuation">.</span><span class="token function">getConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> pageSql<span class="token punctuation">,</span> boundSql<span class="token punctuation">.</span><span class="token function">getParameterMappings</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> parameter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> Object<span class="token operator">></span> additionalParameters <span class="token operator">=</span> <span class="token function">getAdditionalParameter</span><span class="token punctuation">(</span>boundSql<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Iterator var12 <span class="token operator">=</span> additionalParameters<span class="token punctuation">.</span><span class="token function">keySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">while</span><span class="token punctuation">(</span>var12<span class="token punctuation">.</span><span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            String key <span class="token operator">=</span> <span class="token punctuation">(</span>String<span class="token punctuation">)</span>var12<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            pageBoundSql<span class="token punctuation">.</span><span class="token function">setAdditionalParameter</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> additionalParameters<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> executor<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> parameter<span class="token punctuation">,</span> RowBounds<span class="token punctuation">.</span>DEFAULT<span class="token punctuation">,</span> resultHandler<span class="token punctuation">,</span> cacheKey<span class="token punctuation">,</span> pageBoundSql<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在抽象类 AbstractHelperDialect 的<code>getPageSql</code>获取到对应的 Page 对象</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> String <span class="token function">getPageSql</span><span class="token punctuation">(</span>MappedStatement ms<span class="token punctuation">,</span> BoundSql boundSql<span class="token punctuation">,</span> Object parameterObject<span class="token punctuation">,</span> RowBounds rowBounds<span class="token punctuation">,</span> CacheKey pageKey<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    String sql <span class="token operator">=</span> boundSql<span class="token punctuation">.</span><span class="token function">getSql</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Page page <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getLocalPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    String orderBy <span class="token operator">=</span> page<span class="token punctuation">.</span><span class="token function">getOrderBy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>StringUtil<span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span>orderBy<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        pageKey<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>orderBy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sql <span class="token operator">=</span> OrderByParser<span class="token punctuation">.</span><span class="token function">converToOrderBySql</span><span class="token punctuation">(</span>sql<span class="token punctuation">,</span> orderBy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> page<span class="token punctuation">.</span><span class="token function">isOrderByOnly</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">?</span>sql<span class="token operator">:</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getPageSql</span><span class="token punctuation">(</span>sql<span class="token punctuation">,</span> page<span class="token punctuation">,</span> pageKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>进入到 MySqlDialect 类的<code>getPageSql</code>方法进行 SQL 封装，根据 page 对象信息增加 Limit。分页的信息就是这么拼装起来的</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> String <span class="token function">getPageSql</span><span class="token punctuation">(</span>String sql<span class="token punctuation">,</span> Page page<span class="token punctuation">,</span> CacheKey pageKey<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    StringBuilder sqlBuilder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span>sql<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">14</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    sqlBuilder<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>sql<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>page<span class="token punctuation">.</span><span class="token function">getStartRow</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        sqlBuilder<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">" LIMIT ? "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        sqlBuilder<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">" LIMIT ?, ? "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> sqlBuilder<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>将最后拼装好的 SQL 返回给 DefaultSqlSession 执行查询并返回</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token operator">&lt;</span>E<span class="token operator">></span> List<span class="token operator">&lt;</span>E<span class="token operator">></span> <span class="token function">selectList</span><span class="token punctuation">(</span>String statement<span class="token punctuation">,</span> Object parameter<span class="token punctuation">,</span> RowBounds rowBounds<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        MappedStatement ms <span class="token operator">=</span> configuration<span class="token punctuation">.</span><span class="token function">getMappedStatement</span><span class="token punctuation">(</span>statement<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> executor<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> <span class="token function">wrapCollection</span><span class="token punctuation">(</span>parameter<span class="token punctuation">)</span><span class="token punctuation">,</span> rowBounds<span class="token punctuation">,</span> Executor<span class="token punctuation">.</span>NO_RESULT_HANDLER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> ExceptionFactory<span class="token punctuation">.</span><span class="token function">wrapException</span><span class="token punctuation">(</span><span class="token string">"Error querying database.  Cause: "</span> <span class="token operator">+</span> e<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        ErrorContext<span class="token punctuation">.</span><span class="token function">instance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">reset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>至此整个查询过程完成，原来 PageHelper 的分页功能是通过 Limit 拼接 SQL 实现的。</p>
+<p>PageHelper 的分页原理，最核心的部分是实现了 MyBatis 的 Interceptor 接口，从而将分页参数拦截在执行 sql 之前，拼装出分页 sql 到数据库中执行。<br>初始化自动配置的时候，将 PageInterceptor 初始化并加入 MyBatis 拦截器，记录在 interceptorChain 中。<br>执行的时候，PageHelper 首先将 page 需求记录在 <code>ThreadLocal&lt;Page&gt;</code> 中，然后在拦截的时候，从 <code>ThreadLocal&lt;Page&gt;</code> 中取出 page，拼装出分页 sql，然后执行。<br>同时将结果分页信息（包括当前页，每页条数，总页数，总记录数等）设置回 page，让业务代码可以获取。</p>
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><p>PageHelper 作为 GitHub 上现在近 10K 的开源分页框架,也许代码深度和广度不及主流市场框架和技术,虽然在功能的实现和原理上,造轮子的难度不高,源码也很清晰,但是在很大程度上解决了很多基于 MyBatis 的分页技术难题,简化并提示了广大开发者的效率,这才是开发者们在开发的路上应该向往并为之拼搏的方向和道路. 作为受益者,也不应当仅仅是对其进行基本的使用,开发之余,也应该关注一些框架的拓展,对框架的底层有一定程度上的了解,并为之拓展和优化<br>​</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2021/11/10/yuque/mybatis-shi-yong-pagehelper-fen-ye/">https://dongzhougu.github.io/2021/11/10/yuque/mybatis-shi-yong-pagehelper-fen-ye/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Mybatis/">Mybatis</a><a class="post-meta__tags" href="/tags/%E5%88%86%E9%A1%B5/">分页</a><a class="post-meta__tags" href="/tags/%E6%BA%90%E7%A0%81/">源码</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/11/10/yuque/mybatis-dong-tai-sql/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Mybatis-动态SQL</div></div></a></div><div class="next-post pull-right"><a href="/2021/11/10/yuque/mybatis-plus-zi-ding-yi-fen-ye-cha-jian/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Mybatis-plus自定义分页插件</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/11/10/yuque/mybatis-plus-zi-ding-yi-fen-ye-cha-jian/" title="Mybatis-plus自定义分页插件"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-10</div><div class="title">Mybatis-plus自定义分页插件</div></div></a></div><div><a href="/2021/11/10/yuque/mybatis-cha-jian-yuan-li-dong-tai-dai-li-ze-ren-lian/" title="Mybatis-插件原理(动态代理+责任链)"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-10</div><div class="title">Mybatis-插件原理(动态代理+责任链)</div></div></a></div><div><a href="/2021/11/10/yuque/mybatis-dong-tai-sql/" title="Mybatis-动态SQL"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-10</div><div class="title">Mybatis-动态SQL</div></div></a></div><div><a href="/2021/11/10/yuque/mybatis-lan-jie-qi-cha-jian-li-zi-min-gan-xin-xi-jia-mi/" title="Mybatis-拦截器插件例子(敏感信息加密)"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-10</div><div class="title">Mybatis-拦截器插件例子(敏感信息加密)</div></div></a></div><div><a href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-14</div><div class="title">Mybatis-缓存工作原理</div></div></a></div><div><a href="/2020/10/21/ssm-kuang-jia-zheng-he/" title="SSM框架整合"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-21</div><div class="title">SSM框架整合</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="toc-number">1.</span> <span class="toc-text">1、引入依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE%E7%9B%B8%E5%BA%94%E7%9A%84%E5%8F%82%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">2、配置文件配置相应的参数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#application-yml"><span class="toc-number">2.1.</span> <span class="toc-text">application.yml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#application-properties"><span class="toc-number">2.2.</span> <span class="toc-text">application.properties</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E4%BD%BF%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">3、使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E4%BD%BF%E7%94%A8%E6%8F%90%E7%A4%BA"><span class="toc-number">4.</span> <span class="toc-text">4、使用提示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">5. 源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-Boot-%E4%B8%BA%E6%88%91%E4%BB%AC%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-number">5.1.</span> <span class="toc-text">Spring Boot 为我们做了什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PageHelper-%E5%AE%9E%E9%99%85%E6%8B%A6%E6%88%AA-SQL"><span class="toc-number">5.2.</span> <span class="toc-text">PageHelper 实际拦截 SQL</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">6. 总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=o;var i=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function o(){i&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,e,a=0;a<r.length;a++)t=r[a],e=void 0,0<=(e=t.getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(n.innerHeight||document.documentElement.clientHeight)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}o(),n.addEventListener("scroll",function(){var t,e;t=o,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body></html>

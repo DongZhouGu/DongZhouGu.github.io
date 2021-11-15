@@ -1,0 +1,505 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hexo+travis+语雀 自动部署博客 | 欢迎来到，TWOTO 的博客</title><meta name="keywords" content="Hexo,博客搭建,自动化"><meta name="author" content="DongZhou"><meta name="copyright" content="DongZhou"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="​">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo+travis+语雀 自动部署博客">
+<meta property="og:url" content="https://dongzhougu.github.io/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/index.html">
+<meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
+<meta property="og:description" content="​">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-11-03T16:13:43.000Z">
+<meta property="article:modified_time" content="2021-11-15T15:09:00.776Z">
+<meta property="article:author" content="DongZhou">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="博客搭建">
+<meta property="article:tag" content="自动化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Hexo+travis+语雀 自动部署博客',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-11-15 23:09:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><style type="text/css" lang="css">
+    #loading-container{
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-height: 100vh;
+        width: 100vw;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #FFF;
+        text-align: center;
+        /* loader页面消失采用渐隐的方式*/
+        -webkit-transition: opacity 1s ease;
+        -moz-transition: opacity 1s ease;
+        -o-transition: opacity 1s ease;
+        transition: opacity 1s ease;
+    }
+    .loading-image{
+        width: 120px;
+        height: 50px;
+        transform: translate(-50%);
+    }
+    
+    .loading-image div:nth-child(2) {
+        -webkit-animation: pacman-balls 1s linear 0s infinite;
+        animation: pacman-balls 1s linear 0s infinite
+    }
+
+    .loading-image div:nth-child(3) {
+        -webkit-animation: pacman-balls 1s linear .33s infinite;
+        animation: pacman-balls 1s linear .33s infinite
+    }
+
+    .loading-image div:nth-child(4) {
+        -webkit-animation: pacman-balls 1s linear .66s infinite;
+        animation: pacman-balls 1s linear .66s infinite
+    }
+
+    .loading-image div:nth-child(5) {
+        -webkit-animation: pacman-balls 1s linear .99s infinite;
+        animation: pacman-balls 1s linear .99s infinite
+    }
+    
+   .loading-image div:first-of-type {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_up .5s 0s infinite;
+        animation: rotate_pacman_half_up .5s 0s infinite;
+    }
+    .loading-image div:nth-child(2) {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_down .5s 0s infinite;
+        animation: rotate_pacman_half_down .5s 0s infinite;
+        margin-top: -50px;
+    }
+    @-webkit-keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @-webkit-keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+
+    @keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+    
+    @-webkit-keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+
+    @keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+    
+   
+    .loading-image div:nth-child(3),
+    .loading-image div:nth-child(4),
+    .loading-image div:nth-child(5),
+    .loading-image div:nth-child(6){
+        background-color: #49b1f5;
+        width: 15px;
+        height: 15px;
+        border-radius: 100%;
+        margin: 2px;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        transform: translateY(-6.25px);
+        top: 25px;
+        left: 100px;
+    }
+    .loading-text{
+        margin-bottom: 20vh;
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2rem;
+        box-sizing: border-box;
+        padding: 0 10px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    @media only screen and (max-width: 500px) {
+         .loading-text{
+            font-size: 1.5rem;
+         }
+    }
+    .fadeout {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    /* logo出现动画 */
+    @-webkit-keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}100%{opacity:1;-webkit-transform:none;transform:none}}
+    @keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);}}
+ </style>
+ <script>
+(function () {
+    const loaded = function(){
+       setTimeout(function(){
+            const loader = document.getElementById("loading-container");
+            loader.className="fadeout" ;//使用渐隐的方法淡出loading page
+            // document.getElementById("body-wrap").style.display="flex";
+            setTimeout(function(){
+                loader.style.display="none";
+            },1000); 
+        },1000);//强制显示loading page 1s  
+    };
+    loaded();
+})()
+ </script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="欢迎来到，TWOTO 的博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+ <div id="loading-container">
+     <p class="loading-text">玩命加载中 . . . </p> 
+     <div class="loading-image">
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div> 
+         <div></div>
+     </div>
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Hexo+travis+语雀 自动部署博客</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-11-03T16:13:43.000Z" title="发表于 2021-11-04 00:13:43">2021-11-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-11-15T15:09:00.776Z" title="更新于 2021-11-15 23:09:00">2021-11-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%99%E7%A8%8B/">教程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Hexo+travis+语雀 自动部署博客"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>​</p>
+<span id="more"></span>
+
+<p>修改自：<a target="_blank" rel="noopener" href="https://www.yuque.com/u46795/blog/dlloc7">https://www.yuque.com/u46795/blog/dlloc7</a><br>yuque-hexo:<a target="_blank" rel="noopener" href="https://github.com/x-cold/yuque-hexo">https://github.com/x-cold/yuque-hexo</a></p>
+<h3 id="一、Hexo-Github-的痛点"><a href="#一、Hexo-Github-的痛点" class="headerlink" title="一、Hexo+Github 的痛点"></a>一、Hexo+Github 的痛点</h3><h4 id="1-为啥要用-hexo-github？"><a href="#1-为啥要用-hexo-github？" class="headerlink" title="1.为啥要用 hexo+github？"></a>1.为啥要用 hexo+github？</h4><p>作为一个程序猿，博客肯定是必须要有的拉，github 也是必须要混的拉~所以:</p>
+<ul>
+<li>hexo + github = 高大上</li>
+</ul>
+<p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/jpeg/155457/1546857679810-d82e3d46-e960-419c-a715-0a82c48a2fd6.jpeg#height=225&amp;id=IUgNo&amp;name=image.jpeg&amp;originHeight=225&amp;originWidth=225&amp;originalType=binary%E2%88%B6=1&amp;size=6267&amp;status=done&amp;style=none&amp;width=225" alt="image.jpeg"></p>
+<h4 id="2-蛋疼的写作体验"><a href="#2-蛋疼的写作体验" class="headerlink" title="2.蛋疼的写作体验"></a>2.蛋疼的写作体验</h4><p>使用 hexo，会面临如下问题：</p>
+<ul>
+<li>博客源码怎么管理？</li>
+<li>图片存在哪？</li>
+<li>如何编写 markdown 文件？</li>
+</ul>
+<p>相信很多人都在使用本地编辑器来写博客，那体验，真心蛋疼，比如说 vscode，可视化插件一般般，图片还不能复制黏贴，想插入个图片还要先保存成文件放在本地，然后再引用，啥？你说七牛云存储？哪有复制黏贴爽呀~<br>当然，博客源码可以使用 travis-ci 来做持续集成，想写博客或者换个电脑，clone 一下源仓库，写完 push 一下，就可以不用管了。but，比起独立站点的博客，如 wordpress，还是觉得写作体验有点不爽。<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/jpeg/155457/1546858156666-f3f7ae20-c7f8-49b9-849d-b4364f3685f7.jpeg#height=213&amp;id=aXrQY&amp;name=image.jpeg&amp;originHeight=213&amp;originWidth=237&amp;originalType=binary%E2%88%B6=1&amp;size=5810&amp;status=done&amp;style=none&amp;width=237" alt="image.jpeg"></p>
+<h4 id="3-脑洞大开："><a href="#3-脑洞大开：" class="headerlink" title="3. 脑洞大开："></a>3. 脑洞大开：</h4><p>偶然间，朋友安利了语雀这个文档写作平台，觉得这就是完美的写作体验，各种 UI 和编辑器都很舒服~秀个图：<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/png/155457/1546858295510-9ca72eb5-b3ae-4d7c-8478-d8d1cda959d0.png#height=821&amp;id=tVeye&amp;name=image.png&amp;originHeight=903&amp;originWidth=1789&amp;originalType=binary%E2%88%B6=1&amp;size=119669&amp;status=done&amp;style=none&amp;width=1626" alt="image.png"></p>
+<p>markdown 编辑器也是巨爽：<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/png/155457/1546858354478-127bd82a-7958-40ce-b760-07e469bd55ba.png#height=840&amp;id=cGRvZ&amp;name=image.png&amp;originHeight=924&amp;originWidth=1890&amp;originalType=binary%E2%88%B6=1&amp;size=125288&amp;status=done&amp;style=none&amp;width=1718" alt="image.png"></p>
+<p>于是乎，就在想能不能在语雀里写作，写完之后自动同步到 Github 的博客呢？年轻就要有激情，说干就干，花了一天时间，结合了 severless、yuque-hexo、travis-ci 之后，终于跑通了整个写作、发布、自动部署的流程~<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/jpeg/155457/1546858544992-c921de6f-b08a-469a-bd5f-81996309443b.jpeg#height=225&amp;id=PVGCa&amp;name=image.jpeg&amp;originHeight=225&amp;originWidth=225&amp;originalType=binary%E2%88%B6=1&amp;size=10511&amp;status=done&amp;style=none&amp;width=225" alt="image.jpeg"></p>
+<h3 id="二、具体方案"><a href="#二、具体方案" class="headerlink" title="二、具体方案"></a>二、具体方案</h3><p>整体流程：<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/png/155457/1546854780929-79a8a0f2-1678-4e16-bf23-52bbc364a5eb.png#height=262&amp;id=z1LNs&amp;name=%E5%B7%A5%E4%BD%9C%E6%B5%81.png&amp;originHeight=446&amp;originWidth=1268&amp;originalType=binary%E2%88%B6=1&amp;size=21932&amp;status=done&amp;style=none&amp;width=746" alt="工作流.png"></p>
+<ul>
+<li>语雀发布一篇文章</li>
+<li>webhook 调用 serverless 函数</li>
+<li>serverless 发起请求 trigger 一个 build 任务</li>
+<li>travis-ci 同步语雀文章并构建 hexo</li>
+<li>github 生成静态页面展示</li>
+</ul>
+<h4 id="1-hexo-github-triavs-ci"><a href="#1-hexo-github-triavs-ci" class="headerlink" title="1. hexo+github+triavs-ci"></a>1. hexo+github+triavs-ci</h4><p>hexo 如何部署，如何集成 travis-ci，等等，我就不再讲了，网上类似的文章灰常多~<br>比如：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000013266001">使用 Hexo+Github+TravisCI 搭建自动发布的静态博客系统</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000016487753">GitHub pages + Hexo 搭建自己的个人博客</a></li>
+</ul>
+<p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/png/155457/1546856496741-e2bcacb7-133f-411f-8696-68e29c280dfc.png#height=225&amp;id=hc0wH&amp;name=image.png&amp;originHeight=225&amp;originWidth=225&amp;originalType=binary%E2%88%B6=1&amp;size=3779&amp;status=done&amp;style=none&amp;width=225" alt="image.png"><br>附上 travis 的配置文件。travis.yml</p>
+<pre class="line-numbers language-java"><code class="language-java">language<span class="token operator">:</span> node_js
+node_js<span class="token operator">:</span>
+<span class="token operator">-</span> v12<span class="token number">.18</span><span class="token punctuation">.</span><span class="token number">1</span>
+before_install<span class="token operator">:</span>
+<span class="token operator">-</span> cp id_rsa  <span class="token operator">~</span><span class="token operator">/</span><span class="token punctuation">.</span>ssh<span class="token operator">/</span>id_rsa
+<span class="token operator">-</span> chmod <span class="token number">600</span> <span class="token operator">~</span><span class="token operator">/</span><span class="token punctuation">.</span>ssh<span class="token operator">/</span>id_rsa
+<span class="token operator">-</span> eval $<span class="token punctuation">(</span>ssh<span class="token operator">-</span>agent<span class="token punctuation">)</span>
+<span class="token operator">-</span> ssh<span class="token operator">-</span>add <span class="token operator">~</span><span class="token operator">/</span><span class="token punctuation">.</span>ssh<span class="token operator">/</span>id_rsa
+<span class="token operator">-</span> cp <span class="token punctuation">.</span>travis<span class="token operator">/</span>ssh_config <span class="token operator">~</span><span class="token operator">/</span><span class="token punctuation">.</span>ssh<span class="token operator">/</span>config
+<span class="token operator">-</span> git config <span class="token operator">--</span>global user<span class="token punctuation">.</span>name <span class="token string">"DongZhouGu"</span>
+<span class="token operator">-</span> git config <span class="token operator">--</span>global user<span class="token punctuation">.</span>email gdz678<span class="token annotation punctuation">@163</span><span class="token punctuation">.</span>com
+install<span class="token operator">:</span>
+<span class="token operator">-</span> npm install
+<span class="token operator">-</span> npm audit fix
+script<span class="token operator">:</span>
+<span class="token operator">-</span> npm run deploy
+<span class="token operator">-</span> git remote rm origin
+<span class="token operator">-</span> git remote add origin git<span class="token annotation punctuation">@github</span><span class="token punctuation">.</span>com<span class="token operator">:</span>DongZhouGu<span class="token operator">/</span>Blog<span class="token operator">-</span>backup<span class="token punctuation">.</span>git
+<span class="token operator">-</span> git add  scaffolds scripts source my_themes themes _config<span class="token punctuation">.</span>yml <span class="token keyword">package</span><span class="token punctuation">.</span>json run<span class="token punctuation">.</span>bash <span class="token punctuation">.</span>travis id_rsa <span class="token punctuation">.</span>travis<span class="token punctuation">.</span>yml
+<span class="token operator">-</span> git commit  <span class="token operator">-</span>m  <span class="token string">"travis"</span>
+<span class="token operator">-</span> git push origin HEAD<span class="token operator">:</span>master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>那么如何同步语雀的文章呢？答案就是：</p>
+<h5 id="yuque-hexo"><a href="#yuque-hexo" class="headerlink" title="yuque-hexo"></a>yuque-hexo</h5><p>这是一个开源库：<a target="_blank" rel="noopener" href="https://github.com/x-cold/yuque-hexo">https://github.com/x-cold/yuque-hexo</a><br>用法也很简单：</p>
+<ol>
+<li>修改 package.json，增加配置:</li>
+</ol>
+<pre class="line-numbers language-json"><code class="language-json">  <span class="token property">"yuqueConfig"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"baseUrl"</span><span class="token operator">:</span> <span class="token string">"https://www.yuque.com/api/v2"</span><span class="token punctuation">,</span>
+    <span class="token property">"login"</span><span class="token operator">:</span> <span class="token string">"u46795"</span><span class="token punctuation">,</span>
+    <span class="token property">"repo"</span><span class="token operator">:</span> <span class="token string">"blog"</span><span class="token punctuation">,</span>//不是仓库名而是一串随机字符注意
+    <span class="token property">"mdNameFormat"</span><span class="token operator">:</span> <span class="token string">"title"</span><span class="token punctuation">,</span>
+    <span class="token property">"postPath"</span><span class="token operator">:</span> <span class="token string">"source/_posts/yuque"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>2）增加命令：</p>
+<pre class="line-numbers language-json"><code class="language-json">  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"sync"</span><span class="token operator">:</span> <span class="token string">"yuque-hexo sync"</span><span class="token punctuation">,</span>
+    <span class="token property">"clean:yuque"</span><span class="token operator">:</span> <span class="token string">"yuque-hexo clean"</span><span class="token punctuation">,</span>
+    <span class="token property">"deploy"</span><span class="token operator">:</span> <span class="token string">"npm run sync &amp;&amp; hexo clean &amp;&amp; hexo g -d"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>附上我的<a target="_blank" rel="noopener" href="https://github.com/Ghostdar/blog-origin/blob/master/package.json">package.json</a>文件。</p>
+<h4 id="2-serverless"><a href="#2-serverless" class="headerlink" title="2. serverless"></a>2. serverless</h4><p>目前阿里云和腾讯云都有 serverless 服务，免费的额度完全够用了，下面介绍一下如何配置：</p>
+<h5 id="1）创建函数"><a href="#1）创建函数" class="headerlink" title="1）创建函数"></a>1）创建函数</h5><p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/png/155457/1546855514908-08a6c588-774a-404e-8425-89ce6a3f7167.png#height=697&amp;id=OBnqI&amp;name=image.png&amp;originHeight=767&amp;originWidth=1408&amp;originalType=binary%E2%88%B6=1&amp;size=90789&amp;status=done&amp;style=none&amp;width=1280" alt="image.png"></p>
+<h5 id="2）serverless-函数示例"><a href="#2）serverless-函数示例" class="headerlink" title="2）serverless 函数示例:"></a>2）serverless 函数示例:</h5><pre class="line-numbers language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token keyword">function</span> <span class="token function">main_handler</span><span class="token punctuation">(</span><span class="token variable">$event</span><span class="token punctuation">,</span> <span class="token variable">$context</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 解析语雀post的数据</span>
+    <span class="token variable">$update_title</span> <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$event</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">body</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token variable">$yuque_data</span><span class="token operator">=</span> <span class="token function">json_decode</span><span class="token punctuation">(</span><span class="token variable">$event</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">body</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$update_title</span> <span class="token punctuation">.</span><span class="token operator">=</span> <span class="token variable">$yuque_data</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">data</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">title</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// default params</span>
+    <span class="token variable">$repos</span> <span class="token operator">=</span> <span class="token string">'github/账户名%2F仓库名'</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 你的仓库id 或 slug</span>
+    <span class="token variable">$token</span> <span class="token operator">=</span> <span class="token string">'xxxxx'</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 你的登录token</span>
+    <span class="token variable">$message</span> <span class="token operator">=</span> <span class="token function">date</span><span class="token punctuation">(</span><span class="token string">"Y/m/d"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token string">':yuque update:'</span><span class="token punctuation">.</span><span class="token variable">$update_title</span><span class="token punctuation">;</span>
+    <span class="token variable">$branch</span> <span class="token operator">=</span> <span class="token string">'master'</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// post params</span>
+    <span class="token variable">$queryString</span> <span class="token operator">=</span> <span class="token variable">$event</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">queryString</span><span class="token punctuation">;</span>
+    <span class="token variable">$q_token</span> <span class="token operator">=</span> <span class="token variable">$queryString</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">token</span> <span class="token operator">?</span> <span class="token variable">$queryString</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">token</span> <span class="token punctuation">:</span> <span class="token variable">$token</span><span class="token punctuation">;</span>
+    <span class="token variable">$q_repos</span> <span class="token operator">=</span> <span class="token variable">$queryString</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">repos</span> <span class="token operator">?</span> <span class="token variable">$queryString</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">repos</span> <span class="token punctuation">:</span> <span class="token variable">$repos</span><span class="token punctuation">;</span>
+    <span class="token variable">$q_message</span> <span class="token operator">=</span> <span class="token variable">$queryString</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">message</span> <span class="token operator">?</span> <span class="token variable">$queryString</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">message</span> <span class="token punctuation">:</span> <span class="token variable">$message</span><span class="token punctuation">;</span>
+    <span class="token variable">$q_branch</span> <span class="token operator">=</span> <span class="token variable">$queryString</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">branch</span> <span class="token operator">?</span> <span class="token variable">$queryString</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">branch</span> <span class="token punctuation">:</span> <span class="token string">'master'</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span><span class="token punctuation">(</span><span class="token variable">$q_token</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span><span class="token punctuation">(</span><span class="token string">'==='</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span> <span class="token punctuation">(</span><span class="token variable">$q_repos</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span> <span class="token punctuation">(</span><span class="token string">'==='</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span> <span class="token punctuation">(</span><span class="token variable">$q_message</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span> <span class="token punctuation">(</span><span class="token string">'==='</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span> <span class="token punctuation">(</span><span class="token variable">$q_branch</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span> <span class="token punctuation">(</span><span class="token string">'==='</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//request travis ci</span>
+    <span class="token variable">$res_info</span> <span class="token operator">=</span> <span class="token function">triggerTravisCI</span><span class="token punctuation">(</span><span class="token variable">$q_repos</span><span class="token punctuation">,</span> <span class="token variable">$q_token</span><span class="token punctuation">,</span> <span class="token variable">$q_message</span><span class="token punctuation">,</span> <span class="token variable">$q_branch</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token variable">$res_code</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token variable">$res_message</span> <span class="token operator">=</span> <span class="token string">'未知'</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$res_info</span><span class="token punctuation">[</span><span class="token string">'http_code'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token variable">$res_code</span> <span class="token operator">=</span> <span class="token variable">$res_info</span><span class="token punctuation">[</span><span class="token string">'http_code'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">switch</span><span class="token punctuation">(</span><span class="token variable">$res_info</span><span class="token punctuation">[</span><span class="token string">'http_code'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">case</span> <span class="token number">200</span><span class="token punctuation">:</span>
+            <span class="token keyword">case</span> <span class="token number">202</span><span class="token punctuation">:</span>
+                <span class="token variable">$res_message</span> <span class="token operator">=</span> <span class="token string">'success'</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">default</span><span class="token punctuation">:</span>
+                <span class="token variable">$res_message</span> <span class="token operator">=</span> <span class="token string">'faild'</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token variable">$res</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span>
+        <span class="token string">'status'</span><span class="token operator">=</span><span class="token operator">></span><span class="token variable">$res_code</span><span class="token punctuation">,</span>
+        <span class="token string">'message'</span><span class="token operator">=</span><span class="token operator">></span><span class="token variable">$res_message</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token variable">$res</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">/*
+* @description  travis api , trigger a build
+* @param $repos string 仓库ID、slug
+* @param $token string 登录验证token
+* @param $message string 触发信息
+* @param $branch string 分支
+* @return $info array 回包信息
+*/</span>
+<span class="token keyword">function</span> <span class="token function">triggerTravisCI</span> <span class="token punctuation">(</span><span class="token variable">$repos</span><span class="token punctuation">,</span> <span class="token variable">$token</span><span class="token punctuation">,</span> <span class="token variable">$message</span><span class="token operator">=</span><span class="token string">'yuque update'</span><span class="token punctuation">,</span> <span class="token variable">$branch</span><span class="token operator">=</span><span class="token string">'master'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//初始化</span>
+    <span class="token variable">$curl</span> <span class="token operator">=</span> <span class="token function">curl_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//设置抓取的url</span>
+    <span class="token function">curl_setopt</span><span class="token punctuation">(</span><span class="token variable">$curl</span><span class="token punctuation">,</span> <span class="token constant">CURLOPT_URL</span><span class="token punctuation">,</span> 'https<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//api.travis-ci.com/repo/'.$repos.'/requests');</span>
+    <span class="token comment" spellcheck="true">//设置获取的信息以文件流的形式返回，而不是直接输出。</span>
+    <span class="token function">curl_setopt</span><span class="token punctuation">(</span><span class="token variable">$curl</span><span class="token punctuation">,</span> <span class="token constant">CURLOPT_RETURNTRANSFER</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//设置post方式提交</span>
+    <span class="token function">curl_setopt</span><span class="token punctuation">(</span><span class="token variable">$curl</span><span class="token punctuation">,</span> <span class="token constant">CURLOPT_CUSTOMREQUEST</span><span class="token punctuation">,</span> <span class="token string">"POST"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//设置post数据</span>
+    <span class="token variable">$post_data</span> <span class="token operator">=</span> <span class="token function">json_encode</span><span class="token punctuation">(</span><span class="token keyword">array</span><span class="token punctuation">(</span>
+        <span class="token string">"request"</span><span class="token operator">=</span><span class="token operator">></span> <span class="token keyword">array</span><span class="token punctuation">(</span>
+            <span class="token string">"message"</span><span class="token operator">=</span><span class="token operator">></span><span class="token variable">$message</span><span class="token punctuation">,</span>
+            <span class="token string">"branch"</span><span class="token operator">=</span><span class="token operator">></span><span class="token variable">$branch</span>
+        <span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$header</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span>
+      <span class="token string">'Content-Type: application/json'</span><span class="token punctuation">,</span>
+      <span class="token string">'Travis-API-Version: 3'</span><span class="token punctuation">,</span>
+      <span class="token string">'Authorization:token '</span><span class="token punctuation">.</span><span class="token variable">$token</span><span class="token punctuation">,</span>
+      <span class="token string">'Content-Length:'</span> <span class="token punctuation">.</span> <span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$post_data</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">curl_setopt</span><span class="token punctuation">(</span><span class="token variable">$curl</span><span class="token punctuation">,</span> <span class="token constant">CURLOPT_HTTPHEADER</span><span class="token punctuation">,</span> <span class="token variable">$header</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">curl_setopt</span><span class="token punctuation">(</span><span class="token variable">$curl</span><span class="token punctuation">,</span> <span class="token constant">CURLOPT_POSTFIELDS</span><span class="token punctuation">,</span> <span class="token variable">$post_data</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//执行命令</span>
+    <span class="token variable">$data</span> <span class="token operator">=</span> <span class="token function">curl_exec</span><span class="token punctuation">(</span><span class="token variable">$curl</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$info</span> <span class="token operator">=</span> <span class="token function">curl_getinfo</span><span class="token punctuation">(</span><span class="token variable">$curl</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//关闭URL请求</span>
+    <span class="token function">curl_close</span><span class="token punctuation">(</span><span class="token variable">$curl</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token variable">$info</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token delimiter">?></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里有几个需要获取的参数：</p>
+<ul>
+<li>travis 登录 token，在 travis-ci.org 中设置界面获取：</li>
+</ul>
+<p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/png/155457/1546854976464-f57b5676-57a6-45d6-a15f-a6ea73b5ea03.png#height=719&amp;id=FUF95&amp;name=image.png&amp;originHeight=791&amp;originWidth=1086&amp;originalType=binary%E2%88%B6=1&amp;size=76663&amp;status=done&amp;style=none&amp;width=987" alt="image.png"></p>
+<ul>
+<li>仓库 ID 或 扩展名，</li>
+</ul>
+<p>使用 findder 抓包获得<br>​</p>
+<h5 id="3）-配置触发方式"><a href="#3）-配置触发方式" class="headerlink" title="3） 配置触发方式"></a>3） 配置触发方式</h5><p><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/png/155457/1546855590231-653629dc-6c95-4c63-838a-cf17157c3174.png#height=670&amp;id=CCYa7&amp;name=image.png&amp;originHeight=737&amp;originWidth=1446&amp;originalType=binary%E2%88%B6=1&amp;size=64764&amp;status=done&amp;style=none&amp;width=1315" alt="image.png"></p>
+<p>一般会得到这么个 api：<br><a target="_blank" rel="noopener" href="https://service-s08f6nvk-1251833201.ap-guangzhou.apigateway.myqcloud.com/release/xxx">https://service-s08f6nvk-1251833201.ap-guangzhou.apigateway.myqcloud.com/release/xxx</a></p>
+<h4 id="3-语雀配置"><a href="#3-语雀配置" class="headerlink" title="3. 语雀配置"></a>3. 语雀配置</h4><p>配置一个仓库的 webhook:<br><img src="/medias/loading.gif" data-original="https://cdn.nlark.com/yuque/0/2019/png/155457/1546855687662-f145f491-ef19-45f6-b30e-d422f693e29e.png#height=525&amp;id=XITjC&amp;name=image.png&amp;originHeight=578&amp;originWidth=1495&amp;originalType=binary%E2%88%B6=1&amp;size=59624&amp;status=done&amp;style=none&amp;width=1359" alt="image.png"></p>
+<p>可以选择所有更新触发或者主动触发，主动触发的意思即发布需要勾选一个选项才会触发 webhook。具体可参见语雀文档：<a target="_blank" rel="noopener" href="https://www.yuque.com/yuque/developer/doc-webhook">https://www.yuque.com/yuque/developer/doc-webhook</a>；<br>将 serverless 生成的 api 填入,可以在链接后面带参数：</p>
+<pre><code>token 登录token
+repos 仓库id
+message 提交信息
+branch 分支
+
+示例：
+https://service-s08f6nvk-1251833201.ap-guangzhou.apigateway.myqcloud.com/release/xxx?repos=xxx&amp;token=xxx&amp;message=xxx&amp;branch=xxx
+</code></pre><p>如果不在链接带参数则写在 serverless 函数内。<br>​</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/">https://dongzhougu.github.io/2021/11/04/yuque/hexo-travis-yu-que-zi-dong-bu-shu-bo-ke/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Hexo/">Hexo</a><a class="post-meta__tags" href="/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><a class="post-meta__tags" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">自动化</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/11/07/yuque/huan-fen-bu-qing-cookie-session-token-jwt/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">还分不清 Cookie、Session、Token、JWT？</div></div></a></div><div class="next-post pull-right"><a href="/2021/10/13/qiang-xue-zhu-zhang-de-xin-suan-lei/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">抢学术章的的辛酸泪</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/06/27/hexo-bo-ke-you-hua-jia-su/" title="Hexo博客优化加速"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-27</div><div class="title">Hexo博客优化加速</div></div></a></div><div><a href="/2020/06/28/hexo-bo-ke-bei-fen/" title="Hexo博客备份"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-28</div><div class="title">Hexo博客备份</div></div></a></div><div><a href="/2020/06/27/shi-yong-hexo-da-jian-github-bo-ke/" title="使用Hexo搭建Github博客"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-27</div><div class="title">使用Hexo搭建Github博客</div></div></a></div><div><a href="/2021/10/13/qiang-xue-zhu-zhang-de-xin-suan-lei/" title="抢学术章的的辛酸泪"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-10-13</div><div class="title">抢学术章的的辛酸泪</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81Hexo-Github-%E7%9A%84%E7%97%9B%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">一、Hexo+Github 的痛点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%BA%E5%95%A5%E8%A6%81%E7%94%A8-hexo-github%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">1.为啥要用 hexo+github？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%9B%8B%E7%96%BC%E7%9A%84%E5%86%99%E4%BD%9C%E4%BD%93%E9%AA%8C"><span class="toc-number">1.2.</span> <span class="toc-text">2.蛋疼的写作体验</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">3. 脑洞大开：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%85%B7%E4%BD%93%E6%96%B9%E6%A1%88"><span class="toc-number">2.</span> <span class="toc-text">二、具体方案</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-hexo-github-triavs-ci"><span class="toc-number">2.1.</span> <span class="toc-text">1. hexo+github+triavs-ci</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#yuque-hexo"><span class="toc-number">2.1.1.</span> <span class="toc-text">yuque-hexo</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-serverless"><span class="toc-number">2.2.</span> <span class="toc-text">2. serverless</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%EF%BC%89%E5%88%9B%E5%BB%BA%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.1.</span> <span class="toc-text">1）创建函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%EF%BC%89serverless-%E5%87%BD%E6%95%B0%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.2.2.</span> <span class="toc-text">2）serverless 函数示例:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3%EF%BC%89-%E9%85%8D%E7%BD%AE%E8%A7%A6%E5%8F%91%E6%96%B9%E5%BC%8F"><span class="toc-number">2.2.3.</span> <span class="toc-text">3） 配置触发方式</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E8%AF%AD%E9%9B%80%E9%85%8D%E7%BD%AE"><span class="toc-number">2.3.</span> <span class="toc-text">3. 语雀配置</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(n){n.imageLazyLoadSetting.processImages=o;var i=n.imageLazyLoadSetting.isSPA,r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]"));function o(){i&&(r=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")));for(var t,e,a=0;a<r.length;a++)t=r[a],e=void 0,0<=(e=t.getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(n.innerHeight||document.documentElement.clientHeight)&&function(){var t,e,n,i,o=r[a];t=o,e=function(){r=r.filter(function(t){return o!==t})},n=new Image,i=t.getAttribute("data-original"),n.onload=function(){t.src=i,e&&e()},n.src=i}()}o(),n.addEventListener("scroll",function(){var t,e;t=o,e=n,clearTimeout(t.tId),t.tId=setTimeout(function(){t.call(e)},500)})}(this);</script></body></html>
