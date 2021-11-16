@@ -5,27 +5,27 @@
 <meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
 <meta property="og:description" content="1、 背景对实验室多台工作站的多块GPU进行合理的管理和使用分配规划及申请&#x2F;授权&#x2F;使用自动管理，希望工作站可以作为服务器使用，能够多人同时使用，互不影响。 2、需求 不同用户之间不能相互影响且可以同时使用 用户注册登录使用需要被授权 用户要能方便地访问自己的“机器” 用户要有足够大的权限，能自由地安装程序，能自由地访问网络 用户不被允许直接操作宿主机  3、具体方案3.1、LXD&#x2F;ZFS 安装及配">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png">
 <meta property="article:published_time" content="2020-11-26T04:15:50.000Z">
 <meta property="article:modified_time" content="2021-11-07T15:47:01.361Z">
 <meta property="article:author" content="DongZhou">
 <meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2020/11/26/lxd-gpu2.0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="NdIUXAOVyGnnBhcrip0ksCawbdAzT0hlBZDE9u4jx6k"/><meta name="msvalidate.01" content="567E47D75E8DCF1282B9623AD914701E"/><meta name="baidu-site-verification" content="code-pE5rnuxcfD"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2020/11/26/lxd-gpu2.0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="NdIUXAOVyGnnBhcrip0ksCawbdAzT0hlBZDE9u4jx6k"/><meta name="msvalidate.01" content="567E47D75E8DCF1282B9623AD914701E"/><meta name="baidu-site-verification" content="code-pE5rnuxcfD"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
   localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
   translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
   noticeOutdate: undefined,
-  highlight: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
   copy: {
     success: '复制成功',
     error: '复制错误',
     noSupport: '浏览器不支持'
   },
   relativeDate: {
-    homepage: true,
-    post: true
+    homepage: false,
+    post: false
   },
   runtime: '天',
   date_suffix: {
@@ -302,8 +302,7 @@
     loaded();
 })()
  </script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="欢迎来到，TWOTO 的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+</head>
  <div id="loading-container">
      <p class="loading-text">玩命加载中 . . . </p> 
      <div class="loading-image">
@@ -313,7 +312,7 @@
          <div></div> 
          <div></div>
      </div>
- </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目錄</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 歸檔</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-book"></i><span> 文檔</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/posts/21cfbf15/"><span> 🚀 快速開始</span></a></li><li><a class="site-page child" href="/posts/dc584b87/"><span> 📑 主題頁面</span></a></li><li><a class="site-page child" href="/posts/4aa8abbe/"><span> 🛠 主題配置-1</span></a></li><li><a class="site-page child" href="/posts/ceeb73f/"><span> ⚔️ 主題配置-2</span></a></li><li><a class="site-page child" href="/posts/98d20436/"><span> ❓ 主題問答</span></a></li><li><a class="site-page child" href="/posts/4073eda/"><span> ⚡️ 進階教程</span></a></li><li><a class="site-page child" href="/posts/198a4240/"><span> ✨ 更新日誌</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娛樂</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 圖庫</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li><li><a class="site-page child" href="/talking/"><i class="fa-fw fas fa-cubes"></i><span> 自言自語</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-thumbs-up"></i><span> 示例</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用LXD搭建多人共用GPU<a class="post-edit-link" href="https://github.com/jerryc127/butterfly.js.org/edit/main/source/_posts/lxd_gpu2.0.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2020-11-26T04:15:50.000Z" title="undefined 2020-11-26 12:15:50">2020-11-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%99%E7%A8%8B/">教程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="使用LXD搭建多人共用GPU"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1、-背景"><a href="#1、-背景" class="headerlink" title="1、 背景"></a>1、 背景</h2><p>对实验室多台工作站的多块GPU进行合理的管理和使用分配规划及申请/授权/使用自动管理，希望工作站可以作为服务器使用，能够多人同时使用，互不影响。</p>
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娱乐</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 娱乐</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用LXD搭建多人共用GPU<a class="post-edit-link" href="https://github.com/DongZhouGu/Blog-backup/edit/master/source/_posts/lxd_gpu2.0.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2020-11-26T04:15:50.000Z" title="undefined 2020-11-26 12:15:50">2020-11-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%99%E7%A8%8B/">教程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="使用LXD搭建多人共用GPU"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1、-背景"><a href="#1、-背景" class="headerlink" title="1、 背景"></a>1、 背景</h2><p>对实验室多台工作站的多块GPU进行合理的管理和使用分配规划及申请/授权/使用自动管理，希望工作站可以作为服务器使用，能够多人同时使用，互不影响。</p>
 <h2 id="2、需求"><a href="#2、需求" class="headerlink" title="2、需求"></a>2、需求</h2><ul>
 <li>不同用户之间不能相互影响且可以同时使用</li>
 <li>用户注册登录使用需要被授权</li>
@@ -322,7 +321,8 @@
 <li>用户不被允许直接操作宿主机</li>
 </ul>
 <h2 id="3、具体方案"><a href="#3、具体方案" class="headerlink" title="3、具体方案"></a>3、具体方案</h2><h3 id="3-1、LXD-ZFS-安装及配置"><a href="#3-1、LXD-ZFS-安装及配置" class="headerlink" title="3.1、LXD/ZFS 安装及配置"></a>3.1、LXD/ZFS 安装及配置</h3><h4 id="LXD-软件安装s"><a href="#LXD-软件安装s" class="headerlink" title="LXD 软件安装s"></a>LXD 软件安装s</h4><p>LXD：用于创建和管理容器<br>ZFS：用于管理物理磁盘，支持 LXD 高级功能，负责容器存储。<br>Bridge-Utils：用于搭建网桥，负责容器上网。</p>
-<pre class="line-numbers language-shell"><code class="language-shell">sudo apt-get install lxd zfsutils-linux bridge-utils<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install lxd zfsutils-linux bridge-utils</span><br></pre></td></tr></tbody></table></figure>
+
 <h4 id="初始化-LXD"><a href="#初始化-LXD" class="headerlink" title="初始化 LXD"></a>初始化 LXD</h4><p>运行 <code>sudo lxd init</code> 进行 LXD 初始化配置，选项如下图：</p>
 <p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://gitee.com/ma_tung_zhou/imageuse1/raw/master/imgg/lxd.png" alt="lxd"></p>
 <ul>
@@ -342,95 +342,70 @@
 <li>stale cached？：默认 yes</li>
 <li>YAML printed？：选择yes，查看容器配置信息</li>
 </ul>
-<h4 id="新建容器"><a href="#新建容器" class="headerlink" title="新建容器"></a>新建容器</h4><pre class="line-numbers language-shell"><code class="language-shell"># 创建一个remote链接，指向TUNA镜像站。
-sudo lxc remote add tuna-images https://mirrors.tuna.tsinghua.edu.cn/lxc-images/ --protocol=simplestreams --public
-# 查看镜像列表，寻找合适的镜像的FINGERPRINT，用于下载
-sudo lxc image list tuna-images: 
-# 举例，创建一个名为tiger的容器。在lxc清华源中使用ubuntu/18.04
-sudo lxc launch tuna-images:ubuntu/18.04 tiger<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="新建容器"><a href="#新建容器" class="headerlink" title="新建容器"></a>新建容器</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建一个remote链接，指向TUNA镜像站。</span></span><br><span class="line">sudo lxc remote add tuna-images https://mirrors.tuna.tsinghua.edu.cn/lxc-images/ --protocol=simplestreams --public</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看镜像列表，寻找合适的镜像的FINGERPRINT，用于下载</span></span><br><span class="line">sudo lxc image list tuna-images: </span><br><span class="line"><span class="meta">#</span><span class="bash"> 举例，创建一个名为tiger的容器。在lxc清华源中使用ubuntu/18.04</span></span><br><span class="line">sudo lxc launch tuna-images:ubuntu/18.04 tiger</span><br></pre></td></tr></tbody></table></figure>
+
 <h4 id="查看容器"><a href="#查看容器" class="headerlink" title="查看容器"></a>查看容器</h4><p>运行 <code>sudo lxc list</code> 进行容器列表查看。</p>
 <p>运行 <code>sudo lxc exec &lt;ContainerTemplateName&gt; bash</code>  可进入容器的 root 用户下 bash。</p>
 <p>可以使用 <code>su ubuntu</code> 或 <code>sudo su</code> 进行用户切换。</p>
-<pre class="line-numbers language-shell"><code class="language-shell">#使用以下命令更改容器系统用户密码
-passwd ubuntu 
-passwd root
-#后面远程登陆会用到<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="设置容器"><a href="#设置容器" class="headerlink" title="设置容器"></a>设置容器</h4><pre class="line-numbers language-sh"><code class="language-sh">#换源，加速apt-get insatll
-sudo vim /etc/apt/sources.list
-====
-deb http://mirrors.163.com/ubuntu/ bionic main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ bionic main restricted universe multiverse
-deb http://mirrors.163.com/ubuntu/ bionic-security main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ bionic-security main restricted universe multiverse
-deb http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse
-deb http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse
-deb http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse
-===
-#刷新源
-sudo apt update
-#安装必要工具
-apt install make cmake openssh-server gcc g++ build-essential
-#启动ssh命令 
-sudo service ssh start
-#端口转发60601是我们定的端口号，通过宿主机的60601端口号监听容器中22端口号（SSH默认端口号）
-sudo lxc config device add <container> proxy0 proxy listen=tcp:172.22.24.126:60601 connect=tcp:10.152.210.183:22 bind=host
-#此时就可以使用校园网访问
-ssh ubuntu@172.22.24.126 -p 60601<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">使用以下命令更改容器系统用户密码</span></span><br><span class="line">passwd ubuntu </span><br><span class="line">passwd root</span><br><span class="line"><span class="meta">#</span><span class="bash">后面远程登陆会用到</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="设置容器"><a href="#设置容器" class="headerlink" title="设置容器"></a>设置容器</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#换源，加速apt-get insatll</span></span><br><span class="line">sudo vim /etc/apt/sources.list</span><br><span class="line">====</span><br><span class="line">deb http://mirrors.163.com/ubuntu/ bionic main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.163.com/ubuntu/ bionic main restricted universe multiverse</span><br><span class="line">deb http://mirrors.163.com/ubuntu/ bionic-security main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.163.com/ubuntu/ bionic-security main restricted universe multiverse</span><br><span class="line">deb http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.163.com/ubuntu/ bionic-updates main restricted universe multiverse</span><br><span class="line">deb http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe multiverse</span><br><span class="line">deb http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse</span><br><span class="line">===</span><br><span class="line"><span class="comment">#刷新源</span></span><br><span class="line">sudo apt update</span><br><span class="line"><span class="comment">#安装必要工具</span></span><br><span class="line">apt install make cmake openssh-server gcc g++ build-essential</span><br><span class="line"><span class="comment">#启动ssh命令 </span></span><br><span class="line">sudo service ssh start</span><br><span class="line"><span class="comment">#端口转发60601是我们定的端口号，通过宿主机的60601端口号监听容器中22端口号（SSH默认端口号）</span></span><br><span class="line">sudo lxc config device add &lt;container&gt; proxy0 proxy listen=tcp:172.22.24.126:60601 connect=tcp:10.152.210.183:22 <span class="built_in">bind</span>=host</span><br><span class="line"><span class="comment">#此时就可以使用校园网访问</span></span><br><span class="line">ssh ubuntu@172.22.24.126 -p 60601</span><br></pre></td></tr></tbody></table></figure>
+
 <h3 id="3-2、配置共享目录和-GPU"><a href="#3-2、配置共享目录和-GPU" class="headerlink" title="3.2、配置共享目录和 GPU"></a>3.2、配置共享目录和 GPU</h3><p>配置共享目录</p>
-<pre class="line-numbers language-sh"><code class="language-sh">sudo lxc config set <yourContainerName> security.privileged true
-sudo lxc config device add <yourContainerName> <shareName> disk source=path1 path=path2
-#举例
-sudo lxc config device add tiger father disk source=/home/gdz path=/father
-# path1为宿主机路径，path2为容器内路径<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo lxc config <span class="built_in">set</span> &lt;yourContainerName&gt; security.privileged <span class="literal">true</span></span><br><span class="line">sudo lxc config device add &lt;yourContainerName&gt; &lt;shareName&gt; disk <span class="built_in">source</span>=path1 path=path2</span><br><span class="line"><span class="comment">#举例</span></span><br><span class="line">sudo lxc config device add tiger father disk <span class="built_in">source</span>=/home/gdz path=/father</span><br><span class="line"><span class="comment"># path1为宿主机路径，path2为容器内路径</span></span><br></pre></td></tr></tbody></table></figure>
+
 <p>配置GPU</p>
-<pre class="line-numbers language-sh"><code class="language-sh">#为容器添加所有GPU:
-sudo lxc config device add <yourContainerName> gpu gpu
-#添加指定GPU： 
-sudo lxc config device add <yourContainerName> gpu0 gpu id=0
-# 安装驱动：在容器中显卡驱动不需要安装内核文件，安装宿主机显卡驱动的版本，通过共享目录传至容器中
-sudo sh /NVIDIA-Linux-x86_64-xxx.xx.run --no-kernel-module <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#为容器添加所有GPU:</span></span><br><span class="line">sudo lxc config device add &lt;yourContainerName&gt; gpu gpu</span><br><span class="line"><span class="comment">#添加指定GPU： </span></span><br><span class="line">sudo lxc config device add &lt;yourContainerName&gt; gpu0 gpu id=0</span><br><span class="line"><span class="comment"># 安装驱动：在容器中显卡驱动不需要安装内核文件，安装宿主机显卡驱动的版本，通过共享目录传至容器中</span></span><br><span class="line">sudo sh /NVIDIA-Linux-x86_64-xxx.xx.run --no-kernel-module </span><br></pre></td></tr></tbody></table></figure>
+
 <p>挂载 <code>nvidia-uvm</code></p>
 <p>①如果宿主机没有<code>/dev/nvidia-uvm</code>设备，需要通过以下命令挂载设备：</p>
-<pre class="line-numbers language-sh"><code class="language-sh">/sbin/modprobe nvidia-uvm
-D=`grep nvidia-uvm /proc/devices | awk '{print $1}'`
-mknod -m 666 /dev/nvidia-uvm c $D 0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/sbin/modprobe nvidia-uvm</span><br><span class="line">D=`grep nvidia-uvm /proc/devices | awk <span class="string">'{print $1}'</span>`</span><br><span class="line">mknod -m 666 /dev/nvidia-uvm c <span class="variable">$D</span> 0</span><br></pre></td></tr></tbody></table></figure>
 <p>②挂载设备到容器：</p>
-<pre class="line-numbers language-sh"><code class="language-sh">sudo lxc config device add yourContainerName nvidia-uvm unix-char path=/dev/nvidia-uvm<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lxc config device add yourContainerName nvidia-uvm unix-char path=/dev/nvidia-uvm</span><br></pre></td></tr></tbody></table></figure>
+
 <h3 id="3-3、配置图形桌面"><a href="#3-3、配置图形桌面" class="headerlink" title="3.3、配置图形桌面"></a>3.3、配置图形桌面</h3><blockquote>
 <p>Xrdp 是 Microsoft 远程桌面协议 (RDP) 的开源实现，允许以图形方式控制远程系统。使用 RDP 可以登录到远程计算机并创建一个真实的桌面会话，就像您已登录到本地计算机一样。</p>
 <p>Ubuntu 存储库中有好几个桌面环境，这里我们将安装 Xfce 。它是一个快速，稳定和轻量级的桌面环境，非常适合在远程服务器上使用</p>
 </blockquote>
 <p><strong>安装 Xrdp</strong></p>
-<pre class="line-numbers language-sh"><code class="language-sh">sudo apt install xrdp
-# 安装完成后 Xrdp 服务将自动运行，您可以通过键入以下指令来验证 Xrdp 是否正在运行
-sudo systemctl status xrdp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install xrdp</span><br><span class="line"><span class="comment"># 安装完成后 Xrdp 服务将自动运行，您可以通过键入以下指令来验证 Xrdp 是否正在运行</span></span><br><span class="line">sudo systemctl status xrdp</span><br></pre></td></tr></tbody></table></figure>
+
 <p><strong>配置 Xrdp</strong></p>
 <p>Xrdp 的配置文件位于 /etc/xrdp 目录。对于 Xrdp 的基本连接，只需要配置 Xrdp 即可使用 Xfce 。</p>
-<pre class="line-numbers language-javascript"><code class="language-javascript">sudo vim <span class="token operator">/</span>etc<span class="token operator">/</span>xrdp<span class="token operator">/</span>xrdp<span class="token punctuation">.</span>ini<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/xrdp/xrdp.ini</span><br></pre></td></tr></tbody></table></figure>
+
 <p>在文件末尾添加以下内容并保存：</p>
 <p>exec startxfce4</p>
 <p>此外，该文件中可配置 xrdp 远程桌面服务的端口号（默认端口为3389）</p>
-<pre class="line-numbers language-sh"><code class="language-sh"># 重新启动 Xrdp 服务：
-sudo systemctl restart xrdp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重新启动 Xrdp 服务：</span></span><br><span class="line">sudo systemctl restart xrdp</span><br></pre></td></tr></tbody></table></figure>
 <p><strong>端口转发</strong></p>
-<pre><code># 在安装好XRDP后，与之前一样，因为我们ping不通容器，所以我们需要使用宿主机的端口号监听容器的xrdp的端口3389
-sudo lxc config device add &lt;container&gt; proxy1 proxy listen=tcp:172.22.24.126:60611 connect=tcp:10.152.210.183:3389 bind=host</code></pre><p>现在可以通过windows的远程连接或者ubuntu的Remmina 来使用容器。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 在安装好XRDP后，与之前一样，因为我们ping不通容器，所以我们需要使用宿主机的端口号监听容器的xrdp的端口3389</span><br><span class="line">sudo lxc config device add &lt;container&gt; proxy1 proxy listen=tcp:172.22.24.126:60611 connect=tcp:10.152.210.183:3389 bind=host</span><br></pre></td></tr></tbody></table></figure>
+
+<p>现在可以通过windows的远程连接或者ubuntu的Remmina 来使用容器。</p>
 <p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://gitee.com/ma_tung_zhou/imageuse1/raw/master/imgg/image-20201126002245828.png" alt="1"></p>
 <h3 id="3-4、创建容器模板并分发"><a href="#3-4、创建容器模板并分发" class="headerlink" title="3.4、创建容器模板并分发"></a>3.4、创建容器模板并分发</h3><p><strong>为容器修改参数配置</strong></p>
-<pre class="line-numbers language-sh"><code class="language-sh">sudo lxc config edit YourContainerName<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+ <figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lxc config edit YourContainerName</span><br></pre></td></tr></tbody></table></figure>
+
 <p>一般使用以下的配置即可满足</p>
 <p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://gitee.com/ma_tung_zhou/imageuse1/raw/master/imgg/1.png" alt="img"></p>
 <p>配置默认容器参数（新容器的参数会继承default配置的参数，容器会优先使用自己的参数）</p>
-<pre><code>sudo lxc profile edit default</code></pre><p><strong>我们把这个配置好的容器当成模板，保存为镜像</strong>。</p>
+ <figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lxc profile edit default</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>我们把这个配置好的容器当成模板，保存为镜像</strong>。</p>
 <p>停止容器</p>
-<pre><code> sudo lxc stop test</code></pre><p>将该容器复制为ubuntudemo，作为以后容器分发的模板</p>
-<pre><code>sudo lxc copy tiger ubuntudemo</code></pre><p>并删除端口转发</p>
-<pre><code>sudo lxc config device remove ubuntudemo proxy1</code></pre><p>现在，建立第二个容器bigdog吧，记得把端口转发设置下，并设置容器的初始密码</p>
-<pre class="line-numbers language-sh"><code class="language-sh">sudo lxc copy tiger ubuntudemo
-sudo lxc config device add bigdog proxy1 proxy listen=tcp:xx.xx.xx.xx:60621 connect=tcp:10.176.88.68:3389 bind=host<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+ <figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lxc stop test</span><br></pre></td></tr></tbody></table></figure>
+
+<p>将该容器复制为ubuntudemo，作为以后容器分发的模板</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lxc copy tiger ubuntudemo</span><br></pre></td></tr></tbody></table></figure>
+
+<p>并删除端口转发</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lxc config device remove ubuntudemo proxy1</span><br></pre></td></tr></tbody></table></figure>
+
+<p>现在，建立第二个容器bigdog吧，记得把端口转发设置下，并设置容器的初始密码</p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo lxc copy tiger ubuntudemo</span><br><span class="line">sudo lxc config device add bigdog proxy1 proxy listen=tcp:xx.xx.xx.xx:60621 connect=tcp:10.176.88.68:3389 <span class="built_in">bind</span>=host</span><br></pre></td></tr></tbody></table></figure>
+
+
+
 <h3 id="3-5、LXDUI-可视化管理界面"><a href="#3-5、LXDUI-可视化管理界面" class="headerlink" title="3.5、LXDUI 可视化管理界面"></a>3.5、LXDUI 可视化管理界面</h3><p>在宿主机上根据<a target="_blank" rel="noopener" href="https://github.com/AdaptiveScale/lxdui">AdaptiveScale/lxdui: LXDUI is a web UI for the native Linux container technology LXD/LXC (github.com)</a>配置可视化管理界面，如下，方便地管理容器</p>
 <p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://gitee.com/ma_tung_zhou/imageuse1/raw/master/imgg/image-20201126153135876.png" alt=""></p>
 <h2 id="4、宿主机的远程访问"><a href="#4、宿主机的远程访问" class="headerlink" title="4、宿主机的远程访问"></a>4、宿主机的远程访问</h2><p>使用xdrp访问宿主机默认桌面</p>
@@ -439,16 +414,12 @@ sudo lxc config device add bigdog proxy1 proxy listen=tcp:xx.xx.xx.xx:60621 conn
 <p>将【允许其他人查看您的桌面】这一项勾上，然后在安全那项，勾选【要求远程用户输入此密码】，并设置远程密码。并且我们取消勾选【必须为对本机器的每次访问进行确定】（这样做，是为了被远程的时候不需要再确认，否则每次远程都要人为确认才能被远程，会很繁琐）如图所示：</p>
 </blockquote>
 <p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://gitee.com/ma_tung_zhou/imageuse1/raw/master/imgg/image-20201126153209005.png" alt=""></p>
-<h3 id="4-2、安装xdrp-vnc"><a href="#4-2、安装xdrp-vnc" class="headerlink" title="4.2、安装xdrp+vnc"></a>4.2、安装xdrp+vnc</h3><pre class="line-numbers language-sh"><code class="language-sh">#步骤一、安装TigerVNC Server软件包
-sudo apt-get install tightvncserver （使用在线安装）
-#步骤二、安装xrdp
-sudo apt-get install xrdp -y
-#步骤三、编辑配置：
-sudo vi /etc/xrdp/startwm.sh
-#把最下面的test和exec两行注释掉，添加一行
-unity<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-2、安装xdrp-vnc"><a href="#4-2、安装xdrp-vnc" class="headerlink" title="4.2、安装xdrp+vnc"></a>4.2、安装xdrp+vnc</h3><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#步骤一、安装TigerVNC Server软件包</span></span><br><span class="line">sudo apt-get install tightvncserver （使用在线安装）</span><br><span class="line"><span class="comment">#步骤二、安装xrdp</span></span><br><span class="line">sudo apt-get install xrdp -y</span><br><span class="line"><span class="comment">#步骤三、编辑配置：</span></span><br><span class="line">sudo vi /etc/xrdp/startwm.sh</span><br><span class="line"><span class="comment">#把最下面的test和exec两行注释掉，添加一行</span></span><br><span class="line">unity</span><br></pre></td></tr></tbody></table></figure>
+
 <h3 id="4-3、安装dconf-editor-取消权限限制"><a href="#4-3、安装dconf-editor-取消权限限制" class="headerlink" title="4.3、安装dconf-editor(取消权限限制)"></a>4.3、安装dconf-editor(取消权限限制)</h3><p>再次，我们需要取消掉请求加密的功能，否则缺少这一步是无法远程上的，这个时候我们需要安装dconf-editor工具进行配置，输入以下命令：</p>
-<pre><code>sudo apt-get install dconf-editor</code></pre><p>安装完成之后，我们需要打开dconf-editor工具，在桌面搜索dconf-editor打开，如图所示：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install dconf-editor</span><br></pre></td></tr></tbody></table></figure>
+
+<p>安装完成之后，我们需要打开dconf-editor工具，在桌面搜索dconf-editor打开，如图所示：</p>
 <p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://gitee.com/ma_tung_zhou/imageuse1/raw/master/imgg/image-20201126153453473.png" alt=""></p>
 <p>打开之后，依次展开org-&gt;gnome-&gt;desktop-&gt;remote-access，然后取消 “requlre-encryption”的勾选即可。如图所示：</p>
 <p><img src= "/img/loading.gif" data-lazy-src="/medias/loading.gif" data-original="https://gitee.com/ma_tung_zhou/imageuse1/raw/master/imgg/image-20201126153555644.png" alt=""></p>
@@ -481,7 +452,7 @@ unity<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
             });
             document.body.appendChild(img);
           });
-      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2020/11/26/lxd-gpu2.0/">https://dongzhougu.github.io/2020/11/26/lxd-gpu2.0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/wechat.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipay.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipay.jpg" alt="支付寶"/></a><div class="post-qr-code-desc">支付寶</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipayhk.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/Photo/alipayhk.jpg" alt="支付寶香港"/></a><div class="post-qr-code-desc">支付寶香港</div></li></ul></div></div><div class="ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="ca-pub-8919908724705274" data-ad-slot="5978969231"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/11/26/linux-chang-yong-ming-ling/"><img class="prev-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Linux常用命令</div></div></a></div><div class="next-post pull-right"><a href="/2020/10/29/yuque/lun-wen-shi-kong-shuang-liu-two-stream-ji-yan-sheng-fang-fa/"><img class="next-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-10.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">论文-时空双流Two Stream及衍生方法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/11/26/linux-chang-yong-ming-ling/" title="Linux常用命令"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-26</div><div class="title">Linux常用命令</div></div></a></div><div><a href="/2020/12/09/shu-lxd-gpu/" title="实验室gpu管理"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-09</div><div class="title">实验室gpu管理</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><i class="fab fa-github"></i><span>主題 GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">如果你在使用中遇到問題，請到 <a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly/issues" style="color:#49b1f5">Github Issues</a> 或者 <a href="/messageboard/" style="color:#49b1f5">留言板</a> 進行反饋，你也可以加入 QQ 群（由於 QQ 群只能有500人，會定時清理潛水的人）<div class="social-button"> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=KU9105XR" target="_blank">QQ 1 群 👍</a> <a class="button--animated" href="https://jq.qq.com/?_wv=1027&k=r1nK0DQz" target="_blank">QQ 2 群 👍</a> <a class="button--animated" href="https://t.me/bu2fly" target="_blank">Telegram 👍</a> </div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81-%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">1、 背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E9%9C%80%E6%B1%82"><span class="toc-number">2.</span> <span class="toc-text">2、需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E5%85%B7%E4%BD%93%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">3、具体方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1%E3%80%81LXD-ZFS-%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE"><span class="toc-number">3.1.</span> <span class="toc-text">3.1、LXD&#x2F;ZFS 安装及配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#LXD-%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85s"><span class="toc-number">3.1.1.</span> <span class="toc-text">LXD 软件安装s</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-LXD"><span class="toc-number">3.1.2.</span> <span class="toc-text">初始化 LXD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E5%AE%B9%E5%99%A8"><span class="toc-number">3.1.3.</span> <span class="toc-text">新建容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8"><span class="toc-number">3.1.4.</span> <span class="toc-text">查看容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E5%AE%B9%E5%99%A8"><span class="toc-number">3.1.5.</span> <span class="toc-text">设置容器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2%E3%80%81%E9%85%8D%E7%BD%AE%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95%E5%92%8C-GPU"><span class="toc-number">3.2.</span> <span class="toc-text">3.2、配置共享目录和 GPU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3%E3%80%81%E9%85%8D%E7%BD%AE%E5%9B%BE%E5%BD%A2%E6%A1%8C%E9%9D%A2"><span class="toc-number">3.3.</span> <span class="toc-text">3.3、配置图形桌面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4%E3%80%81%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8%E6%A8%A1%E6%9D%BF%E5%B9%B6%E5%88%86%E5%8F%91"><span class="toc-number">3.4.</span> <span class="toc-text">3.4、创建容器模板并分发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5%E3%80%81LXDUI-%E5%8F%AF%E8%A7%86%E5%8C%96%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2"><span class="toc-number">3.5.</span> <span class="toc-text">3.5、LXDUI 可视化管理界面</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%AE%BF%E4%B8%BB%E6%9C%BA%E7%9A%84%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE"><span class="toc-number">4.</span> <span class="toc-text">4、宿主机的远程访问</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1%E3%80%81%E8%AE%BE%E7%BD%AEubuntu"><span class="toc-number">4.1.</span> <span class="toc-text">4.1、设置ubuntu</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2%E3%80%81%E5%AE%89%E8%A3%85xdrp-vnc"><span class="toc-number">4.2.</span> <span class="toc-text">4.2、安装xdrp+vnc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3%E3%80%81%E5%AE%89%E8%A3%85dconf-editor-%E5%8F%96%E6%B6%88%E6%9D%83%E9%99%90%E9%99%90%E5%88%B6"><span class="toc-number">4.3.</span> <span class="toc-text">4.3、安装dconf-editor(取消权限限制)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5、总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div><div class="card-widget ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8919908724705274" data-ad-slot="8108145410" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png')"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">簡</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/main.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/tw_cn.min.js?ver=3.8.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/localsearch.min.js?ver=3.8.4"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2020/11/26/lxd-gpu2.0/">https://dongzhougu.github.io/2020/11/26/lxd-gpu2.0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.png" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="/img/wechat.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><div class="ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86" data-ad-client="ca-pub-8919908724705274" data-ad-slot="5978969231"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/11/26/linux-chang-yong-ming-ling/"><img class="prev-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Linux常用命令</div></div></a></div><div class="next-post pull-right"><a href="/2020/10/29/yuque/lun-wen-shi-kong-shuang-liu-two-stream-ji-yan-sheng-fang-fa/"><img class="next-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">论文-时空双流Two Stream及衍生方法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/11/26/linux-chang-yong-ming-ling/" title="Linux常用命令"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-26</div><div class="title">Linux常用命令</div></div></a></div><div><a href="/2020/12/09/shu-lxd-gpu/" title="实验室gpu管理"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-09</div><div class="title">实验室gpu管理</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/DongZhouGu/Blog-backup"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="/1596586942" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://github.com/DongZhouGu" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81-%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">1、 背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E9%9C%80%E6%B1%82"><span class="toc-number">2.</span> <span class="toc-text">2、需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E5%85%B7%E4%BD%93%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">3、具体方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1%E3%80%81LXD-ZFS-%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE"><span class="toc-number">3.1.</span> <span class="toc-text">3.1、LXD&#x2F;ZFS 安装及配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#LXD-%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85s"><span class="toc-number">3.1.1.</span> <span class="toc-text">LXD 软件安装s</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96-LXD"><span class="toc-number">3.1.2.</span> <span class="toc-text">初始化 LXD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E5%AE%B9%E5%99%A8"><span class="toc-number">3.1.3.</span> <span class="toc-text">新建容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8"><span class="toc-number">3.1.4.</span> <span class="toc-text">查看容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E5%AE%B9%E5%99%A8"><span class="toc-number">3.1.5.</span> <span class="toc-text">设置容器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2%E3%80%81%E9%85%8D%E7%BD%AE%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95%E5%92%8C-GPU"><span class="toc-number">3.2.</span> <span class="toc-text">3.2、配置共享目录和 GPU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3%E3%80%81%E9%85%8D%E7%BD%AE%E5%9B%BE%E5%BD%A2%E6%A1%8C%E9%9D%A2"><span class="toc-number">3.3.</span> <span class="toc-text">3.3、配置图形桌面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4%E3%80%81%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8%E6%A8%A1%E6%9D%BF%E5%B9%B6%E5%88%86%E5%8F%91"><span class="toc-number">3.4.</span> <span class="toc-text">3.4、创建容器模板并分发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5%E3%80%81LXDUI-%E5%8F%AF%E8%A7%86%E5%8C%96%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2"><span class="toc-number">3.5.</span> <span class="toc-text">3.5、LXDUI 可视化管理界面</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%AE%BF%E4%B8%BB%E6%9C%BA%E7%9A%84%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE"><span class="toc-number">4.</span> <span class="toc-text">4、宿主机的远程访问</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1%E3%80%81%E8%AE%BE%E7%BD%AEubuntu"><span class="toc-number">4.1.</span> <span class="toc-text">4.1、设置ubuntu</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2%E3%80%81%E5%AE%89%E8%A3%85xdrp-vnc"><span class="toc-number">4.2.</span> <span class="toc-text">4.2、安装xdrp+vnc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3%E3%80%81%E5%AE%89%E8%A3%85dconf-editor-%E5%8F%96%E6%B6%88%E6%9D%83%E9%99%90%E9%99%90%E5%88%B6"><span class="toc-number">4.3.</span> <span class="toc-text">4.3、安装dconf-editor(取消权限限制)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5、总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-zheng-he-redis/" title="SpringBoot-整合Redis">SpringBoot-整合Redis</a><time datetime="2021-11-15T11:11:53.000Z" title="发表于 2021-11-15 19:11:53">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/" title="分布式消息中间件-概述">分布式消息中间件-概述</a><time datetime="2021-11-15T10:58:22.000Z" title="发表于 2021-11-15 18:58:22">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/15/yuque/springboot-qian-hou-duan-fen-chi-kua-yu-pei-zhi/" title="SpringBoot-前后端分离跨域配置">SpringBoot-前后端分离跨域配置</a><time datetime="2021-11-15T06:57:12.000Z" title="发表于 2021-11-15 14:57:12">2021-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-jia-gou-yu-yuan-li/" title="MyBatis-架构与原理">MyBatis-架构与原理</a><time datetime="2021-11-14T04:59:00.000Z" title="发表于 2021-11-14 12:59:00">2021-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/14/yuque/mybatis-huan-cun-gong-zuo-yuan-li/" title="Mybatis-缓存工作原理">Mybatis-缓存工作原理</a><time datetime="2021-11-14T04:58:08.000Z" title="发表于 2021-11-14 12:58:08">2021-11-14</time></div></div></div></div><div class="card-widget ads-wrap"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8919908724705274" data-ad-slot="8108145410" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/main.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/tw_cn.min.js?ver=3.8.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/localsearch.min.js?ver=3.8.4"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
   if (window.mermaidJsLoad) mermaid.init()
   else {
     getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
@@ -492,171 +463,68 @@ unity<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
       true && mermaid.init()
     })
   }
-}</script><script>(()=>{
-  const $countDom = document.getElementById('twikoo-count')
-  const init = () => {
-    twikoo.init(Object.assign({
-      el: '#twikoo-wrap',
-      envId: 'https://butterfly-twikoo.vercel.app/',
-      region: ''
-    }, null))
+}</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'RPCuj0HNm1eqAREO6c5T7nSJ-gzGzoHsz',
+      appKey: 'laCdQbWLFWOWdkXVM3RxoXGe',
+      placeholder: '记得留下你的昵称和邮箱....可以快速收到回复',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, {"path":"/messageboard/"}))
   }
 
-  const getCount = () => {
-    twikoo.getCommentsCount({
-      envId: 'https://butterfly-twikoo.vercel.app/',
-      region: '',
-      urls: [window.location.pathname],
-      includeReply: false
-    }).then(function (res) {
-      $countDom.innerText = res[0].count
-    }).catch(function (err) {
-      console.error(err);
-    });
-  }
-
-  const loadTwikoo = (bool = false) => {
-    if (typeof twikoo === 'object') {
-      init()
-      bool && $countDom && setTimeout(getCount,0)
-    } else {
-      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(()=> {
-        init()
-        bool && $countDom && setTimeout(getCount,0)
-      })
-    }
-  }
-
-  if ('Twikoo' === 'Twikoo' || !true) {
-    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
-    else loadTwikoo(true)
-  } else {
-    window.loadOtherComment = () => {
-      loadTwikoo()
-    }
-  }
-})()</script><script>function loadDisqus () {
-  var disqus_config = function () {
-    this.page.url = 'https://dongzhougu.github.io/2020/11/26/lxd-gpu2.0/'
-    this.page.identifier = '2020/11/26/lxd-gpu2.0/'
-    this.page.title = '使用LXD搭建多人共用GPU'
-  };
-
-  window.disqusReset = () => {
-    DISQUS.reset({
-      reload: true,
-      config: disqus_config
-    })
-  }
-
-  if (window.DISQUS) disqusReset()
-  else {
-    (function() { 
-      var d = document, s = d.createElement('script');
-      s.src = 'https://demo-jerryc-me.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-    })();
-  }
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
 }
 
-if ('Twikoo' === 'Disqus' || !true) {
-  if (true) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
-  else loadDisqus()
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
 } else {
   function loadOtherComment () {
-    loadDisqus()
+    loadValine()
   }
-}
-</script></div><script>window.addEventListener('load', () => {
-  const changeContent = (content) => {
-    if (content === '') return content
+}</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script>(function(d, w, c) {
+    w.ChatraID = 'ZjXyfadNfHZ8yJGFm';
+    var s = d.createElement('script');
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+    };
+    s.async = true;
+    s.src = 'https://call.chatra.io/chatra.js';
+    if (d.head) d.head.appendChild(s);
+})(document, window, 'Chatra');
 
-    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
-    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
-    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
-    content = content.replace(/<[^>]+>/g,"") // remove html tag
-
-    if (content.length > 150) {
-      content = content.substring(0,150) + '...'
-    }
-    return content
+if (true) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      Chatra('openChat')
+    });
   }
-
-  const getComment = () => {
-    const runTwikoo = () => {
-      twikoo.getRecentComments({
-        envId: 'https://butterfly-twikoo.vercel.app/',
-        region: '',
-        pageSize: 6,
-        includeReply: true
-      }).then(function (res) {
-        const twikooArray = res.map(e => {
-          return {
-            'content': changeContent(e.comment),
-            'avatar': e.avatar,
-            'nick': e.nick,
-            'url': e.url + '#' + e.id,
-            'date': new Date(e.created).toISOString()
-          }
-        })
-
-        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 5/(60*24))
-        generateHtml(twikooArray)
-      }).catch(function (err) {
-        const $dom = document.querySelector('#card-newest-comments .aside-list')
-        $dom.innerHTML= "无法获取评论，请确认相关配置是否正确"
-      })
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      Chatra('hide')
     }
-
-    if (typeof twikoo === 'object') {
-      runTwikoo()
-    } else {
-      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.min.js').then(runTwikoo)
+    function chatBtnShow () {
+      Chatra('show')
     }
   }
-
-  const generateHtml = array => {
-    let result = ''
-
-    if (array.length) {
-      for (let i = 0; i < array.length; i++) {
-        result += '<div class=\'aside-list-item\'>'
-
-        if (true) {
-          const name = 'data-lazy-src'
-          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'></a>`
-        }
-        
-        result += `<div class='content'>
-        <a class='comment' href='${array[i].url}'>${array[i].content}</a>
-        <div class='name'><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
-        </div></div>`
-      }
-    } else {
-      result += '没有评论'
-    }
-
-    let $dom = document.querySelector('#card-newest-comments .aside-list')
-    $dom.innerHTML= result
-    window.lazyLoadInstance && window.lazyLoadInstance.update()
-    window.pjax && window.pjax.refresh($dom)
-  }
-
-  const newestCommentInit = () => {
-    if (document.querySelector('#card-newest-comments .aside-list')) {
-      const data = saveToLocal.get('twikoo-newest-comments')
-      if (data) {
-        generateHtml(JSON.parse(data))
-      } else {
-        getComment()
-      }
-    }
-  }
-
-  newestCommentInit()
-  document.addEventListener('pjax:complete', newestCommentInit)
-})</script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+}</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
   'title',
   '#config-diff',
   '#body-wrap',
