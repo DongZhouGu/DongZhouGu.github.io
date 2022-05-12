@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://dongzhougu.github.io/"/>
-  <updated>2021-11-07T15:58:30.471Z</updated>
+  <updated>2022-05-12T07:52:06.879Z</updated>
   <id>https://dongzhougu.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>抢学术章的的辛酸泪</title>
-    <link href="https://dongzhougu.github.io/2021/10/13/qiang-xue-zhu-zhang-de-xin-suan-lei/"/>
-    <id>https://dongzhougu.github.io/2021/10/13/qiang-xue-zhu-zhang-de-xin-suan-lei/</id>
-    <published>2021-10-13T04:15:50.000Z</published>
-    <updated>2021-11-07T15:58:30.471Z</updated>
+    <title>八，项目性能测试</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/ba-xiang-mu-xing-neng-ce-shi/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/ba-xiang-mu-xing-neng-ce-shi/</id>
+    <published>2022-05-12T06:42:22.000Z</published>
+    <updated>2022-05-12T07:52:06.879Z</updated>
     
     <summary type="html">
     
@@ -29,28 +29,30 @@
       
         
         
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;通过前面的章节，我们的 RPC
         
       
     
     </summary>
     
     
-      <category term="开源项目" scheme="https://dongzhougu.github.io/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"/>
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
     
     
-      <category term="自动化" scheme="https://dongzhougu.github.io/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/"/>
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
     
-      <category term="网络" scheme="https://dongzhougu.github.io/tags/%E7%BD%91%E7%BB%9C/"/>
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
     
   </entry>
   
   <entry>
-    <title>注意力机制-Attention</title>
-    <link href="https://dongzhougu.github.io/2021/01/14/zhu-yi-li-ji-zhi/"/>
-    <id>https://dongzhougu.github.io/2021/01/14/zhu-yi-li-ji-zhi/</id>
-    <published>2021-01-14T12:33:00.000Z</published>
-    <updated>2021-11-07T14:59:41.387Z</updated>
+    <title>七、集成Spring与SpringBoot</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/qi-ji-cheng-spring-yu-springboot/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/qi-ji-cheng-spring-yu-springboot/</id>
+    <published>2022-05-12T06:42:19.000Z</published>
+    <updated>2022-05-12T07:52:06.921Z</updated>
     
     <summary type="html">
     
@@ -58,26 +60,31 @@
       
         
         
-          &lt;h1 id=&quot;注意力机制-Attention&quot;&gt;&lt;a href=&quot;#注意力机制-Attention&quot; class=&quot;headerlink&quot;
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;从零实现一个轻量级 RPC 框架-系列文章&lt;br&gt;Github: &lt;a
         
       
     
     </summary>
     
     
-      <category term="科研" scheme="https://dongzhougu.github.io/categories/%E7%A7%91%E7%A0%94/"/>
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
     
     
-      <category term="注意力机制" scheme="https://dongzhougu.github.io/tags/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/"/>
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
+    
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
     
   </entry>
   
   <entry>
-    <title>Mask R-CNN 演变笔记</title>
-    <link href="https://dongzhougu.github.io/2020/12/19/maskrcnn/"/>
-    <id>https://dongzhougu.github.io/2020/12/19/maskrcnn/</id>
-    <published>2020-12-19T12:33:00.000Z</published>
-    <updated>2021-11-07T14:57:58.671Z</updated>
+    <title>XRPC项目(仿Dubbo)-README</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/xrpc-xiang-mu-fang-dubbo-readme/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/xrpc-xiang-mu-fang-dubbo-readme/</id>
+    <published>2022-05-12T06:42:18.000Z</published>
+    <updated>2022-05-12T07:52:07.004Z</updated>
     
     <summary type="html">
     
@@ -85,28 +92,30 @@
       
         
         
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h1 id=&quot;XRPC-实现轻量级-RPC-框架&quot;&gt;&lt;a href=&quot;#XRPC-实现轻量级-RPC-框架&quot; class=&quot;headerlink&quot; title=&quot;XRPC-实现轻量级 RPC
         
       
     
     </summary>
     
     
-      <category term="科研" scheme="https://dongzhougu.github.io/categories/%E7%A7%91%E7%A0%94/"/>
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
     
     
-      <category term="目标检测" scheme="https://dongzhougu.github.io/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/"/>
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
     
-      <category term="深度学习" scheme="https://dongzhougu.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
     
   </entry>
   
   <entry>
-    <title>Leetcode总结—二叉树的构造</title>
-    <link href="https://dongzhougu.github.io/2020/12/13/er-cha-shu-de-gou-zao/"/>
-    <id>https://dongzhougu.github.io/2020/12/13/er-cha-shu-de-gou-zao/</id>
-    <published>2020-12-13T04:15:50.000Z</published>
-    <updated>2021-11-07T15:00:37.946Z</updated>
+    <title>六、去调用哪个服务器呢？负载均衡策略</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/liu-qu-diao-yong-na-ge-fu-wu-qi-ni-fu-zai-jun-heng-ce-lue/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/liu-qu-diao-yong-na-ge-fu-wu-qi-ni-fu-zai-jun-heng-ce-lue/</id>
+    <published>2022-05-12T06:42:15.000Z</published>
+    <updated>2022-05-12T07:52:07.055Z</updated>
     
     <summary type="html">
     
@@ -114,27 +123,31 @@
       
         
         
-          &lt;p&gt;二叉树是面试中常见的题目类型，这里，针对leetcode前200道题中的二叉树相关问题进行总结与思考，力求烂熟于心，能根据题目名回忆起题目的具体描述，进而用简洁的语言描述出算法的核心。具体的题目答案可打开leetcode查看历史提交记录。&lt;/p&gt;
-&lt;p&gt;&lt;a
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;从零实现一个轻量级 RPC 框架-系列文章&lt;br&gt;Github: &lt;a
         
       
     
     </summary>
     
     
-      <category term="leetcode" scheme="https://dongzhougu.github.io/categories/leetcode/"/>
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
     
     
-      <category term="二叉树" scheme="https://dongzhougu.github.io/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/"/>
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
+    
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
     
   </entry>
   
   <entry>
-    <title>iCAN (BMVC2018)</title>
-    <link href="https://dongzhougu.github.io/2020/12/10/lun-wen-ican-bmvc2018/"/>
-    <id>https://dongzhougu.github.io/2020/12/10/lun-wen-ican-bmvc2018/</id>
-    <published>2020-12-10T12:33:00.000Z</published>
-    <updated>2021-11-07T15:07:57.926Z</updated>
+    <title>五、使用SPI实现可插拔扩展设计</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/wu-shi-yong-spi-shi-xian-ke-cha-ba-kuo-zhan-she-ji/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/wu-shi-yong-spi-shi-xian-ke-cha-ba-kuo-zhan-she-ji/</id>
+    <published>2022-05-12T06:42:14.000Z</published>
+    <updated>2022-05-12T07:52:07.114Z</updated>
     
     <summary type="html">
     
@@ -142,26 +155,31 @@
       
         
         
-          &lt;h1 id=&quot;文献-iCAN-Instance-Centric-Attention-Network-for-Human-Object-Interaction-Detection&quot;&gt;&lt;a
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;从零实现一个轻量级 RPC 框架-系列文章&lt;br&gt;Github: &lt;a
         
       
     
     </summary>
     
     
-      <category term="科研" scheme="https://dongzhougu.github.io/categories/%E7%A7%91%E7%A0%94/"/>
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
     
     
-      <category term="HOI人物交互检测" scheme="https://dongzhougu.github.io/tags/HOI%E4%BA%BA%E7%89%A9%E4%BA%A4%E4%BA%92%E6%A3%80%E6%B5%8B/"/>
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
+    
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
     
   </entry>
   
   <entry>
-    <title>实验室gpu管理</title>
-    <link href="https://dongzhougu.github.io/2020/12/09/shu-lxd-gpu/"/>
-    <id>https://dongzhougu.github.io/2020/12/09/shu-lxd-gpu/</id>
-    <published>2020-12-09T07:57:44.000Z</published>
-    <updated>2021-11-07T16:03:12.075Z</updated>
+    <title>四、采用动态代理去无感调用远程服务</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/si-cai-yong-dong-tai-dai-li-qu-wu-gan-diao-yong-yuan-cheng-fu-wu/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/si-cai-yong-dong-tai-dai-li-qu-wu-gan-diao-yong-yuan-cheng-fu-wu/</id>
+    <published>2022-05-12T06:42:12.000Z</published>
+    <updated>2022-05-12T07:52:07.220Z</updated>
     
     <summary type="html">
     
@@ -169,26 +187,31 @@
       
         
         
-          &lt;p&gt;&lt;strong&gt;&lt;span class=&quot;github-emoji&quot; style=&quot;color: transparent;background:no-repeat
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;从零实现一个轻量级 RPC 框架-系列文章&lt;br&gt;Github: &lt;a
         
       
     
     </summary>
     
     
-      <category term="开源项目" scheme="https://dongzhougu.github.io/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"/>
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
     
     
-      <category term="Linux" scheme="https://dongzhougu.github.io/tags/Linux/"/>
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
+    
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
     
   </entry>
   
   <entry>
-    <title>HICO-DET数据集</title>
-    <link href="https://dongzhougu.github.io/2020/12/03/lun-wen-hico-det-shu-ju-ji/"/>
-    <id>https://dongzhougu.github.io/2020/12/03/lun-wen-hico-det-shu-ju-ji/</id>
-    <published>2020-12-03T12:33:00.000Z</published>
-    <updated>2021-11-07T15:08:06.788Z</updated>
+    <title>三、服务注册与发现</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/san-fu-wu-zhu-ce-yu-fa-xian/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/san-fu-wu-zhu-ce-yu-fa-xian/</id>
+    <published>2022-05-12T06:42:11.000Z</published>
+    <updated>2022-05-12T07:52:07.307Z</updated>
     
     <summary type="html">
     
@@ -196,26 +219,31 @@
       
         
         
-          &lt;h1 id=&quot;文献-Learning-to-Detect-Human-Object-Interaction&quot;&gt;&lt;a href=&quot;#文献-Learning-to-Detect-Human-Object-Interaction&quot; class=&quot;headerlink&quot;
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;从零实现一个轻量级 RPC 框架-系列文章&lt;br&gt;Github: &lt;a
         
       
     
     </summary>
     
     
-      <category term="科研" scheme="https://dongzhougu.github.io/categories/%E7%A7%91%E7%A0%94/"/>
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
     
     
-      <category term="HOI人物交互检测" scheme="https://dongzhougu.github.io/tags/HOI%E4%BA%BA%E7%89%A9%E4%BA%A4%E4%BA%92%E6%A3%80%E6%B5%8B/"/>
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
+    
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
     
   </entry>
   
   <entry>
-    <title>图解HTTP总结</title>
-    <link href="https://dongzhougu.github.io/2020/11/29/tu-jie-http-zong-jie/"/>
-    <id>https://dongzhougu.github.io/2020/11/29/tu-jie-http-zong-jie/</id>
-    <published>2020-11-29T04:15:50.000Z</published>
-    <updated>2022-05-12T07:20:50.337Z</updated>
+    <title>二、网络传输高效序列化协议与实现</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/er-wang-luo-chuan-shu-gao-xiao-xu-lie-hua-xie-yi-yu-shi-xian/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/er-wang-luo-chuan-shu-gao-xiao-xu-lie-hua-xie-yi-yu-shi-xian/</id>
+    <published>2022-05-12T06:42:09.000Z</published>
+    <updated>2022-05-12T07:52:07.369Z</updated>
     
     <summary type="html">
     
@@ -223,7 +251,251 @@
       
         
         
-          &lt;h2 id=&quot;参考资料&quot;&gt;&lt;a href=&quot;#参考资料&quot; class=&quot;headerlink&quot; title=&quot;参考资料&quot;&gt;&lt;/a&gt;参考资料&lt;/h2&gt;&lt;p&gt;上野宣. 图解 HTTP[M]. 人民邮电出版社, 2014.&lt;/p&gt;
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;从零实现一个轻量级 RPC 框架-系列文章&lt;br&gt;Github: &lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
+    
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一、如何用Netty实现高性能网络通信？</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/yi-ru-he-yong-netty-shi-xian-gao-xing-neng-wang-luo-tong-xin/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/yi-ru-he-yong-netty-shi-xian-gao-xing-neng-wang-luo-tong-xin/</id>
+    <published>2022-05-12T06:42:07.000Z</published>
+    <updated>2022-05-12T07:52:07.520Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;从零实现一个轻量级 RPC 框架-系列文章&lt;br&gt;Github: &lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
+    
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>零、如何实现一个轻量级RPC框架？</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/ling-ru-he-shi-xian-yi-ge-qing-liang-ji-rpc-kuang-jia/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/ling-ru-he-shi-xian-yi-ge-qing-liang-ji-rpc-kuang-jia/</id>
+    <published>2022-05-12T06:42:06.000Z</published>
+    <updated>2022-05-12T07:52:07.592Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;零实现一个轻量级 RPC 框架-系列文章&lt;br&gt;Github: &lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+      <category term="XPRC" scheme="https://dongzhougu.github.io/tags/XPRC/"/>
+    
+      <category term="Netty" scheme="https://dongzhougu.github.io/tags/Netty/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Springboot-聊天室Websockt</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/springboot-liao-tian-shi-websockt/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/springboot-liao-tian-shi-websockt/</id>
+    <published>2022-05-12T06:40:46.000Z</published>
+    <updated>2022-05-12T07:52:07.616Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;&lt;img
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="https://dongzhougu.github.io/categories/Java/"/>
+    
+    
+      <category term="SpringBoot" scheme="https://dongzhougu.github.io/tags/SpringBoot/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker部署博客项目</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/docker-bu-shu-bo-ke-xiang-mu/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/docker-bu-shu-bo-ke-xiang-mu/</id>
+    <published>2022-05-12T06:40:34.000Z</published>
+    <updated>2022-05-12T07:52:07.630Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;后端打包&quot;&gt;&lt;a href=&quot;#后端打包&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="项目" scheme="https://dongzhougu.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
+    
+    
+      <category term="Docker" scheme="https://dongzhougu.github.io/tags/Docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringBoot-定时任务</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/springboot-ding-shi-ren-wu/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/springboot-ding-shi-ren-wu/</id>
+    <published>2022-05-12T06:40:28.000Z</published>
+    <updated>2022-05-12T07:52:07.654Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;p&gt;在编写 Spring Boot 应用中经常会遇到这样的场景，比如：需要定时地发送一些短信、邮件之类的操作，也可能会定时地检查和监控一些标志、参数等。&lt;/p&gt;
+&lt;h3 id=&quot;创建定时任务&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="Java" scheme="https://dongzhougu.github.io/categories/Java/"/>
+    
+    
+      <category term="SpringBoot" scheme="https://dongzhougu.github.io/tags/SpringBoot/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringBoot-Elasticsearch搜索</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/springboot-elasticsearch-sou-suo/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/springboot-elasticsearch-sou-suo/</id>
+    <published>2022-05-12T06:40:26.000Z</published>
+    <updated>2022-05-12T07:52:07.729Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;一、ElasticSearch-简介&quot;&gt;&lt;a href=&quot;#一、ElasticSearch-简介&quot; class=&quot;headerlink&quot; title=&quot;一、ElasticSearch
+        
+      
+    
+    </summary>
+    
+    
+      <category term="中间件" scheme="https://dongzhougu.github.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
+    
+    
+      <category term="Elasticsearch" scheme="https://dongzhougu.github.io/tags/Elasticsearch/"/>
+    
+      <category term="搜索" scheme="https://dongzhougu.github.io/tags/%E6%90%9C%E7%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringBoot-整合Redis</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/springboot-zheng-he-redis/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/springboot-zheng-he-redis/</id>
+    <published>2022-05-12T06:40:23.000Z</published>
+    <updated>2022-05-12T07:52:07.793Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h2 id=&quot;Redis-概述&quot;&gt;&lt;a href=&quot;#Redis-概述&quot; class=&quot;headerlink&quot; title=&quot;Redis 概述&quot;&gt;&lt;/a&gt;Redis 概述&lt;/h2&gt;&lt;h3 id=&quot;什么是-Redis&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="中间件" scheme="https://dongzhougu.github.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
+    
+    
+      <category term="Redis" scheme="https://dongzhougu.github.io/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>分布式消息中间件-概述</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/fen-bu-shi-xiao-xi-zhong-jian-jian-gai-shu/</id>
+    <published>2022-05-12T06:40:22.000Z</published>
+    <updated>2022-05-12T07:52:07.892Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;h3 id=&quot;1-单体架构&quot;&gt;&lt;a href=&quot;#1-单体架构&quot; class=&quot;headerlink&quot; title=&quot;1. 单体架构&quot;&gt;&lt;/a&gt;1. 单体架构&lt;/h3&gt;&lt;hr&gt;
 &lt;p&gt;&lt;img
         
       
@@ -231,19 +503,19 @@
     </summary>
     
     
-      <category term="计算机网络" scheme="https://dongzhougu.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+      <category term="中间件" scheme="https://dongzhougu.github.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
     
     
-      <category term="网络" scheme="https://dongzhougu.github.io/tags/%E7%BD%91%E7%BB%9C/"/>
+      <category term="消息中间件" scheme="https://dongzhougu.github.io/tags/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
     
   </entry>
   
   <entry>
-    <title>Leetcode总结—二叉树的遍历</title>
-    <link href="https://dongzhougu.github.io/2020/11/27/er-cha-shu-de-bian-li/"/>
-    <id>https://dongzhougu.github.io/2020/11/27/er-cha-shu-de-bian-li/</id>
-    <published>2020-11-27T04:15:50.000Z</published>
-    <updated>2021-11-07T15:00:48.869Z</updated>
+    <title>Mybatis-缓存工作原理</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/mybatis-huan-cun-gong-zuo-yuan-li/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/mybatis-huan-cun-gong-zuo-yuan-li/</id>
+    <published>2022-05-12T06:40:17.000Z</published>
+    <updated>2022-05-12T07:52:07.959Z</updated>
     
     <summary type="html">
     
@@ -251,89 +523,7 @@
       
         
         
-          &lt;p&gt;二叉树是面试中常见的题目类型，这里，针对 leetcode 前200道题中的二叉树相关问题进行总结与思考，力求烂熟于心，能根据题目名回忆起题目的具体描述，进而用简洁的语言描述出算法的核心。具体的题目答案可打开 leetcode 查看历史提交记录。&lt;/p&gt;
-&lt;h2
-        
-      
-    
-    </summary>
-    
-    
-      <category term="leetcode" scheme="https://dongzhougu.github.io/categories/leetcode/"/>
-    
-    
-      <category term="二叉树" scheme="https://dongzhougu.github.io/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux常用命令</title>
-    <link href="https://dongzhougu.github.io/2020/11/26/linux-chang-yong-ming-ling/"/>
-    <id>https://dongzhougu.github.io/2020/11/26/linux-chang-yong-ming-ling/</id>
-    <published>2020-11-26T04:15:50.000Z</published>
-    <updated>2021-11-04T04:29:36.499Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;一、文件-文件夹管理&quot;&gt;&lt;a href=&quot;#一、文件-文件夹管理&quot; class=&quot;headerlink&quot; title=&quot;一、文件/文件夹管理&quot;&gt;&lt;/a&gt;&lt;strong&gt;一、文件/文件夹管理&lt;/strong&gt;&lt;/h2&gt;&lt;figure
-        
-      
-    
-    </summary>
-    
-    
-      <category term="备忘录" scheme="https://dongzhougu.github.io/categories/%E5%A4%87%E5%BF%98%E5%BD%95/"/>
-    
-    
-      <category term="Linux" scheme="https://dongzhougu.github.io/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用LXD搭建多人共用GPU</title>
-    <link href="https://dongzhougu.github.io/2020/11/26/lxd-gpu2.0/"/>
-    <id>https://dongzhougu.github.io/2020/11/26/lxd-gpu2.0/</id>
-    <published>2020-11-26T04:15:50.000Z</published>
-    <updated>2021-11-07T15:47:01.361Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;1、-背景&quot;&gt;&lt;a href=&quot;#1、-背景&quot; class=&quot;headerlink&quot; title=&quot;1、 背景&quot;&gt;&lt;/a&gt;1、
-        
-      
-    
-    </summary>
-    
-    
-      <category term="教程" scheme="https://dongzhougu.github.io/categories/%E6%95%99%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="https://dongzhougu.github.io/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>SSM框架整合</title>
-    <link href="https://dongzhougu.github.io/2020/10/21/ssm-kuang-jia-zheng-he/"/>
-    <id>https://dongzhougu.github.io/2020/10/21/ssm-kuang-jia-zheng-he/</id>
-    <published>2020-10-21T07:57:44.000Z</published>
-    <updated>2021-11-07T15:49:59.933Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h3 id=&quot;1-环境配置&quot;&gt;&lt;a href=&quot;#1-环境配置&quot; class=&quot;headerlink&quot; title=&quot;1. 环境配置&quot;&gt;&lt;/a&gt;1. 环境配置&lt;/h3&gt;&lt;h4 id=&quot;1-1-新建一Maven项目！ssmbuild-，-添加web的支持&quot;&gt;&lt;a
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;在计算机的世界中，缓存无处不在，操作系统有操作系统的缓存，数据库也会有数据库的缓存，各种中间件如 Redis
         
       
     
@@ -345,18 +535,14 @@
     
       <category term="Mybatis" scheme="https://dongzhougu.github.io/tags/Mybatis/"/>
     
-      <category term="SSM" scheme="https://dongzhougu.github.io/tags/SSM/"/>
-    
-      <category term="SpringMVC" scheme="https://dongzhougu.github.io/tags/SpringMVC/"/>
-    
   </entry>
   
   <entry>
-    <title>MySQL基础入门</title>
-    <link href="https://dongzhougu.github.io/2020/10/08/mysql-ji-chu-ru-men/"/>
-    <id>https://dongzhougu.github.io/2020/10/08/mysql-ji-chu-ru-men/</id>
-    <published>2020-10-08T07:57:44.000Z</published>
-    <updated>2021-11-07T15:49:20.281Z</updated>
+    <title>Mybatis-动态SQL</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/mybatis-dong-tai-sql/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/mybatis-dong-tai-sql/</id>
+    <published>2022-05-12T06:40:14.000Z</published>
+    <updated>2022-05-12T07:52:07.983Z</updated>
     
     <summary type="html">
     
@@ -364,8 +550,7 @@
       
         
         
-          &lt;hr&gt;
-&lt;p&gt;下面是根据开源项目 &lt;a href=&quot;https://github.com/jaywcjlove/mysql-tutorial/blob/master/21-minutes-MySQL-basic-entry.md&quot;&gt;21分钟MySQL基础入门&lt;/a&gt;
+          &lt;p&gt;在 Structs 流行的时代 OGNL 可是必会的数据渲染技术。它全称 Object Graph Navigation Language，作用是降低对数据层访问的难度，它拥有类型转换、访问对象方法、操作集合对象等功能。目前已经很少通过 OGNL
         
       
     
@@ -375,16 +560,16 @@
       <category term="数据库" scheme="https://dongzhougu.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
-      <category term="Mysql" scheme="https://dongzhougu.github.io/tags/Mysql/"/>
+      <category term="Mybatis" scheme="https://dongzhougu.github.io/tags/Mybatis/"/>
     
   </entry>
   
   <entry>
-    <title>JDBC核心技术</title>
-    <link href="https://dongzhougu.github.io/2020/10/08/jdbc-he-xin-ji-zhu/"/>
-    <id>https://dongzhougu.github.io/2020/10/08/jdbc-he-xin-ji-zhu/</id>
-    <published>2020-10-08T07:57:44.000Z</published>
-    <updated>2021-11-07T15:49:12.312Z</updated>
+    <title>Mybatis-使用PageHelper分页</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/mybatis-shi-yong-pagehelper-fen-ye/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/mybatis-shi-yong-pagehelper-fen-ye/</id>
+    <published>2022-05-12T06:40:13.000Z</published>
+    <updated>2022-05-12T07:52:08.042Z</updated>
     
     <summary type="html">
     
@@ -392,28 +577,30 @@
       
         
         
-          &lt;hr&gt;
-&lt;blockquote&gt;
-&lt;p&gt;此笔记是观看 &lt;a href=&quot;https://www.bilibili.com/video/BV11J411c7sB?from=search&amp;amp;seid=4044749892780872620&quot;&gt;此视频&lt;/a&gt; 
+          &lt;h2 id=&quot;1、引入依赖&quot;&gt;&lt;a href=&quot;#1、引入依赖&quot; class=&quot;headerlink&quot; title=&quot;1、引入依赖&quot;&gt;&lt;/a&gt;1、引入依赖&lt;/h2&gt;&lt;p&gt;只引入 PageHelper 不会自动适配 SpringBoot 失效，还需要整合依赖
         
       
     
     </summary>
     
     
-      <category term="数据库" scheme="https://dongzhougu.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <category term="Java" scheme="https://dongzhougu.github.io/categories/Java/"/>
     
     
-      <category term="JDBC" scheme="https://dongzhougu.github.io/tags/JDBC/"/>
+      <category term="Mybatis" scheme="https://dongzhougu.github.io/tags/Mybatis/"/>
+    
+      <category term="分页" scheme="https://dongzhougu.github.io/tags/%E5%88%86%E9%A1%B5/"/>
+    
+      <category term="源码" scheme="https://dongzhougu.github.io/tags/%E6%BA%90%E7%A0%81/"/>
     
   </entry>
   
   <entry>
-    <title>机器学习算法实现</title>
-    <link href="https://dongzhougu.github.io/2020/07/16/ji-qi-xue-xi-suan-fa-shi-xian/"/>
-    <id>https://dongzhougu.github.io/2020/07/16/ji-qi-xue-xi-suan-fa-shi-xian/</id>
-    <published>2020-07-16T07:57:44.000Z</published>
-    <updated>2021-11-07T15:59:03.057Z</updated>
+    <title>Mybatis-拦截器插件例子(敏感信息加密)</title>
+    <link href="https://dongzhougu.github.io/2022/05/12/yuque/mybatis-lan-jie-qi-cha-jian-li-zi-min-gan-xin-xi-jia-mi/"/>
+    <id>https://dongzhougu.github.io/2022/05/12/yuque/mybatis-lan-jie-qi-cha-jian-li-zi-min-gan-xin-xi-jia-mi/</id>
+    <published>2022-05-12T06:40:10.000Z</published>
+    <updated>2022-05-12T07:52:08.075Z</updated>
     
     <summary type="html">
     
@@ -421,152 +608,17 @@
       
         
         
-          &lt;h3 id=&quot;机器学习算法实现&quot;&gt;&lt;a href=&quot;#机器学习算法实现&quot; class=&quot;headerlink&quot; title=&quot;机器学习算法实现&quot;&gt;&lt;/a&gt;机器学习算法实现&lt;/h3&gt;&lt;p&gt;&lt;img
+          &lt;h2 id=&quot;1-前言&quot;&gt;&lt;a href=&quot;#1-前言&quot; class=&quot;headerlink&quot; title=&quot;1. 前言&quot;&gt;&lt;/a&gt;1. 前言&lt;/h2&gt;&lt;p&gt;在学习 PageHelper 分页插件的时候，对于其如何和 Mybatis
         
       
     
     </summary>
     
     
-      <category term="开源项目" scheme="https://dongzhougu.github.io/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"/>
+      <category term="Java" scheme="https://dongzhougu.github.io/categories/Java/"/>
     
     
-      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>scikit-learn系列九：K-均值</title>
-    <link href="https://dongzhougu.github.io/2020/07/16/scikit-learn-xi-lie-jiu-k-jun-zhi/"/>
-    <id>https://dongzhougu.github.io/2020/07/16/scikit-learn-xi-lie-jiu-k-jun-zhi/</id>
-    <published>2020-07-16T07:57:44.000Z</published>
-    <updated>2021-11-07T15:49:32.238Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;项目地址传送门，欢迎-star-和-fork-！&quot;&gt;&lt;a href=&quot;#项目地址传送门，欢迎-star-和-fork-！&quot; class=&quot;headerlink&quot; title=&quot;项目地址传送门，欢迎 star 和 fork ！&quot;&gt;&lt;/a&gt;项目地址&lt;a
-        
-      
-    
-    </summary>
-    
-    
-      <category term="Python" scheme="https://dongzhougu.github.io/categories/Python/"/>
-    
-    
-      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>scikit-learn系列八：PCA</title>
-    <link href="https://dongzhougu.github.io/2020/07/15/scikit-learn-xi-lie-ba-pca/"/>
-    <id>https://dongzhougu.github.io/2020/07/15/scikit-learn-xi-lie-ba-pca/</id>
-    <published>2020-07-15T07:57:44.000Z</published>
-    <updated>2021-11-07T15:49:25.609Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;项目地址传送门，欢迎-star-和-fork-！&quot;&gt;&lt;a href=&quot;#项目地址传送门，欢迎-star-和-fork-！&quot; class=&quot;headerlink&quot; title=&quot;项目地址传送门，欢迎 star 和 fork ！&quot;&gt;&lt;/a&gt;项目地址&lt;a
-        
-      
-    
-    </summary>
-    
-    
-      <category term="Python" scheme="https://dongzhougu.github.io/categories/Python/"/>
-    
-    
-      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>scikit-learn系列七：朴素贝叶斯</title>
-    <link href="https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/"/>
-    <id>https://dongzhougu.github.io/2020/07/02/scikit-learn-xi-lie-qi-po-su-bei-xie-si/</id>
-    <published>2020-07-02T07:57:44.000Z</published>
-    <updated>2021-11-07T15:49:39.092Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;项目地址传送门，欢迎-star-和-fork-！&quot;&gt;&lt;a href=&quot;#项目地址传送门，欢迎-star-和-fork-！&quot; class=&quot;headerlink&quot; title=&quot;项目地址传送门，欢迎 star 和 fork ！&quot;&gt;&lt;/a&gt;项目地址&lt;a
-        
-      
-    
-    </summary>
-    
-    
-      <category term="Python" scheme="https://dongzhougu.github.io/categories/Python/"/>
-    
-    
-      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>scikit-learn系列六：SVM</title>
-    <link href="https://dongzhougu.github.io/2020/07/01/scikit-learn-xi-lie-liu-svm/"/>
-    <id>https://dongzhougu.github.io/2020/07/01/scikit-learn-xi-lie-liu-svm/</id>
-    <published>2020-07-01T07:57:44.000Z</published>
-    <updated>2021-11-07T15:49:35.680Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;项目地址传送门，欢迎-star-和-fork-！&quot;&gt;&lt;a href=&quot;#项目地址传送门，欢迎-star-和-fork-！&quot; class=&quot;headerlink&quot; title=&quot;项目地址传送门，欢迎 star 和 fork ！&quot;&gt;&lt;/a&gt;项目地址&lt;a
-        
-      
-    
-    </summary>
-    
-    
-      <category term="Python" scheme="https://dongzhougu.github.io/categories/Python/"/>
-    
-    
-      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>scikit-learn系列五：决策树</title>
-    <link href="https://dongzhougu.github.io/2020/06/30/scikit-learn-xi-lie-wu-jue-ce-shu/"/>
-    <id>https://dongzhougu.github.io/2020/06/30/scikit-learn-xi-lie-wu-jue-ce-shu/</id>
-    <published>2020-06-30T10:57:44.000Z</published>
-    <updated>2021-11-07T15:49:50.701Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;项目地址传送门，欢迎-star-和-fork-！&quot;&gt;&lt;a href=&quot;#项目地址传送门，欢迎-star-和-fork-！&quot; class=&quot;headerlink&quot; title=&quot;项目地址传送门，欢迎 star 和 fork ！&quot;&gt;&lt;/a&gt;项目地址&lt;a
-        
-      
-    
-    </summary>
-    
-    
-      <category term="Python" scheme="https://dongzhougu.github.io/categories/Python/"/>
-    
-    
-      <category term="机器学习" scheme="https://dongzhougu.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+      <category term="Mybatis" scheme="https://dongzhougu.github.io/tags/Mybatis/"/>
     
   </entry>
   

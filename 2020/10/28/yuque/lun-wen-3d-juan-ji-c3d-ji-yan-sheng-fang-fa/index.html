@@ -1,0 +1,481 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>论文-3D卷积 C3D 及衍生方法 | 欢迎来到，TWOTO 的博客</title><meta name="keywords" content="3D卷积,动作识别"><meta name="author" content="DongZhou"><meta name="copyright" content="DongZhou"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1. (C3D)Learning spatiotemporal features with 3d convolutional networks-2015ICCV-facebook 概述：采用 3D 卷积和 3D Pooling 构建了网络。 通过 3D 卷积，C3D 可以直接处理视频（或者说是视频帧的 volume）关键词：C3D，速度快，模型简单论文地址：https:&#x2F;&#x2F;arxiv.org&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文-3D卷积 C3D 及衍生方法">
+<meta property="og:url" content="https://dongzhougu.github.io/2020/10/28/yuque/lun-wen-3d-juan-ji-c3d-ji-yan-sheng-fang-fa/index.html">
+<meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
+<meta property="og:description" content="1. (C3D)Learning spatiotemporal features with 3d convolutional networks-2015ICCV-facebook 概述：采用 3D 卷积和 3D Pooling 构建了网络。 通过 3D 卷积，C3D 可以直接处理视频（或者说是视频帧的 volume）关键词：C3D，速度快，模型简单论文地址：https:&#x2F;&#x2F;arxiv.org&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://dongzhougu.github.io/img/avatar.png">
+<meta property="article:published_time" content="2020-10-28T13:15:50.000Z">
+<meta property="article:modified_time" content="2022-05-12T07:52:08.602Z">
+<meta property="article:author" content="DongZhou">
+<meta property="article:tag" content="3D卷积">
+<meta property="article:tag" content="动作识别">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dongzhougu.github.io/img/avatar.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2020/10/28/yuque/lun-wen-3d-juan-ji-c3d-ji-yan-sheng-fang-fa/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="NdIUXAOVyGnnBhcrip0ksCawbdAzT0hlBZDE9u4jx6k"/><meta name="msvalidate.01" content="567E47D75E8DCF1282B9623AD914701E"/><meta name="baidu-site-verification" content="code-pE5rnuxcfD"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":150,"languages":{"author":"作者: DongZhou","link":"链接: ","source":"来源: 欢迎来到，TWOTO 的博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '论文-3D卷积 C3D 及衍生方法',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-12 15:52:08'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">.card-announcement .social-button{margin: .6rem 0 0 0; text-align: center;}.card-announcement .social-button a{display: block; margin: 0.2rem 0;background-color: var(--btn-bg); color: var(--btn-color); line-height: 1.6rem; transition: all .3s; position: relative; z-index: 1;}</style><style type="text/css" lang="css">
+    #loading-container{
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-height: 100vh;
+        width: 100vw;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #FFF;
+        text-align: center;
+        /* loader页面消失采用渐隐的方式*/
+        -webkit-transition: opacity 1s ease;
+        -moz-transition: opacity 1s ease;
+        -o-transition: opacity 1s ease;
+        transition: opacity 1s ease;
+    }
+    .loading-image{
+        width: 120px;
+        height: 50px;
+        transform: translate(-50%);
+    }
+    
+    .loading-image div:nth-child(2) {
+        -webkit-animation: pacman-balls 1s linear 0s infinite;
+        animation: pacman-balls 1s linear 0s infinite
+    }
+
+    .loading-image div:nth-child(3) {
+        -webkit-animation: pacman-balls 1s linear .33s infinite;
+        animation: pacman-balls 1s linear .33s infinite
+    }
+
+    .loading-image div:nth-child(4) {
+        -webkit-animation: pacman-balls 1s linear .66s infinite;
+        animation: pacman-balls 1s linear .66s infinite
+    }
+
+    .loading-image div:nth-child(5) {
+        -webkit-animation: pacman-balls 1s linear .99s infinite;
+        animation: pacman-balls 1s linear .99s infinite
+    }
+    
+   .loading-image div:first-of-type {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_up .5s 0s infinite;
+        animation: rotate_pacman_half_up .5s 0s infinite;
+    }
+    .loading-image div:nth-child(2) {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_down .5s 0s infinite;
+        animation: rotate_pacman_half_down .5s 0s infinite;
+        margin-top: -50px;
+    }
+    @-webkit-keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @-webkit-keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+
+    @keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+    
+    @-webkit-keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+
+    @keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+    
+   
+    .loading-image div:nth-child(3),
+    .loading-image div:nth-child(4),
+    .loading-image div:nth-child(5),
+    .loading-image div:nth-child(6){
+        background-color: #49b1f5;
+        width: 15px;
+        height: 15px;
+        border-radius: 100%;
+        margin: 2px;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        transform: translateY(-6.25px);
+        top: 25px;
+        left: 100px;
+    }
+    .loading-text{
+        margin-bottom: 20vh;
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2rem;
+        box-sizing: border-box;
+        padding: 0 10px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    @media only screen and (max-width: 500px) {
+         .loading-text{
+            font-size: 1.5rem;
+         }
+    }
+    .fadeout {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    /* logo出现动画 */
+    @-webkit-keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}100%{opacity:1;-webkit-transform:none;transform:none}}
+    @keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);}}
+ </style>
+ <script>
+(function () {
+    const loaded = function(){
+       setTimeout(function(){
+            const loader = document.getElementById("loading-container");
+            loader.className="fadeout" ;//使用渐隐的方法淡出loading page
+            // document.getElementById("body-wrap").style.display="flex";
+            setTimeout(function(){
+                loader.style.display="none";
+            },1000); 
+        },1000);//强制显示loading page 1s  
+    };
+    loaded();
+})()
+ </script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="欢迎来到，TWOTO 的博客" type="application/atom+xml">
+</head>
+ <div id="loading-container">
+     <p class="loading-text">玩命加载中 . . . </p> 
+     <div class="loading-image">
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div> 
+         <div></div>
+     </div>
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">59</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">论文-3D卷积 C3D 及衍生方法<a class="post-edit-link" href="https://github.com/DongZhouGu/Blog-backup/edit/master/source/_posts/yuque/论文-3D卷积 C3D 及衍生方法.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2020-10-28T13:15:50.000Z" title="undefined 2020-10-28 21:15:50">2020-10-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="论文-3D卷积 C3D 及衍生方法"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><span id="more"></span>
+
+<h2 id="1-C3D-Learning-spatiotemporal-features-with-3d-convolutional-networks-2015ICCV-facebook"><a href="#1-C3D-Learning-spatiotemporal-features-with-3d-convolutional-networks-2015ICCV-facebook" class="headerlink" title="1. (C3D)Learning spatiotemporal features with 3d convolutional networks-2015ICCV-facebook"></a>1. (C3D)Learning spatiotemporal features with 3d convolutional networks-2015ICCV-facebook</h2><blockquote>
+<p>概述：采用 3D 卷积和 3D Pooling 构建了网络。 通过 3D 卷积，C3D 可以直接处理视频（或者说是视频帧的 volume）<br>关键词：C3D，速度快，模型简单<br>论文地址：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1412.0767.pdf">https://arxiv.org/pdf/1412.0767.pdf</a><br>论文翻译地址：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/09d1d8ffe8a4">https://www.jianshu.com/p/09d1d8ffe8a4</a><br>caff 源码:<a target="_blank" rel="noopener" href="https://github.com/facebook/C3D">https://github.com/facebook/C3D</a></p>
+</blockquote>
+<h3 id="主要贡献"><a href="#主要贡献" class="headerlink" title="主要贡献"></a>主要贡献</h3><p>1）与 2DCNN 相比，3DCNN 更适合时空特征学习；</p>
+<p>2）对于 3D ConvNet 而言，在所有层使用 3×3×3 的小卷积核效果最好；</p>
+<p>3）我们通过简单的线性分类器学到的特征名为 C3D(Convolutional 3D)，在 4 个不同的基准上优于现有的方法，并在其他 2 个基准上与目前最好的方法相当。</p>
+<p>此外，特征是紧凑的：在 UCF101 数据集上得到 52.8%的准确率只用了 10 维，并且由于 ConvNets 的推断快，计算效率非常高。最后，它们在概念上非常简单，易于训练和使用。</p>
+<h3 id="NOTE"><a href="#NOTE" class="headerlink" title="NOTE"></a>NOTE</h3><p>速度 C3D 的最大优势在于其速度，在文章中其速度为 314fps。而实际上这是基于两年前的显卡了。 用 Nvidia 1080 显卡可以达到 600fps 以上。 所以 C3D 的效率是要远远高于其他方法的，个人认为这使得 C3D 有着很好的应用前景。</p>
+<h3 id="原理图"><a href="#原理图" class="headerlink" title="原理图"></a>原理图</h3><p>与 2D ConvNet 相比，3D ConvNet 能够通过 3D 卷积和 3D 池化操作更好地建模时间信息。在 3D ConvNets 中，卷积和池化操作在时空上执行，而在 2D ConvNets 中，它们仅在空间上完成。下图展现出了差异，应用于一个图像的 2D 卷积将输出一个图像，施加在多个图像上的 2D 卷积(将它们视为不同的通道)也输出一个图像。因此，2D ConvNets 在每次卷积运算之后就会丢失输入信号的时间信息。只有 3D 卷积才能保留输入信号的时间信息。</p>
+<p><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2020/png/1164521/1603898415385-90eb1703-b84a-4947-904e-930775f7258e.png#height=136&amp;id=wiKDw&amp;originHeight=136&amp;originWidth=928&amp;originalType=binary%E2%88%B6=1&amp;size=0&amp;status=done&amp;style=none&amp;width=928" alt=""></p>
+<p>（a）和（b）分别为 2D 卷积用于单通道图像和多通道图像的情况（此处多通道图像可以指同一张图片的 3 个颜色通道，也指多张堆叠在一起的图片，即一小段视频），对于一个滤波器，输出为一张二维的特征图，多通道的信息被完全压缩了。而（c）中的 3D 卷积的输出仍然为 3D 的特征图，即保留了时间信息。</p>
+<h3 id="网络架构"><a href="#网络架构" class="headerlink" title="网络架构"></a>网络架构</h3><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2020/png/1164521/1603898415463-6f36965e-b043-4048-9f98-fa6ea8b48d5f.png#height=164&amp;id=EZnvM&amp;originHeight=164&amp;originWidth=855&amp;originalType=binary%E2%88%B6=1&amp;size=0&amp;status=done&amp;style=none&amp;width=855" alt=""></p>
+<p>3×3×3 卷积核的均匀设置是 3D ConvNets 的最佳选择。这个发现与 2D ConvNets 一致。使用大型数据集，可以根据机器内存限制和计算承受能力，尽可能深入地训练具有 3×3×3 核的 3D ConvNet。使用目前的 GPU 内存，我们设计了 3D ConvNet，具有 8 个卷积层、5 个池化层、两个全连接层，以及一个 softmax 输出层。网络架构如图 3 所示。为了简单起见，我们从现在开始将这个网络称为 C3D。所有 3D 卷积滤波器均为 3×3×3，步长为 1×1×1。为了保持早期的时间信息设置 pool1 核大小为 1×2×2、步长 1×2×2，其余所有 3D 池化层均为 2×2×2，步长为 2×2×2。每个全连接层有 4096 个输出单元。</p>
+<h3 id="结果对比"><a href="#结果对比" class="headerlink" title="结果对比"></a>结果对比</h3><p><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2020/png/1164521/1603898415419-f88654b4-6ec3-43aa-8795-51d8d1e9d13d.png#height=665&amp;id=WpuCf&amp;originHeight=665&amp;originWidth=662&amp;originalType=binary%E2%88%B6=1&amp;size=0&amp;status=done&amp;style=none&amp;width=662" alt=""></p>
+<p>实验效果：UCF101-85.2% 可以看出其在 UCF101 上的效果距离 two stream 方法还有不小差距。         我认为这主要是网络结构造成的</p>
+<h2 id="2-I3D-Inception-V1-Quo-Vadis-Action-Recognition-A-New-Model-and-the-Kinetics-Dataset-2017CVPR-facebook"><a href="#2-I3D-Inception-V1-Quo-Vadis-Action-Recognition-A-New-Model-and-the-Kinetics-Dataset-2017CVPR-facebook" class="headerlink" title="2. (I3D-Inception-V1)Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset-2017CVPR-facebook"></a>2. (I3D-Inception-V1)Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset-2017CVPR-facebook</h2><blockquote>
+<p>概述：以往的 Conv3D 效果很差的原因之一就是数据集太小，喂不饱网络。文章中的 3D 网络并不是随机初始化的，而是将在 ImageNet 训好的 2D 模型参数展开成 3D，之后再训练。因此叫 Inflating 3D ConvNets。<br>关键词：I3D，Inception-V1，数据集 kinetics，DeepMind 实验室牛逼有钱<br>论文地址：<a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2017/papers/Carreira_Quo_Vadis_Action_CVPR_2017_paper.pdf">https://openaccess.thecvf.com/content_cvpr_2017/papers/Carreira_Quo_Vadis_Action_CVPR_2017_paper.pdf</a><br>论文翻译地址：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/71d35fda32d3">https://www.jianshu.com/p/71d35fda32d3</a><br>论文源码:<a target="_blank" rel="noopener" href="https://github.com/deepmind/kinetics-i3d">https://github.com/deepmind/kinetics-i3d</a></p>
+</blockquote>
+<h3 id="主要贡献-1"><a href="#主要贡献-1" class="headerlink" title="主要贡献"></a>主要贡献</h3><p>1）提出了大数据集 kinetics，文章又把之前的经典方法都在这个数据集上做了实验，并且实验了在 kinetics 上预训练的模型对于小数据集的结果是否会有提升，实验结果表明使用 kinetics 预训练的模型能得到更高的准确率。</p>
+<p>2）提出了一种 I3D（Two-Stream Inflated 3D ConvNets）模型，该 3DCNN 模型是由 2DCNN Inception-V1 扩张而来，并且可以使用在 ImageNet 上预训练的参数，实验结果表明这个模型在各个标准数据集上都取得了当时最好的结果。</p>
+<h3 id="NOTE-1"><a href="#NOTE-1" class="headerlink" title="NOTE"></a>NOTE</h3><p>迁移学习：提出一个 <strong>infalted</strong>的思想，利用现阶段已有的 imageNet 去训练 2D 网络，再膨胀为 3D，也就是著名的<strong>I3D</strong>的方法。</p>
+<p>预训练：预训练，这一神奇的操作，来源就是产生于此。在现阶段的 video 方面的方法中，大多数方法在使用了预训练的方法。都可以产生一定的提升。从大规模优化的角度来说，预训练就是在网络中产生了一个较好的初始参数值，之后微调进行收敛，达到一个较好的<strong>局部</strong>最优解。虽然不知道具体怎么解释，但一定比随机初始化要好。</p>
+<h2 id="3-P3D-ResNet-Learning-Spatio-Temporal-Representation-with-Pseudo-3D-Residual-Networks-2017ICCV"><a href="#3-P3D-ResNet-Learning-Spatio-Temporal-Representation-with-Pseudo-3D-Residual-Networks-2017ICCV" class="headerlink" title="3.(P3D-ResNet)Learning Spatio-Temporal Representation with Pseudo-3D Residual Networks-2017ICCV"></a>3.(P3D-ResNet)<strong>Learning Spatio-Temporal Representation with Pseudo-3D Residual Networks</strong>-2017ICCV</h2><h2 id="4-R-2-1-D-A-Closer-Look-at-Spatiotemporal-Convolutions-for-Action-Recognition-2018CVPR"><a href="#4-R-2-1-D-A-Closer-Look-at-Spatiotemporal-Convolutions-for-Action-Recognition-2018CVPR" class="headerlink" title="4.(R(2+1)D)A Closer Look at Spatiotemporal Convolutions for Action Recognition-2018CVPR"></a>4.(R(2+1)D)A Closer Look at Spatiotemporal Convolutions for Action Recognition-2018CVPR</h2><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2020/10/28/yuque/lun-wen-3d-juan-ji-c3d-ji-yan-sheng-fang-fa/">https://dongzhougu.github.io/2020/10/28/yuque/lun-wen-3d-juan-ji-c3d-ji-yan-sheng-fang-fa/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/3D%E5%8D%B7%E7%A7%AF/">3D卷积</a><a class="post-meta__tags" href="/tags/%E5%8A%A8%E4%BD%9C%E8%AF%86%E5%88%AB/">动作识别</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/wechat.png" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/wechat.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><meta name="referrer" content="no-referrer" /><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/10/29/yuque/lun-wen-shi-kong-shuang-liu-two-stream-ji-yan-sheng-fang-fa/"><img class="prev-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">论文-时空双流Two Stream及衍生方法</div></div></a></div><div class="next-post pull-right"><a href="/2020/10/21/ssm-kuang-jia-zheng-he/"><img class="next-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-4.png" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SSM框架整合</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/10/29/yuque/lun-wen-shi-kong-shuang-liu-two-stream-ji-yan-sheng-fang-fa/" title="论文-时空双流Two Stream及衍生方法"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-29</div><div class="title">论文-时空双流Two Stream及衍生方法</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">59</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/DongZhouGu"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="tencent://AddContact/?fromId=45&amp;fromSubId=1&amp;subcmd=all&amp;uin=1596586942&amp;website=www.oicqzone.com" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://github.com/DongZhouGu" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-C3D-Learning-spatiotemporal-features-with-3d-convolutional-networks-2015ICCV-facebook"><span class="toc-number">1.</span> <span class="toc-text">1. (C3D)Learning spatiotemporal features with 3d convolutional networks-2015ICCV-facebook</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E8%B4%A1%E7%8C%AE"><span class="toc-number">1.1.</span> <span class="toc-text">主要贡献</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NOTE"><span class="toc-number">1.2.</span> <span class="toc-text">NOTE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E5%9B%BE"><span class="toc-number">1.3.</span> <span class="toc-text">原理图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84"><span class="toc-number">1.4.</span> <span class="toc-text">网络架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C%E5%AF%B9%E6%AF%94"><span class="toc-number">1.5.</span> <span class="toc-text">结果对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-I3D-Inception-V1-Quo-Vadis-Action-Recognition-A-New-Model-and-the-Kinetics-Dataset-2017CVPR-facebook"><span class="toc-number">2.</span> <span class="toc-text">2. (I3D-Inception-V1)Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset-2017CVPR-facebook</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E8%B4%A1%E7%8C%AE-1"><span class="toc-number">2.1.</span> <span class="toc-text">主要贡献</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NOTE-1"><span class="toc-number">2.2.</span> <span class="toc-text">NOTE</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-P3D-ResNet-Learning-Spatio-Temporal-Representation-with-Pseudo-3D-Residual-Networks-2017ICCV"><span class="toc-number">3.</span> <span class="toc-text">3.(P3D-ResNet)Learning Spatio-Temporal Representation with Pseudo-3D Residual Networks-2017ICCV</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-R-2-1-D-A-Closer-Look-at-Spatiotemporal-Convolutions-for-Action-Recognition-2018CVPR"><span class="toc-number">4.</span> <span class="toc-text">4.(R(2+1)D)A Closer Look at Spatiotemporal Convolutions for Action Recognition-2018CVPR</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/ba-xiang-mu-xing-neng-ce-shi/" title="八，项目性能测试">八，项目性能测试</a><time datetime="2022-05-12T06:42:22.000Z" title="发表于 2022-05-12 14:42:22">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/qi-ji-cheng-spring-yu-springboot/" title="七、集成Spring与SpringBoot">七、集成Spring与SpringBoot</a><time datetime="2022-05-12T06:42:19.000Z" title="发表于 2022-05-12 14:42:19">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/xrpc-xiang-mu-fang-dubbo-readme/" title="XRPC项目(仿Dubbo)-README">XRPC项目(仿Dubbo)-README</a><time datetime="2022-05-12T06:42:18.000Z" title="发表于 2022-05-12 14:42:18">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/liu-qu-diao-yong-na-ge-fu-wu-qi-ni-fu-zai-jun-heng-ce-lue/" title="六、去调用哪个服务器呢？负载均衡策略">六、去调用哪个服务器呢？负载均衡策略</a><time datetime="2022-05-12T06:42:15.000Z" title="发表于 2022-05-12 14:42:15">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/wu-shi-yong-spi-shi-xian-ke-cha-ba-kuo-zhan-she-ji/" title="五、使用SPI实现可插拔扩展设计">五、使用SPI实现可插拔扩展设计</a><time datetime="2022-05-12T06:42:14.000Z" title="发表于 2022-05-12 14:42:14">2022-05-12</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/main.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/tw_cn.min.js?ver=3.8.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/localsearch.min.js?ver=3.8.4"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      true && mermaid.init()
+    })
+  }
+}</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script>(function(d, w, c) {
+    w.ChatraID = 'ZjXyfadNfHZ8yJGFm';
+    var s = d.createElement('script');
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+    };
+    s.async = true;
+    s.src = 'https://call.chatra.io/chatra.js';
+    if (d.head) d.head.appendChild(s);
+})(document, window, 'Chatra');
+
+if (true) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      Chatra('openChat')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      Chatra('hide')
+    }
+    function chatBtnShow () {
+      Chatra('show')
+    }
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/talking/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

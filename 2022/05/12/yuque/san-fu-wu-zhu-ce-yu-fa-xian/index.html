@@ -1,0 +1,640 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>三、服务注册与发现 | 欢迎来到，TWOTO 的博客</title><meta name="keywords" content="XPRC,Netty"><meta name="author" content="DongZhou"><meta name="copyright" content="DongZhou"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="从零实现一个轻量级 RPC 框架-系列文章Github: https:&#x2F;&#x2F;github.com&#x2F;DongZhouGu&#x2F;XRpc  前言客户端在调用远程服务时，怎么知道服务端是否有要调用的服务呢，如果有，服务端的地址是什么呢？因此，在 RPC 框架中，服务注册与发现是非常重要的一个部分。在 Provider 也就是服务端启动时，需要将自己的 IP 地址和 RPC 接口写到配置表中；Consum">
+<meta property="og:type" content="article">
+<meta property="og:title" content="三、服务注册与发现">
+<meta property="og:url" content="https://dongzhougu.github.io/2022/05/12/yuque/san-fu-wu-zhu-ce-yu-fa-xian/index.html">
+<meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
+<meta property="og:description" content="从零实现一个轻量级 RPC 框架-系列文章Github: https:&#x2F;&#x2F;github.com&#x2F;DongZhouGu&#x2F;XRpc  前言客户端在调用远程服务时，怎么知道服务端是否有要调用的服务呢，如果有，服务端的地址是什么呢？因此，在 RPC 框架中，服务注册与发现是非常重要的一个部分。在 Provider 也就是服务端启动时，需要将自己的 IP 地址和 RPC 接口写到配置表中；Consum">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://dongzhougu.github.io/img/avatar.png">
+<meta property="article:published_time" content="2022-05-12T06:42:11.000Z">
+<meta property="article:modified_time" content="2022-05-12T07:52:07.307Z">
+<meta property="article:author" content="DongZhou">
+<meta property="article:tag" content="XPRC">
+<meta property="article:tag" content="Netty">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dongzhougu.github.io/img/avatar.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2022/05/12/yuque/san-fu-wu-zhu-ce-yu-fa-xian/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="NdIUXAOVyGnnBhcrip0ksCawbdAzT0hlBZDE9u4jx6k"/><meta name="msvalidate.01" content="567E47D75E8DCF1282B9623AD914701E"/><meta name="baidu-site-verification" content="code-pE5rnuxcfD"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":150,"languages":{"author":"作者: DongZhou","link":"链接: ","source":"来源: 欢迎来到，TWOTO 的博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '三、服务注册与发现',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-12 15:52:07'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">.card-announcement .social-button{margin: .6rem 0 0 0; text-align: center;}.card-announcement .social-button a{display: block; margin: 0.2rem 0;background-color: var(--btn-bg); color: var(--btn-color); line-height: 1.6rem; transition: all .3s; position: relative; z-index: 1;}</style><style type="text/css" lang="css">
+    #loading-container{
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-height: 100vh;
+        width: 100vw;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #FFF;
+        text-align: center;
+        /* loader页面消失采用渐隐的方式*/
+        -webkit-transition: opacity 1s ease;
+        -moz-transition: opacity 1s ease;
+        -o-transition: opacity 1s ease;
+        transition: opacity 1s ease;
+    }
+    .loading-image{
+        width: 120px;
+        height: 50px;
+        transform: translate(-50%);
+    }
+    
+    .loading-image div:nth-child(2) {
+        -webkit-animation: pacman-balls 1s linear 0s infinite;
+        animation: pacman-balls 1s linear 0s infinite
+    }
+
+    .loading-image div:nth-child(3) {
+        -webkit-animation: pacman-balls 1s linear .33s infinite;
+        animation: pacman-balls 1s linear .33s infinite
+    }
+
+    .loading-image div:nth-child(4) {
+        -webkit-animation: pacman-balls 1s linear .66s infinite;
+        animation: pacman-balls 1s linear .66s infinite
+    }
+
+    .loading-image div:nth-child(5) {
+        -webkit-animation: pacman-balls 1s linear .99s infinite;
+        animation: pacman-balls 1s linear .99s infinite
+    }
+    
+   .loading-image div:first-of-type {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_up .5s 0s infinite;
+        animation: rotate_pacman_half_up .5s 0s infinite;
+    }
+    .loading-image div:nth-child(2) {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_down .5s 0s infinite;
+        animation: rotate_pacman_half_down .5s 0s infinite;
+        margin-top: -50px;
+    }
+    @-webkit-keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @-webkit-keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+
+    @keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+    
+    @-webkit-keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+
+    @keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+    
+   
+    .loading-image div:nth-child(3),
+    .loading-image div:nth-child(4),
+    .loading-image div:nth-child(5),
+    .loading-image div:nth-child(6){
+        background-color: #49b1f5;
+        width: 15px;
+        height: 15px;
+        border-radius: 100%;
+        margin: 2px;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        transform: translateY(-6.25px);
+        top: 25px;
+        left: 100px;
+    }
+    .loading-text{
+        margin-bottom: 20vh;
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2rem;
+        box-sizing: border-box;
+        padding: 0 10px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    @media only screen and (max-width: 500px) {
+         .loading-text{
+            font-size: 1.5rem;
+         }
+    }
+    .fadeout {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    /* logo出现动画 */
+    @-webkit-keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}100%{opacity:1;-webkit-transform:none;transform:none}}
+    @keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);}}
+ </style>
+ <script>
+(function () {
+    const loaded = function(){
+       setTimeout(function(){
+            const loader = document.getElementById("loading-container");
+            loader.className="fadeout" ;//使用渐隐的方法淡出loading page
+            // document.getElementById("body-wrap").style.display="flex";
+            setTimeout(function(){
+                loader.style.display="none";
+            },1000); 
+        },1000);//强制显示loading page 1s  
+    };
+    loaded();
+})()
+ </script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="欢迎来到，TWOTO 的博客" type="application/atom+xml">
+</head>
+ <div id="loading-container">
+     <p class="loading-text">玩命加载中 . . . </p> 
+     <div class="loading-image">
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div> 
+         <div></div>
+     </div>
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">59</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">三、服务注册与发现<a class="post-edit-link" href="https://github.com/DongZhouGu/Blog-backup/edit/master/source/_posts/yuque/三、服务注册与发现.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-05-12T06:42:11.000Z" title="undefined 2022-05-12 14:42:11">2022-05-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="三、服务注册与发现"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><span id="more"></span>
+
+<blockquote>
+<p>从零实现一个轻量级 RPC 框架-系列文章<br>Github: <a target="_blank" rel="noopener" href="https://github.com/DongZhouGu/XRpc">https://github.com/DongZhouGu/XRpc</a></p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>客户端在调用远程服务时，怎么知道服务端是否有要调用的服务呢，如果有，服务端的地址是什么呢？<br>因此，在 RPC 框架中，服务注册与发现是非常重要的一个部分。在 Provider 也就是服务端启动时，需要将自己的 IP 地址和 RPC 接口写到配置表中；Consumer 也就是客户端在请求远程服务时，会获取该服务的 IP 地址。这个配置表就叫做<strong>注册中心</strong><br><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2022/png/1164521/1651118558445-f03c704c-04ca-4017-975c-0e09b046ad70.png#clientId=u751c5a9d-f8ad-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u61ac2caa&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1128&amp;originWidth=2272&amp;originalType=url%E2%88%B6=1&amp;rotation=0&amp;showTitle=false&amp;size=240388&amp;status=done&amp;style=none&amp;taskId=u4a7bb34d-0c76-4977-bab7-99130d1e0e0&amp;title=" alt="image.png"></p>
+<h2 id="注册中心的要求"><a href="#注册中心的要求" class="headerlink" title="注册中心的要求"></a>注册中心的要求</h2><p><strong>1. 存储</strong><br>可以简单地将注册中心理解为一个存储系统，存储着服务与服务提供方的映射表。一般注册中心对存储没有太多特别的要求，甚至夸张一点，你可以基于数据库来实现一个注册中心。<br><strong>2. 高可用</strong><br>注册中心一旦挂掉，Consumer 将无法获取 Provider 的地址，整个微服务将无法运转。因此<br>当然 Consumer 可以添加本地缓存，从某种角度上看，是允许注册中心短暂挂掉的。<br><strong>3. 健康检查</strong><br>Provider 向注册中心注册服务之后，注册中心需要定时向 Provider 发起健康检查，当 Provider 宕机的时候，注册中心能更快发现 ，从而将宕机的 Provider 从注册表中移除。<br>这特性数据库、Redis 都不具有，因此他们不适合做注册中心。<br><strong>4. 监听状态</strong><br>当服务增加、减少 Provider 的时候，注册中心除了能及时更新，还要能主动通知 Consumer，以便 Consumer 能快速更新本地缓存，减少错误请求的次数。<br>这一特性同样数据库、Redis 都不具有。<br>目前主流的注册中心有：Zookeeper、Eureka、Nacos、Consul 等。</p>
+<h2 id="一致性协议（CAP）"><a href="#一致性协议（CAP）" class="headerlink" title="一致性协议（CAP）"></a>一致性协议（CAP）</h2><p>CAP 即：</p>
+<ul>
+<li>Consistency（一致性）对于不同节点的请求，要么给出包含最新的修改响应、要么给出一个出错响应。</li>
+<li>Availability（可用性）对于每个请求都会给出一个非错响应，有可能是旧数据</li>
+<li>Partition tolerance（分区容忍性）系统中节点间出现<em>网络分区</em>时，系统仍然能够正常响应请求。</li>
+</ul>
+<p>这三个性质对应了分布式系统的三个指标：<br>而 CAP 理论说的就是：一个分布式系统，不可能同时做到这三点。这是因为在分布式系统总，网络故障和节点宕机是常态，因此<strong>网络分区</strong>是一定会出现的</p>
+<h2 id="注册中心实现的差异"><a href="#注册中心实现的差异" class="headerlink" title="注册中心实现的差异"></a>注册中心实现的差异</h2><p>Spring Cloud 有四个注册中心：Eureka、Zookeeper、Nacos 以及 Consul。注册中心必需的功能，肯定要有服务注册、服务发现、健康检查、集群节点间的心跳机制等等，集群架构要么是平级结构、要么是主从结构。节点之间必须考虑服务的数据信息同步，而一旦是主从结构，就必须考虑主节点 leader 的选举等等功能。这几种注册中心的比较如下</p>
+<table>
+<thead>
+<tr>
+<th><strong>比较项</strong></th>
+<th>*<em>Eureka *</em></th>
+<th>*<em>zookeeper *</em></th>
+<th>*<em>Nacos *</em></th>
+<th><strong>Consul</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>集群结构</td>
+<td>平级</td>
+<td>主从</td>
+<td>支持平级和主从</td>
+<td>主从</td>
+</tr>
+<tr>
+<td>集群角色</td>
+<td>主人</td>
+<td>Leader、follower observer</td>
+<td>leader、follower、candidate</td>
+<td>server-leader、server 以及 client</td>
+</tr>
+<tr>
+<td>是否可以及时知道服务状态变化</td>
+<td>不能及时知道</td>
+<td>会及时知道</td>
+<td>不能及时知道</td>
+<td>不能及时知道</td>
+</tr>
+<tr>
+<td>一致性协议（<strong>CAP）</strong></td>
+<td>注重可用性（AP）</td>
+<td>注重一致性(CP)</td>
+<td>支持 CP 和 AP-如何实现</td>
+<td>注重一致性(CP)</td>
+</tr>
+<tr>
+<td>雪崩保护</td>
+<td>有</td>
+<td>没有</td>
+<td>有</td>
+<td>没有</td>
+</tr>
+<tr>
+<td>社区是否活跃</td>
+<td>Eureka2.0 不再维护了</td>
+<td>持续维护</td>
+<td>持续维护</td>
+<td>持续维护</td>
+</tr>
+<tr>
+<td>管理端</td>
+<td>有现成的 eureka 管理端</td>
+<td>没有现成的管理端</td>
+<td>有现成的管理端</td>
+<td>有现成的管理端</td>
+</tr>
+<tr>
+<td>负载均衡策略</td>
+<td>使用 ribbon 实现</td>
+<td>一般可以直接采用 RPC 的负载均衡</td>
+<td>权重/metadata/Selector</td>
+<td>Fabio</td>
+</tr>
+<tr>
+<td>权限控制</td>
+<td>无</td>
+<td>使用 ACL 实现节点权限控制</td>
+<td>RBAC-用户、角色、权限</td>
+<td>ACL</td>
+</tr>
+<tr>
+<td>Spring Cloud 集成</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>健康检查</td>
+<td>Client Beat</td>
+<td>Keep Alive</td>
+<td>TCP/HTTP/MYSQL/Client Beat</td>
+<td>TCP/HTTP/gRPC/Cmd</td>
+</tr>
+<tr>
+<td>自动注销实例</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>访问协议</td>
+<td>HTTP</td>
+<td>TCP</td>
+<td>HTTP/DNS</td>
+<td>HTTP/DNS</td>
+</tr>
+<tr>
+<td>是否可用作配置中心</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>多数据中心</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>跨注册中心同步</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>Dubbo 集成</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>K8S 集成</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+<p>下面主要用 dubbo 支持的 zookeeper 和 Nacos 两种注册中心进行学习</p>
+<h2 id="Zookeeper"><a href="#Zookeeper" class="headerlink" title="Zookeeper"></a>Zookeeper</h2><p>ZooKeeper 提供的名称空间与标准文件系统的名称空间非常相似。各个节点名称是由斜杠（/）分隔的一系列路径元素。ZooKeeper 命名空间中的每个 znode 节点都由路径标识。<br><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2022/jpeg/1164521/1651496054525-b742e286-a402-47c2-88b8-c20076a1c170.jpeg#clientId=ud4cc99df-ee39-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u52259d48&amp;margin=%5Bobject%20Object%5D&amp;originHeight=253&amp;originWidth=442&amp;originalType=url%E2%88%B6=1&amp;rotation=0&amp;showTitle=false&amp;status=done&amp;style=none&amp;taskId=ub351cc84-e664-4da2-a917-a46a1deee65&amp;title=" alt=""><br>就像拥有一个文件系统一样，该文件系统也允许文件成为目录。<br>需要注意的是：ZooKeeper 旨在存储协调数据：状态信息，配置，位置信息等，因此每个节点上存储的数据通常很小，在字节到千字节范围内。</p>
+<h3 id="Znode-节点"><a href="#Znode-节点" class="headerlink" title="Znode 节点"></a>Znode 节点</h3><ul>
+<li>持久节点：一旦创建，除非主动移除，否则会一直保存在 ZooKeeper。</li>
+<li>临时节点：生命周期和客户端会话绑定，会话失效，相关的临时节点被移除。</li>
+<li>持久顺序性：同时具备顺序性。</li>
+<li>临时顺序性：同时具备顺序性。</li>
+</ul>
+<p>Znodes 维护一个统计数据结构，其中包括用于数据更改，ACL 更改和时间戳的版本号，以允许进行缓存验证和协调更新。<br><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2022/png/1164521/1651496235842-c88adda5-4b13-4860-b3b2-ad93dcd4a6e6.png#clientId=ud4cc99df-ee39-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=uf53d6bda&amp;margin=%5Bobject%20Object%5D&amp;originHeight=420&amp;originWidth=533&amp;originalType=url%E2%88%B6=1&amp;rotation=0&amp;showTitle=false&amp;status=done&amp;style=none&amp;taskId=uf04359a3-1c99-4c29-a961-63d5bf2e545&amp;title=" alt=""><br><strong>ACL(Access Control List)：</strong><br>记录 Znode 的访问权限列表，也就是说存储了哪些人可以访问本节点。<br><strong>stat：</strong><br>包含 Znode 的各种元数据，比如事务 ID、版本号、时间戳、大小等等。<br><strong>child：</strong><br>当前节点的子节点引用，类似于二叉树的孩子节点，当然不止我画的这么两个孩子节点。</p>
+<h3 id="watch-特性"><a href="#watch-特性" class="headerlink" title="watch 特性"></a>watch 特性</h3><p>zookeeper 的这种 watch 机制能够使得客户端能够实时感知到 zk 上它所需要调用的那个服务实例的新增、删除以及更新等操作，从而进行相应的服务熔断、回退后续等处理。当客户端调用了任何一种获取数据（包含 getData()，getChildren()和 exist()）的操作，并将监听事件参数 watch 设置为 true，则当这个 Znode 发生改变，zookeeper 服务端就会发送变化通知到这个请求监听的的客户端。</p>
+<h3 id="集群架构"><a href="#集群架构" class="headerlink" title="集群架构"></a>集群架构</h3><p>主从结构的，具体来说是一主多从结构，就是有一个 leader，多个 follower，以及只负责读操作、不参与选举的 observer<br><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2022/png/1164521/1651494376046-67714b7e-24c2-4112-8693-91606021e7d1.png#clientId=ud4cc99df-ee39-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=CEWeZ&amp;margin=%5Bobject%20Object%5D&amp;originHeight=360&amp;originWidth=743&amp;originalType=url%E2%88%B6=1&amp;rotation=0&amp;showTitle=false&amp;status=done&amp;style=none&amp;taskId=ub14edd0c-65c6-408c-91c3-f9e359f04b5&amp;title=" alt=""></p>
+<h3 id="ZAB-协议保证一致性"><a href="#ZAB-协议保证一致性" class="headerlink" title="ZAB 协议保证一致性"></a>ZAB 协议保证一致性</h3><p>ZAB 有两种基本模式：崩溃恢复和广播模式<br><strong>崩溃恢复：</strong><br>集群架构中是有一个 Leader 的，但是这个 leader 万一因为网络故障挂掉就会从 Follower 中投票选举一个新的 leader。当选举产生了新的 Leader，同时集群中有过半的机器与该 Leader 服务器完成了状态同步（即数据同步）之后，Zab 协议就会退出崩溃恢复模式，进入消息广播模式。</p>
+<p><strong>广播模式：</strong><br><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2022/png/1164521/1651497452486-54e6db95-9b11-48c6-ac67-dbdc5e6fbdd1.png#clientId=ud4cc99df-ee39-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u460db5af&amp;margin=%5Bobject%20Object%5D&amp;originHeight=542&amp;originWidth=820&amp;originalType=url%E2%88%B6=1&amp;rotation=0&amp;showTitle=false&amp;status=done&amp;style=none&amp;taskId=u77e69ba1-dba8-4f60-b1e1-af3df09186c&amp;title=" alt=""><br>1）所有的事务请求必须由一个全局唯一的 leader 服务器来协调处理，leader 接收到写入数据请求（客户端发出写入数据请求给任意 Follower，Follower 将写入数据请求转发给 Leader）<br>2）进入广播提议的发起<br>3）转换成一个 事务 Proposal，并将该 Proposal 分发给集群中所有的 Follower 服务器，也就是向所有 Follower 节点发送数据广播请求<br>4）Follower 接到 Propose 消息，写入日志成功<br>5）返回 ACK 消息给 Leader<br>6）Leader 接到半数以上 ACK 消息，返回成功给客户端，并且广播 Commit 请求给 Follower；<br>7）follower 接收到消息，则提交事务。</p>
+<h3 id="XRPC-中的实现"><a href="#XRPC-中的实现" class="headerlink" title="XRPC 中的实现"></a>XRPC 中的实现</h3><p><strong>注册中心工厂，用于获取注册中心</strong></p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SPI(value = "zookeeper")</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RegisterFactory</span> </span>{</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取注册中心</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> address 注册中心的地址。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 如果协议类型跟注册中心匹配上了，返回对应的配置中心实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Register <span class="title">getRegister</span><span class="params">(String address)</span></span>;</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>注册中心的接口</strong></p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Register</span> </span>{</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">registerServiceMap</span><span class="params">(Map&lt;String, Object&gt; serviceMap, InetSocketAddress serverAddress)</span> </span>{</span><br><span class="line">        <span class="keyword">for</span> (String rpcServiceName : serviceMap.keySet()) {</span><br><span class="line">            registerService(rpcServiceName, serverAddress);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 向注册中心注册服务</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">registerService</span><span class="params">(String rpcServiceName, InetSocketAddress inetSocketAddress)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消所有本机的服务，用于关机的时候</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unregisterAllMyService</span><span class="params">(InetSocketAddress inetSocketAddress)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *  查找含有某个服务的所有服务端地址</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">lookupService</span><span class="params">(String serviceKey)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *  关闭注册中心</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>zookeeper 注册工厂</strong></p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZkRegistryFactory</span> <span class="keyword">implements</span> <span class="title">RegisterFactory</span> </span>{</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, ZkRegister&gt; cache = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Register <span class="title">getRegister</span><span class="params">(String address)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (cache.containsKey(address)) {</span><br><span class="line">            <span class="keyword">return</span> cache.get(address);</span><br><span class="line">        }</span><br><span class="line">        ZkRegister zkRegister = <span class="keyword">new</span> ZkRegister(address);</span><br><span class="line">        cache.putIfAbsent(address, zkRegister);</span><br><span class="line">        <span class="keyword">return</span> cache.get(address);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>zookeeper 注册中心功能实现</strong></p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZkRegister</span> <span class="keyword">implements</span> <span class="title">Register</span> </span>{</span><br><span class="line">    <span class="keyword">private</span> CuratorFramework zkClient;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ZkRegister</span><span class="params">(String address)</span> </span>{</span><br><span class="line">        <span class="keyword">this</span>.zkClient = CuratorUtils.getZkClient(address);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerService</span><span class="params">(String rpcServiceName, InetSocketAddress inetSocketAddress)</span> </span>{</span><br><span class="line">        String servicePath = CuratorUtils.ZK_REGISTER_ROOT_PATH + <span class="string">"/"</span> + rpcServiceName + inetSocketAddress.toString();</span><br><span class="line">        CuratorUtils.createPersistentNode(zkClient, servicePath);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unregisterAllMyService</span><span class="params">(InetSocketAddress inetSocketAddress)</span> </span>{</span><br><span class="line">        CuratorUtils.clearRegistry(zkClient, inetSocketAddress);</span><br><span class="line">        zkClient.close();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">lookupService</span><span class="params">(String serviceKey)</span> </span>{</span><br><span class="line">        <span class="comment">// 从注册中心 拿到该rpcService下的所有server的Address</span></span><br><span class="line">        List&lt;String&gt; serviceUrlList = CuratorUtils.getChildrenNodes(zkClient, serviceKey);</span><br><span class="line">        <span class="keyword">if</span> (CollUtil.isEmpty(serviceUrlList)) {</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RpcException(RpcErrorMessageEnum.SERVICE_CAN_NOT_BE_FOUND, serviceKey);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> serviceUrlList;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>{</span><br><span class="line">        <span class="keyword">this</span>.zkClient.close();</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>从注册中心拿到调用接口的服务地址时，还会走一层<strong>本地缓存</strong>，当注册中心挂的时候，本地还可以使用缓存中的数据。Zookeeper 还有一个很强的功能：<strong>监听。</strong>当监听的路径发生状态变化时，会全量更新对应的服务的本地缓存 SERVICE_ADDRESS_MAP</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CuratorUtils</span> </span>{</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BASE_SLEEP_TIME = <span class="number">1000</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_RETRIES = <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String ZK_REGISTER_ROOT_PATH = <span class="string">"/xrpc"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, List&lt;String&gt;&gt; SERVICE_ADDRESS_MAP = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Set&lt;String&gt; REGISTERED_PATH_SET = ConcurrentHashMap.newKeySet();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> CuratorFramework zkClient;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">CuratorUtils</span><span class="params">()</span> </span>{</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Create persistent nodes. Unlike temporary nodes, persistent nodes are not removed when the client disconnects</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path node path</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">createPersistentNode</span><span class="params">(CuratorFramework zkClient, String path)</span> </span>{</span><br><span class="line">        <span class="keyword">try</span> {</span><br><span class="line">            <span class="keyword">if</span> (REGISTERED_PATH_SET.contains(path) || zkClient.checkExists().forPath(path) != <span class="keyword">null</span>) {</span><br><span class="line">                log.info(<span class="string">"The node already exists. The node is:[{}]"</span>, path);</span><br><span class="line">            } <span class="keyword">else</span> {</span><br><span class="line">                zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);</span><br><span class="line">                log.info(<span class="string">"The node was created successfully. The node is:[{}]"</span>, path);</span><br><span class="line">            }</span><br><span class="line">            REGISTERED_PATH_SET.add(path);</span><br><span class="line">        } <span class="keyword">catch</span> (Exception e) {</span><br><span class="line">            log.error(<span class="string">"create persistent node for path [{}] fail"</span>, path);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Gets the children under a node</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> All child nodes under the specified node</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">getChildrenNodes</span><span class="params">(CuratorFramework zkClient, String rpcServiceName)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (SERVICE_ADDRESS_MAP.containsKey(rpcServiceName)) {</span><br><span class="line">            <span class="keyword">return</span> SERVICE_ADDRESS_MAP.get(rpcServiceName);</span><br><span class="line">        }</span><br><span class="line">        List&lt;String&gt; result = <span class="keyword">null</span>;</span><br><span class="line">        String servicePath = ZK_REGISTER_ROOT_PATH + <span class="string">"/"</span> + rpcServiceName;</span><br><span class="line">        <span class="keyword">try</span> {</span><br><span class="line">            result = zkClient.getChildren().forPath(servicePath);</span><br><span class="line">            SERVICE_ADDRESS_MAP.put(rpcServiceName, result);</span><br><span class="line">            registerWatcher(rpcServiceName, zkClient);</span><br><span class="line">        } <span class="keyword">catch</span> (Exception e) {</span><br><span class="line">            log.error(<span class="string">"get children nodes for path [{}] fail"</span>, servicePath);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Empty the registry of data</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">clearRegistry</span><span class="params">(CuratorFramework zkClient, InetSocketAddress inetSocketAddress)</span> </span>{</span><br><span class="line">        REGISTERED_PATH_SET.stream().parallel().forEach(p -&gt; {</span><br><span class="line">            <span class="keyword">try</span> {</span><br><span class="line">                <span class="keyword">if</span> (p.endsWith(inetSocketAddress.toString())) {</span><br><span class="line">                    zkClient.delete().forPath(p);</span><br><span class="line">                }</span><br><span class="line">            } <span class="keyword">catch</span> (Exception e) {</span><br><span class="line">                log.error(<span class="string">"clear registry for path [{}] fail"</span>, p);</span><br><span class="line">            }</span><br><span class="line">        });</span><br><span class="line">        log.info(<span class="string">"All registered services on the server are cleared:[{}]"</span>, REGISTERED_PATH_SET.toString());</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CuratorFramework <span class="title">getZkClient</span><span class="params">(String zookeeperAddress)</span> </span>{</span><br><span class="line">        <span class="comment">// if zkClient has been started, return directly</span></span><br><span class="line">        <span class="keyword">if</span> (zkClient != <span class="keyword">null</span> &amp;&amp; zkClient.getState() == CuratorFrameworkState.STARTED) {</span><br><span class="line">            <span class="keyword">return</span> zkClient;</span><br><span class="line">        }</span><br><span class="line">        buildZkClient(zookeeperAddress);</span><br><span class="line">        <span class="keyword">try</span> {</span><br><span class="line">            <span class="comment">// wait 30s until connect to the zookeeper</span></span><br><span class="line">            <span class="keyword">if</span> (!zkClient.blockUntilConnected(<span class="number">30</span>, TimeUnit.SECONDS)) {</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Time out waiting to connect to ZK!"</span>);</span><br><span class="line">            }</span><br><span class="line">        } <span class="keyword">catch</span> (InterruptedException e) {</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> zkClient;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 基于建造者模式的链式调用来创建客户端</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> connectString 服务器列表，格式host1:port1,host2:port2,...</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">buildZkClient</span><span class="params">(String connectString)</span> </span>{</span><br><span class="line">        zkClient = CuratorFrameworkFactory.builder()</span><br><span class="line">                .connectString(connectString)</span><br><span class="line">                .retryPolicy(<span class="keyword">new</span> ExponentialBackoffRetry(BASE_SLEEP_TIME, MAX_RETRIES))</span><br><span class="line">                .build();</span><br><span class="line">        zkClient.start();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Registers to listen for changes to the specified node</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">registerWatcher</span><span class="params">(String rpcServiceName, CuratorFramework zkClient)</span> <span class="keyword">throws</span> Exception </span>{</span><br><span class="line">        String servicePath = ZK_REGISTER_ROOT_PATH + <span class="string">"/"</span> + rpcServiceName;</span><br><span class="line">        PathChildrenCache pathChildrenCache = <span class="keyword">new</span> PathChildrenCache(zkClient, servicePath, <span class="keyword">true</span>);</span><br><span class="line">        PathChildrenCacheListener pathChildrenCacheListener = (curatorFramework, pathChildrenCacheEvent) -&gt; {</span><br><span class="line">            List&lt;String&gt; serviceAddresses = curatorFramework.getChildren().forPath(servicePath);</span><br><span class="line">            SERVICE_ADDRESS_MAP.put(rpcServiceName, serviceAddresses);</span><br><span class="line">        };</span><br><span class="line">        pathChildrenCache.getListenable().addListener(pathChildrenCacheListener);</span><br><span class="line">        pathChildrenCache.start();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Nacos"><a href="#Nacos" class="headerlink" title="Nacos"></a>Nacos</h2><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NacosRegister</span> <span class="keyword">implements</span> <span class="title">Register</span> </span>{</span><br><span class="line">    <span class="keyword">private</span> NamingService namingService;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NacosRegister</span><span class="params">(String address)</span> </span>{</span><br><span class="line">        <span class="keyword">this</span>.namingService = NacosUtils.getNacosClient(address);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerService</span><span class="params">(String rpcServiceName, InetSocketAddress inetSocketAddress)</span> </span>{</span><br><span class="line">        <span class="keyword">try</span> {</span><br><span class="line">            NacosUtils.registerInstance(namingService, rpcServiceName, inetSocketAddress);</span><br><span class="line">        } <span class="keyword">catch</span> (NacosException e) {</span><br><span class="line">            log.error(<span class="string">"register service [{}] fail"</span>, rpcServiceName, e);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unregisterAllMyService</span><span class="params">(InetSocketAddress inetSocketAddress)</span> </span>{</span><br><span class="line">        NacosUtils.clearRegistry(namingService, inetSocketAddress);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">lookupService</span><span class="params">(String serviceKey)</span> </span>{</span><br><span class="line">        <span class="comment">// 从注册中心 拿到该rpcService下的所有server的Address</span></span><br><span class="line">        List&lt;String&gt; serviceUrlList = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> {</span><br><span class="line">            serviceUrlList = NacosUtils.getAllInstance(namingService, serviceKey);</span><br><span class="line">        } <span class="keyword">catch</span> (NacosException e) {</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RpcException(RpcErrorMessageEnum.SERVICE_CAN_NOT_BE_FOUND, serviceKey);</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> serviceUrlList;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>{</span><br><span class="line">        namingService=<span class="keyword">null</span>;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NacosUtils</span> </span>{</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, List&lt;String&gt;&gt; SERVICE_ADDRESS_MAP = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Set&lt;String&gt; REGISTERED_PATH_SET = ConcurrentHashMap.newKeySet();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> NamingService namingService;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> NamingService <span class="title">getNacosClient</span><span class="params">(String address)</span> </span>{</span><br><span class="line">        <span class="keyword">try</span> {</span><br><span class="line">            namingService = NamingFactory.createNamingService(address);</span><br><span class="line">        } <span class="keyword">catch</span> (NacosException e) {</span><br><span class="line">            log.error(<span class="string">"connect to nacos [{}] fail"</span>, address);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> namingService;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据服务名称和地址注册服务</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rpcServiceName 服务名称</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> address        服务地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> NacosException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">registerInstance</span><span class="params">(NamingService namingService, String rpcServiceName, InetSocketAddress address)</span> <span class="keyword">throws</span> NacosException </span>{</span><br><span class="line">        namingService.registerInstance(rpcServiceName, address.getHostName(), address.getPort());</span><br><span class="line">        REGISTERED_PATH_SET.add(rpcServiceName);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根绝服务名称获取服务的所有实例</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> serviceName 服务名称</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 服务实例集合</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> NacosException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">getAllInstance</span><span class="params">(NamingService namingService, String serviceName)</span> <span class="keyword">throws</span> NacosException </span>{</span><br><span class="line">        <span class="keyword">if</span> (SERVICE_ADDRESS_MAP.containsKey(serviceName)) {</span><br><span class="line">            <span class="keyword">return</span> SERVICE_ADDRESS_MAP.get(serviceName);</span><br><span class="line">        }</span><br><span class="line">        List&lt;Instance&gt; allInstances = namingService.getAllInstances(serviceName);</span><br><span class="line">        List&lt;String&gt; addressList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Instance instance : allInstances) {</span><br><span class="line">            addressList.add(instance.getIp() + <span class="string">":"</span> + instance.getPort());</span><br><span class="line">        }</span><br><span class="line">        SERVICE_ADDRESS_MAP.put(serviceName, addressList);</span><br><span class="line">        registerWatcher(namingService, serviceName);</span><br><span class="line">        <span class="keyword">return</span> addressList;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据服务地址清理 Nacos</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> address 服务地址</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">clearRegistry</span><span class="params">(NamingService namingService, InetSocketAddress address)</span> </span>{</span><br><span class="line">        String host = address.getHostName();</span><br><span class="line">        <span class="keyword">int</span> port = address.getPort();</span><br><span class="line">        REGISTERED_PATH_SET.stream().parallel().forEach(serviceName -&gt; {</span><br><span class="line">            <span class="keyword">try</span> {</span><br><span class="line">                namingService.deregisterInstance(serviceName, host, port);</span><br><span class="line">            } <span class="keyword">catch</span> (NacosException e) {</span><br><span class="line">                log.error(<span class="string">"clear registry for service [{}] fail"</span>, serviceName, e);</span><br><span class="line">            }</span><br><span class="line">        });</span><br><span class="line">        log.info(<span class="string">"All registered services on the server are cleared:[{}]"</span>, REGISTERED_PATH_SET.toString());</span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 监听服务，更改时刷缓存</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@SneakyThrows</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">registerWatcher</span><span class="params">(NamingService namingService, String serviceName)</span> </span>{</span><br><span class="line">        namingService.subscribe(serviceName, <span class="keyword">new</span> EventListener() {</span><br><span class="line">            <span class="meta">@SneakyThrows</span></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEvent</span><span class="params">(Event event)</span> </span>{</span><br><span class="line">                List&lt;Instance&gt; allInstances = namingService.getAllInstances(serviceName);</span><br><span class="line">                List&lt;String&gt; addressList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                <span class="keyword">for</span> (Instance instance : allInstances) {</span><br><span class="line">                    addressList.add(instance.getIp() + <span class="string">":"</span> + instance.getPort());</span><br><span class="line">                }</span><br><span class="line">                SERVICE_ADDRESS_MAP.put(serviceName, addressList);</span><br><span class="line">            }</span><br><span class="line">        });</span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2022/05/12/yuque/san-fu-wu-zhu-ce-yu-fa-xian/">https://dongzhougu.github.io/2022/05/12/yuque/san-fu-wu-zhu-ce-yu-fa-xian/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/XPRC/">XPRC</a><a class="post-meta__tags" href="/tags/Netty/">Netty</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/wechat.png" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/wechat.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><meta name="referrer" content="no-referrer" /><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/05/12/yuque/si-cai-yong-dong-tai-dai-li-qu-wu-gan-diao-yong-yuan-cheng-fu-wu/"><img class="prev-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-8.png" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">四、采用动态代理去无感调用远程服务</div></div></a></div><div class="next-post pull-right"><a href="/2022/05/12/yuque/er-wang-luo-chuan-shu-gao-xiao-xu-lie-hua-xie-yi-yu-shi-xian/"><img class="next-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">二、网络传输高效序列化协议与实现</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/05/12/yuque/xrpc-xiang-mu-fang-dubbo-readme/" title="XRPC项目(仿Dubbo)-README"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">XRPC项目(仿Dubbo)-README</div></div></a></div><div><a href="/2022/05/12/yuque/qi-ji-cheng-spring-yu-springboot/" title="七、集成Spring与SpringBoot"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">七、集成Spring与SpringBoot</div></div></a></div><div><a href="/2022/05/12/yuque/er-wang-luo-chuan-shu-gao-xiao-xu-lie-hua-xie-yi-yu-shi-xian/" title="二、网络传输高效序列化协议与实现"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">二、网络传输高效序列化协议与实现</div></div></a></div><div><a href="/2022/05/12/yuque/wu-shi-yong-spi-shi-xian-ke-cha-ba-kuo-zhan-she-ji/" title="五、使用SPI实现可插拔扩展设计"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">五、使用SPI实现可插拔扩展设计</div></div></a></div><div><a href="/2022/05/12/yuque/liu-qu-diao-yong-na-ge-fu-wu-qi-ni-fu-zai-jun-heng-ce-lue/" title="六、去调用哪个服务器呢？负载均衡策略"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">六、去调用哪个服务器呢？负载均衡策略</div></div></a></div><div><a href="/2022/05/12/yuque/ling-ru-he-shi-xian-yi-ge-qing-liang-ji-rpc-kuang-jia/" title="零、如何实现一个轻量级RPC框架？"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">零、如何实现一个轻量级RPC框架？</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">59</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/DongZhouGu"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="tencent://AddContact/?fromId=45&amp;fromSubId=1&amp;subcmd=all&amp;uin=1596586942&amp;website=www.oicqzone.com" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://github.com/DongZhouGu" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E7%9A%84%E8%A6%81%E6%B1%82"><span class="toc-number">2.</span> <span class="toc-text">注册中心的要求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E5%8D%8F%E8%AE%AE%EF%BC%88CAP%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">一致性协议（CAP）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="toc-number">4.</span> <span class="toc-text">注册中心实现的差异</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Zookeeper"><span class="toc-number">5.</span> <span class="toc-text">Zookeeper</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Znode-%E8%8A%82%E7%82%B9"><span class="toc-number">5.1.</span> <span class="toc-text">Znode 节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#watch-%E7%89%B9%E6%80%A7"><span class="toc-number">5.2.</span> <span class="toc-text">watch 特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84"><span class="toc-number">5.3.</span> <span class="toc-text">集群架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZAB-%E5%8D%8F%E8%AE%AE%E4%BF%9D%E8%AF%81%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-number">5.4.</span> <span class="toc-text">ZAB 协议保证一致性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XRPC-%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.5.</span> <span class="toc-text">XRPC 中的实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nacos"><span class="toc-number">6.</span> <span class="toc-text">Nacos</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/ba-xiang-mu-xing-neng-ce-shi/" title="八，项目性能测试">八，项目性能测试</a><time datetime="2022-05-12T06:42:22.000Z" title="发表于 2022-05-12 14:42:22">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/qi-ji-cheng-spring-yu-springboot/" title="七、集成Spring与SpringBoot">七、集成Spring与SpringBoot</a><time datetime="2022-05-12T06:42:19.000Z" title="发表于 2022-05-12 14:42:19">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/xrpc-xiang-mu-fang-dubbo-readme/" title="XRPC项目(仿Dubbo)-README">XRPC项目(仿Dubbo)-README</a><time datetime="2022-05-12T06:42:18.000Z" title="发表于 2022-05-12 14:42:18">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/liu-qu-diao-yong-na-ge-fu-wu-qi-ni-fu-zai-jun-heng-ce-lue/" title="六、去调用哪个服务器呢？负载均衡策略">六、去调用哪个服务器呢？负载均衡策略</a><time datetime="2022-05-12T06:42:15.000Z" title="发表于 2022-05-12 14:42:15">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/wu-shi-yong-spi-shi-xian-ke-cha-ba-kuo-zhan-she-ji/" title="五、使用SPI实现可插拔扩展设计">五、使用SPI实现可插拔扩展设计</a><time datetime="2022-05-12T06:42:14.000Z" title="发表于 2022-05-12 14:42:14">2022-05-12</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-5.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/main.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/tw_cn.min.js?ver=3.8.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/localsearch.min.js?ver=3.8.4"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      true && mermaid.init()
+    })
+  }
+}</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script>(function(d, w, c) {
+    w.ChatraID = 'ZjXyfadNfHZ8yJGFm';
+    var s = d.createElement('script');
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+    };
+    s.async = true;
+    s.src = 'https://call.chatra.io/chatra.js';
+    if (d.head) d.head.appendChild(s);
+})(document, window, 'Chatra');
+
+if (true) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      Chatra('openChat')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      Chatra('hide')
+    }
+    function chatBtnShow () {
+      Chatra('show')
+    }
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/talking/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

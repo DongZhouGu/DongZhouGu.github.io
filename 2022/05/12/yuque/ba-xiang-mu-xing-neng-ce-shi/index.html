@@ -1,0 +1,561 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>八，项目性能测试 | 欢迎来到，TWOTO 的博客</title><meta name="keywords" content="XPRC,Netty"><meta name="author" content="DongZhou"><meta name="copyright" content="DongZhou"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言通过前面的章节，我们的 RPC 框架已经搭建完成，虽仍有许多待优化的点，但整体的效率性能应该还是不错的，下面我们来对 XRPC 的性能进行测试 测试环境我所用的测试机器硬件配置为：  操作系统：Windows10 CPU: AMD R5 3500X 6-Core 内存：16 GB 3200 MHz DDR4  序列化测试序列化针对序列化的大小和速度进行测试 序列化后的数据大小1234567">
+<meta property="og:type" content="article">
+<meta property="og:title" content="八，项目性能测试">
+<meta property="og:url" content="https://dongzhougu.github.io/2022/05/12/yuque/ba-xiang-mu-xing-neng-ce-shi/index.html">
+<meta property="og:site_name" content="欢迎来到，TWOTO 的博客">
+<meta property="og:description" content="前言通过前面的章节，我们的 RPC 框架已经搭建完成，虽仍有许多待优化的点，但整体的效率性能应该还是不错的，下面我们来对 XRPC 的性能进行测试 测试环境我所用的测试机器硬件配置为：  操作系统：Windows10 CPU: AMD R5 3500X 6-Core 内存：16 GB 3200 MHz DDR4  序列化测试序列化针对序列化的大小和速度进行测试 序列化后的数据大小1234567">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://dongzhougu.github.io/img/avatar.png">
+<meta property="article:published_time" content="2022-05-12T06:42:22.000Z">
+<meta property="article:modified_time" content="2022-05-12T07:52:06.879Z">
+<meta property="article:author" content="DongZhou">
+<meta property="article:tag" content="XPRC">
+<meta property="article:tag" content="Netty">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dongzhougu.github.io/img/avatar.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongzhougu.github.io/2022/05/12/yuque/ba-xiang-mu-xing-neng-ce-shi/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="NdIUXAOVyGnnBhcrip0ksCawbdAzT0hlBZDE9u4jx6k"/><meta name="msvalidate.01" content="567E47D75E8DCF1282B9623AD914701E"/><meta name="baidu-site-verification" content="code-pE5rnuxcfD"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":150,"languages":{"author":"作者: DongZhou","link":"链接: ","source":"来源: 欢迎来到，TWOTO 的博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '八，项目性能测试',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-12 15:52:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    document.addEventListener('pjax:complete', detectApple)})(window)</script><style type="text/css">.card-announcement .social-button{margin: .6rem 0 0 0; text-align: center;}.card-announcement .social-button a{display: block; margin: 0.2rem 0;background-color: var(--btn-bg); color: var(--btn-color); line-height: 1.6rem; transition: all .3s; position: relative; z-index: 1;}</style><style type="text/css" lang="css">
+    #loading-container{
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-height: 100vh;
+        width: 100vw;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #FFF;
+        text-align: center;
+        /* loader页面消失采用渐隐的方式*/
+        -webkit-transition: opacity 1s ease;
+        -moz-transition: opacity 1s ease;
+        -o-transition: opacity 1s ease;
+        transition: opacity 1s ease;
+    }
+    .loading-image{
+        width: 120px;
+        height: 50px;
+        transform: translate(-50%);
+    }
+    
+    .loading-image div:nth-child(2) {
+        -webkit-animation: pacman-balls 1s linear 0s infinite;
+        animation: pacman-balls 1s linear 0s infinite
+    }
+
+    .loading-image div:nth-child(3) {
+        -webkit-animation: pacman-balls 1s linear .33s infinite;
+        animation: pacman-balls 1s linear .33s infinite
+    }
+
+    .loading-image div:nth-child(4) {
+        -webkit-animation: pacman-balls 1s linear .66s infinite;
+        animation: pacman-balls 1s linear .66s infinite
+    }
+
+    .loading-image div:nth-child(5) {
+        -webkit-animation: pacman-balls 1s linear .99s infinite;
+        animation: pacman-balls 1s linear .99s infinite
+    }
+    
+   .loading-image div:first-of-type {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_up .5s 0s infinite;
+        animation: rotate_pacman_half_up .5s 0s infinite;
+    }
+    .loading-image div:nth-child(2) {
+        width: 0;
+        height: 0;
+        border: 25px solid #49b1f5;
+        border-right-color: transparent;
+        border-radius: 25px;
+        -webkit-animation: rotate_pacman_half_down .5s 0s infinite;
+        animation: rotate_pacman_half_down .5s 0s infinite;
+        margin-top: -50px;
+    }
+    @-webkit-keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @keyframes rotate_pacman_half_up {0% {transform: rotate(270deg)}50% {transform: rotate(1turn)}to {transform: rotate(270deg)}}
+
+    @-webkit-keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+
+    @keyframes rotate_pacman_half_down {0% {transform: rotate(90deg)}50% {transform: rotate(0deg)}to {transform: rotate(90deg)}}
+    
+    @-webkit-keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+
+    @keyframes pacman-balls {75% {opacity: .7}to {transform: translate(-100px, -6.25px)}}
+    
+   
+    .loading-image div:nth-child(3),
+    .loading-image div:nth-child(4),
+    .loading-image div:nth-child(5),
+    .loading-image div:nth-child(6){
+        background-color: #49b1f5;
+        width: 15px;
+        height: 15px;
+        border-radius: 100%;
+        margin: 2px;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        transform: translateY(-6.25px);
+        top: 25px;
+        left: 100px;
+    }
+    .loading-text{
+        margin-bottom: 20vh;
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2rem;
+        box-sizing: border-box;
+        padding: 0 10px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    @media only screen and (max-width: 500px) {
+         .loading-text{
+            font-size: 1.5rem;
+         }
+    }
+    .fadeout {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    /* logo出现动画 */
+    @-webkit-keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}100%{opacity:1;-webkit-transform:none;transform:none}}
+    @keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);}}
+ </style>
+ <script>
+(function () {
+    const loaded = function(){
+       setTimeout(function(){
+            const loader = document.getElementById("loading-container");
+            loader.className="fadeout" ;//使用渐隐的方法淡出loading page
+            // document.getElementById("body-wrap").style.display="flex";
+            setTimeout(function(){
+                loader.style.display="none";
+            },1000); 
+        },1000);//强制显示loading page 1s  
+    };
+    loaded();
+})()
+ </script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="欢迎来到，TWOTO 的博客" type="application/atom+xml">
+</head>
+ <div id="loading-container">
+     <p class="loading-text">玩命加载中 . . . </p> 
+     <div class="loading-image">
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div> 
+         <div></div>
+     </div>
+ </div><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">59</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">欢迎来到，TWOTO 的博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-compass"></i><span> 目录</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">八，项目性能测试<a class="post-edit-link" href="https://github.com/DongZhouGu/Blog-backup/edit/master/source/_posts/yuque/八，项目性能测试.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2022-05-12T06:42:22.000Z" title="undefined 2022-05-12 14:42:22">2022-05-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="八，项目性能测试"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>通过前面的章节，我们的 RPC 框架已经搭建完成，虽仍有许多待优化的点，但整体的效率性能应该还是不错的，下面我们来对 XRPC 的性能进行测试</p>
+<h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>我所用的测试机器硬件配置为：</p>
+<ul>
+<li>操作系统：Windows10</li>
+<li>CPU: AMD R5 3500X 6-Core</li>
+<li>内存：16 GB 3200 MHz DDR4</li>
+</ul>
+<h2 id="序列化测试"><a href="#序列化测试" class="headerlink" title="序列化测试"></a>序列化测试</h2><p>序列化针对序列化的大小和速度进行测试</p>
+<h3 id="序列化后的数据大小"><a href="#序列化后的数据大小" class="headerlink" title="序列化后的数据大小"></a>序列化后的数据大小</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SerializerCompareTest</span> </span>{</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> RpcMessage <span class="title">buildMessage</span><span class="params">()</span> </span>{</span><br><span class="line">        RpcResponse&lt;Object&gt; rpcResponse = RpcResponse.builder()</span><br><span class="line">                .requestId(UUID.randomUUID().toString())</span><br><span class="line">                .message(SUCCESS.getMessage())</span><br><span class="line">                .code(SUCCESS.getCode())</span><br><span class="line">                .data(<span class="keyword">new</span> String(<span class="string">"我是结果，我是结果，我是结果"</span>)).build();</span><br><span class="line"></span><br><span class="line">        RpcMessage rpcMessage = RpcMessage.builder()</span><br><span class="line">                .requestId(<span class="number">1</span>)</span><br><span class="line">                .compress(GZIP.getCode())</span><br><span class="line">                .messageType(REQUEST_TYPE)</span><br><span class="line">                .codec(KRYO.getCode())</span><br><span class="line">                .data(rpcResponse).build();</span><br><span class="line">        <span class="keyword">return</span> rpcMessage;</span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">kryoSerializeSizeTest</span><span class="params">()</span> </span>{</span><br><span class="line">        RpcMessage data = buildMessage();</span><br><span class="line">        KryoSerializer kryoSerializer = <span class="keyword">new</span> KryoSerializer();</span><br><span class="line">        <span class="keyword">byte</span>[] serialize = kryoSerializer.serialize(data);</span><br><span class="line">        System.out.println(<span class="string">"kryo's size is "</span> + serialize.length);</span><br><span class="line">        RpcMessage out = kryoSerializer.deserialize(RpcMessage.class, serialize);</span><br><span class="line">        assertEquals(out, data);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hessianSerializeSizeTest</span><span class="params">()</span> </span>{</span><br><span class="line">        RpcMessage data = buildMessage();</span><br><span class="line">        HessianSerializer hessianSerializer = <span class="keyword">new</span> HessianSerializer();</span><br><span class="line">        <span class="keyword">byte</span>[] serialize = hessianSerializer.serialize(data);</span><br><span class="line">        System.out.println(<span class="string">"hessian's size is "</span> + serialize.length);</span><br><span class="line">        RpcMessage out = hessianSerializer.deserialize(RpcMessage.class, serialize);</span><br><span class="line">        assertEquals(out, data);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">protostuffSerializeSizeTest</span><span class="params">()</span> </span>{</span><br><span class="line">        RpcMessage data = buildMessage();</span><br><span class="line">        ProtostuffSerializer protostuffSerializer = <span class="keyword">new</span> ProtostuffSerializer();</span><br><span class="line">        <span class="keyword">byte</span>[] serialize = protostuffSerializer.serialize(data);</span><br><span class="line">        System.out.println(<span class="string">"protostuff's size is "</span> + serialize.length);</span><br><span class="line">        RpcMessage out = protostuffSerializer.deserialize(RpcMessage.class, serialize);</span><br><span class="line">        assertEquals(out, data);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sizeTest</span><span class="params">()</span> </span>{</span><br><span class="line">        kryoSerializeSizeTest();</span><br><span class="line">        hessianSerializeSizeTest();</span><br><span class="line">        protostuffSerializeSizeTest();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>主要针对实现的三种序列化算法进行了实现，结果如下</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kryo<span class="string">'s size is 100</span></span><br><span class="line"><span class="string">hessian'</span>s size is <span class="number">274</span></span><br><span class="line">protostuff<span class="string">'s size is 138</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>kryo 的序列化后数据体积最小</p>
+<h3 id="序列化性能"><a href="#序列化性能" class="headerlink" title="序列化性能"></a>序列化性能</h3><p>这里使用 JMH 进行测试 <a target="_blank" rel="noopener" href="http://openjdk.java.net/projects/code-tools/jmh/">http://openjdk.java.net/projects/code-tools/jmh/</a></p>
+<blockquote>
+<p>JMH 即 Java Microbenchmark Harness，这是专门用于进行代码的微基准测试的一套工具 API。<br>JMH 由 OpenJDK/Oracle 里面那群开发了 Java 编译器的大牛们所开发 。何谓 Micro Benchmark 呢？ 简单地说就是在 method 层面上的 benchmark，精度可以精确到 微秒级。</p>
+</blockquote>
+<p>首先再 pom 中导入依赖</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">          &lt;groupId&gt;org.openjdk.jmh&lt;/groupId&gt;</span><br><span class="line">          &lt;artifactId&gt;jmh-core&lt;/artifactId&gt;</span><br><span class="line">          &lt;version&gt;<span class="number">1.35</span>&lt;/version&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">          &lt;groupId&gt;org.openjdk.jmh&lt;/groupId&gt;</span><br><span class="line">          &lt;artifactId&gt;jmh-generator-annprocess&lt;/artifactId&gt;</span><br><span class="line">          &lt;version&gt;<span class="number">1.35</span>&lt;/version&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="JMH-中的注解介绍"><a href="#JMH-中的注解介绍" class="headerlink" title="JMH 中的注解介绍"></a>JMH 中的注解介绍</h4><h4 id="Warmup"><a href="#Warmup" class="headerlink" title="@Warmup"></a>@Warmup</h4><p>@Warmup<strong>(</strong> iterations <strong>=</strong> 5<strong>,</strong> time <strong>=</strong> 1<strong>,</strong> timeUnit <strong>=</strong> TimeUnit<strong>.</strong>SECONDS<strong>)</strong><br>warmup 这个注解，可以用在类或者方法上，进行预热配置。可以看到，它有几个配置参数。</p>
+<ul>
+<li>timeUnit ：时间的单位，默认的单位是秒。</li>
+<li>iterations ：预热阶段的迭代数。</li>
+<li>time ：每次预热的时间。</li>
+<li>batchSize ：批处理大小，指定了每次操作调用几次方法。</li>
+</ul>
+<p>上面的注解，意思是对代码预热总计 5 秒（迭代 5 次，每次一秒） 。预热过程的测试数据，是不记录测量结果的。<strong>为啥要预热呢？</strong><br>因为 JVM 的 JIT 机制的存在，如果某个函数被调用多次之后，JVM 会尝试将其编译成为机器码从而提高执行速度。所以为了让 benchmark 的结果更加接近真实情况就需要进行预热。</p>
+<h4 id="Measurement"><a href="#Measurement" class="headerlink" title="@Measurement"></a>@Measurement</h4><p>度量，其实就是一些基本的测试参数。</p>
+<ul>
+<li>iterations - 进行测试的轮次</li>
+<li>time - 每轮进行的时长</li>
+<li>timeUnit - 时长单位</li>
+</ul>
+<h4 id="Benchmark"><a href="#Benchmark" class="headerlink" title="@Benchmark"></a>@Benchmark</h4><p>方法级注解，表示该方法是需要进行 benchmark 的对象，用法和 JUnit 的 @Test 类似。</p>
+<h4 id="BenchmarkMode"><a href="#BenchmarkMode" class="headerlink" title="@BenchmarkMode"></a>@BenchmarkMode</h4><p>基准测试类型。这里选择的是 Throughput 也就是吞吐量。根据源码点进去，每种类型后面都有对应的解释，比较好理解，吞吐量会得到单位时间内可以进行的操作数。</p>
+<ul>
+<li>Throughput: 整体吞吐量，例如”1 秒内可以执行多少次调用”。</li>
+<li>AverageTime: 调用的平均时间，例如”每次调用平均耗时 xxx 毫秒”。</li>
+<li>SampleTime: 随机取样，最后输出取样结果的分布，例如”99%的调用在 xxx 毫秒以内，99.99%的调用在 xxx 毫秒以内”</li>
+<li>SingleShotTime: 以上模式都是默认一次 iteration 是 1s，唯有 SingleShotTime 是只运行一次。往往同时把 warmup 次数设为 0，用于测试冷启动时的性能。</li>
+<li>All(“all”, “All benchmark modes”);</li>
+</ul>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Fork(1)</span></span><br><span class="line"><span class="meta">@Warmup(iterations = 3, time = 5)</span></span><br><span class="line"><span class="comment">//测量次数,每次测量的持续时间</span></span><br><span class="line"><span class="meta">@Measurement(iterations = 3, time = 10)</span></span><br><span class="line"><span class="meta">@BenchmarkMode(Mode.All)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SerializerCompareTest</span> </span>{</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> RpcMessage <span class="title">buildMessage</span><span class="params">()</span> </span>{</span><br><span class="line">        RpcResponse&lt;Object&gt; rpcResponse = RpcResponse.builder()</span><br><span class="line">                .requestId(UUID.randomUUID().toString())</span><br><span class="line">                .message(SUCCESS.getMessage())</span><br><span class="line">                .code(SUCCESS.getCode())</span><br><span class="line">                .data(<span class="keyword">new</span> String(<span class="string">"我是结果，我是结果，我是结果"</span>)).build();</span><br><span class="line"></span><br><span class="line">        RpcMessage rpcMessage = RpcMessage.builder()</span><br><span class="line">                .requestId(<span class="number">1</span>)</span><br><span class="line">                .compress(GZIP.getCode())</span><br><span class="line">                .messageType(REQUEST_TYPE)</span><br><span class="line">                .codec(KRYO.getCode())</span><br><span class="line">                .data(rpcResponse).build();</span><br><span class="line">        <span class="keyword">return</span> rpcMessage;</span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">kryoSerializeSizeTest</span><span class="params">()</span> </span>{</span><br><span class="line">        RpcMessage data = buildMessage();</span><br><span class="line">        KryoSerializer kryoSerializer = <span class="keyword">new</span> KryoSerializer();</span><br><span class="line">        <span class="keyword">byte</span>[] serialize = kryoSerializer.serialize(data);</span><br><span class="line">        <span class="comment">//System.out.println("kryo's size is " + serialize.length);</span></span><br><span class="line">        RpcMessage out = kryoSerializer.deserialize(RpcMessage.class, serialize);</span><br><span class="line">        assertEquals(out, data);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hessianSerializeSizeTest</span><span class="params">()</span> </span>{</span><br><span class="line">        RpcMessage data = buildMessage();</span><br><span class="line">        HessianSerializer hessianSerializer = <span class="keyword">new</span> HessianSerializer();</span><br><span class="line">        <span class="keyword">byte</span>[] serialize = hessianSerializer.serialize(data);</span><br><span class="line">        <span class="comment">//System.out.println("hessian's size is " + serialize.length);</span></span><br><span class="line">        RpcMessage out = hessianSerializer.deserialize(RpcMessage.class, serialize);</span><br><span class="line">        assertEquals(out, data);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">protostuffSerializeSizeTest</span><span class="params">()</span> </span>{</span><br><span class="line">        RpcMessage data = buildMessage();</span><br><span class="line">        ProtostuffSerializer protostuffSerializer = <span class="keyword">new</span> ProtostuffSerializer();</span><br><span class="line">        <span class="keyword">byte</span>[] serialize = protostuffSerializer.serialize(data);</span><br><span class="line">        <span class="comment">//System.out.println("protostuff's size is " + serialize.length);</span></span><br><span class="line">        RpcMessage out = protostuffSerializer.deserialize(RpcMessage.class, serialize);</span><br><span class="line">        assertEquals(out, data);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">speedTest</span><span class="params">()</span> <span class="keyword">throws</span> RunnerException </span>{</span><br><span class="line">        Options options = <span class="keyword">new</span> OptionsBuilder().build();</span><br><span class="line">        <span class="keyword">new</span> Runner(options).run();</span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="性能结果"><a href="#性能结果" class="headerlink" title="性能结果"></a>性能结果</h4><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Benchmark                                           Mode  Cnt       Score      Error  Units</span><br><span class="line">SerializerCompareTest.hessianSerializeSizeTest     thrpt    <span class="number">5</span>   <span class="number">40262.595</span> ± <span class="number">2023.531</span>  ops/s</span><br><span class="line">SerializerCompareTest.kryoSerializeSizeTest        thrpt    <span class="number">5</span>   <span class="number">18974.527</span> ±  <span class="number">449.052</span>  ops/s</span><br><span class="line">SerializerCompareTest.protostuffSerializeSizeTest  thrpt    <span class="number">5</span>  <span class="number">307698.363</span> ± <span class="number">2169.165</span>  ops/s</span><br></pre></td></tr></tbody></table></figure>
+
+<p>对比来看，性能上 protostuff&gt;hessian2&gt;kryo, 综合测试的数据来看，似乎 protostuff 作为默认的序列化技术较佳，不过 kryo 的序列化体积确实是最小的。</p>
+<h2 id="框架性能测试"><a href="#框架性能测试" class="headerlink" title="框架性能测试"></a>框架性能测试</h2><p>这里我们使用线程池估算接口的性能</p>
+<ul>
+<li>大量<strong>顺序</strong>请求下，服务的线程数，JVM 内存布局、系统是否正常。</li>
+<li>大量<strong>并发</strong>请求下，服务的线程数，JVM 内存布局、系统是否正常。</li>
+<li><strong>JVM 参数配置</strong>：-Xmx512m -XX:MaxHeapSize=512m -Xmn256m -XX:MaxNewSize=256m</li>
+</ul>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@SpringBootTest(classes = RpcClientSpringBootApplication.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InvokeCompareTest</span> </span>{</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    HelloController helloController;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ExecutorService executor = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">1</span>, <span class="number">1</span>, <span class="number">5</span>, TimeUnit.SECONDS,</span><br><span class="line">            <span class="keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="number">1000</span>), <span class="keyword">new</span> ThreadFactory() {</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Thread <span class="title">newThread</span><span class="params">(Runnable r)</span> </span>{</span><br><span class="line">            Thread t = <span class="keyword">new</span> Thread(r);</span><br><span class="line">            t.setDaemon(<span class="keyword">true</span>);</span><br><span class="line">            t.setName(<span class="string">"xrpc-test-netty-work"</span>);</span><br><span class="line">            <span class="keyword">return</span> t;</span><br><span class="line">        }</span><br><span class="line">    });</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>{</span><br><span class="line">        <span class="keyword">int</span> epoch = <span class="number">20</span>;</span><br><span class="line">        <span class="keyword">int</span> size = <span class="number">10000</span>;</span><br><span class="line">        <span class="keyword">float</span> allTime = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 运行20次</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= epoch; ++i) {</span><br><span class="line">            <span class="keyword">final</span> CountDownLatch latch = <span class="keyword">new</span> CountDownLatch(size);</span><br><span class="line">            <span class="keyword">final</span> Semaphore semaphore = <span class="keyword">new</span> Semaphore(<span class="number">300</span>, <span class="keyword">false</span>);</span><br><span class="line">            <span class="keyword">long</span> startTime = System.currentTimeMillis();</span><br><span class="line">            <span class="comment">// 每次调用size次</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= size; j++) {</span><br><span class="line">                semaphore.acquire();</span><br><span class="line">                executor.submit(() -&gt; {</span><br><span class="line">                    <span class="keyword">try</span> {</span><br><span class="line">                        helloController.testSyncBenchMark();</span><br><span class="line">                    } <span class="keyword">catch</span> (InterruptedException e) {</span><br><span class="line">                    } <span class="keyword">finally</span> {</span><br><span class="line">                        semaphore.release();</span><br><span class="line">                        latch.countDown();</span><br><span class="line">                    }</span><br><span class="line">                });</span><br><span class="line">            }</span><br><span class="line">            log.info(<span class="string">"第"</span> + i + <span class="string">"次运行--&gt;提交任务完成"</span>);</span><br><span class="line">            <span class="comment">// 阻塞等待调用size次任务完成</span></span><br><span class="line">            latch.await();</span><br><span class="line">            <span class="keyword">float</span> epochTime = System.currentTimeMillis() - startTime;</span><br><span class="line">            allTime += epochTime;</span><br><span class="line">            log.info(<span class="string">"第"</span> + i + <span class="string">"次运行--&gt;耗时：[{}] ms"</span>, epochTime);</span><br><span class="line">            <span class="keyword">if</span> (i == <span class="number">10</span>) {</span><br><span class="line">                Thread.sleep(<span class="number">10000</span>);</span><br><span class="line">            } <span class="keyword">else</span> {</span><br><span class="line">                Thread.sleep(<span class="number">100</span>);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">float</span> num = (<span class="keyword">float</span>) epoch * size;</span><br><span class="line">        log.info(<span class="string">"平均每次调用--&gt;耗时：[{}] ms"</span>, allTime / num);</span><br><span class="line">        <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>).await();</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里我们使用线程池来完成压力测试</p>
+<ul>
+<li>构建一个线程池，线程数模拟并发用户调用</li>
+<li>size 代表连续调用 size 次</li>
+<li>i 为重复次数，以平均时间得到合理压测结果</li>
+<li>同时使用 CountDownLatch 来阻塞主线程以便计算耗时</li>
+<li>使用 Semaphore 来简单限流，限制线程运行数量</li>
+</ul>
+<h3 id="大量顺序请求测试"><a href="#大量顺序请求测试" class="headerlink" title="大量顺序请求测试"></a>大量顺序请求测试</h3><p>如上述代码，我们将线程池中线程设置为 1，连续调用 1w 次,重复 20 次</p>
+<ul>
+<li>serializer: protostuff</li>
+<li>compress: dummy</li>
+</ul>
+<p>调用结果：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">第<span class="number">0</span>次运行--&gt;耗时：[<span class="number">9805.0</span>] ms</span><br><span class="line">第<span class="number">1</span>次运行--&gt;耗时：[<span class="number">6021.0</span>] ms</span><br><span class="line">第<span class="number">2</span>次运行--&gt;耗时：[<span class="number">6032.0</span>] ms</span><br><span class="line">第<span class="number">3</span>次运行--&gt;耗时：[<span class="number">5646.0</span>] ms</span><br><span class="line">第<span class="number">4</span>次运行--&gt;耗时：[<span class="number">5637.0</span>] ms</span><br><span class="line">第<span class="number">5</span>次运行--&gt;耗时：[<span class="number">6673.0</span>] ms</span><br><span class="line">第<span class="number">6</span>次运行--&gt;耗时：[<span class="number">5930.0</span>] ms</span><br><span class="line">第<span class="number">7</span>次运行--&gt;耗时：[<span class="number">6144.0</span>] ms</span><br><span class="line">第<span class="number">8</span>次运行--&gt;耗时：[<span class="number">5814.0</span>] ms</span><br><span class="line">第<span class="number">9</span>次运行--&gt;耗时：[<span class="number">5272.0</span>] ms</span><br><span class="line">第<span class="number">10</span>次运行--&gt;耗时：[<span class="number">5292.0</span>] ms</span><br><span class="line">第<span class="number">11</span>次运行--&gt;耗时：[<span class="number">5401.0</span>] ms</span><br><span class="line">第<span class="number">12</span>次运行--&gt;耗时：[<span class="number">5330.0</span>] ms</span><br><span class="line">第<span class="number">13</span>次运行--&gt;耗时：[<span class="number">5402.0</span>] ms</span><br><span class="line">第<span class="number">14</span>次运行--&gt;耗时：[<span class="number">5350.0</span>] ms</span><br><span class="line">第<span class="number">15</span>次运行--&gt;耗时：[<span class="number">6219.0</span>] ms</span><br><span class="line">第<span class="number">16</span>次运行--&gt;耗时：[<span class="number">5339.0</span>] ms</span><br><span class="line">第<span class="number">17</span>次运行--&gt;耗时：[<span class="number">5427.0</span>] ms</span><br><span class="line">第<span class="number">18</span>次运行--&gt;耗时：[<span class="number">5689.0</span>] ms</span><br><span class="line">第<span class="number">19</span>次运行--&gt;耗时：[<span class="number">6094.0</span>] ms</span><br><span class="line">平均每次调用--&gt;耗时：[<span class="number">0.592585</span>] ms</span><br></pre></td></tr></tbody></table></figure>
+
+<p>每轮重复调用过程中，单次调用时间稳定在 0.6ms 左右<br>测试过程中使用采 JvisualVM 查看 JVM 内存和线程情况，线程数量正常，线程数量稳定，垃圾回收整场</p>
+<p><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2022/png/1164521/1651934672550-985d2040-281e-47e8-9168-72923613e75b.png#clientId=ucc345779-629b-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=912&amp;id=uaf549262&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=912&amp;originWidth=1435&amp;originalType=binary%E2%88%B6=1&amp;rotation=0&amp;showTitle=false&amp;size=151748&amp;status=done&amp;style=none&amp;taskId=ub198c525-26e0-4867-8228-8f506417c01&amp;title=&amp;width=1435" alt="image.png">)<img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2022/png/1164521/1651934692718-cd806545-7f81-4ae1-97c3-8fbd38369716.png#clientId=ucc345779-629b-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=922&amp;id=ude286b31&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=922&amp;originWidth=1445&amp;originalType=binary%E2%88%B6=1&amp;rotation=0&amp;showTitle=false&amp;size=138472&amp;status=done&amp;style=none&amp;taskId=u32a579fb-979a-4b1c-8533-cdb6359122c&amp;title=&amp;width=1445" alt="image.png"></p>
+<h3 id="大量并发请求测试"><a href="#大量并发请求测试" class="headerlink" title="大量并发请求测试"></a>大量并发请求测试</h3><p>如上述代码，我们将线程池中线程设置为 32，连续调用 1w 次,重复 20 次</p>
+<ul>
+<li>serializer: protostuff</li>
+<li>compress: dummy</li>
+</ul>
+<p>调用结果：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">第<span class="number">0</span>次运行--&gt;耗时：[<span class="number">8942.0</span>] ms</span><br><span class="line">第<span class="number">1</span>次运行--&gt;耗时：[<span class="number">2022.0</span>] ms</span><br><span class="line">第<span class="number">2</span>次运行--&gt;耗时：[<span class="number">2182.0</span>] ms</span><br><span class="line">第<span class="number">3</span>次运行--&gt;耗时：[<span class="number">2214.0</span>] ms</span><br><span class="line">第<span class="number">4</span>次运行--&gt;耗时：[<span class="number">1870.0</span>] ms</span><br><span class="line">第<span class="number">5</span>次运行--&gt;耗时：[<span class="number">2050.0</span>] ms</span><br><span class="line">第<span class="number">6</span>次运行--&gt;耗时：[<span class="number">2554.0</span>] ms</span><br><span class="line">第<span class="number">7</span>次运行--&gt;耗时：[<span class="number">1949.0</span>] ms</span><br><span class="line">第<span class="number">8</span>次运行--&gt;耗时：[<span class="number">1866.0</span>] ms</span><br><span class="line">第<span class="number">9</span>次运行--&gt;耗时：[<span class="number">1916.0</span>] ms</span><br><span class="line">第<span class="number">10</span>次运行--&gt;耗时：[<span class="number">1767.0</span>] ms</span><br><span class="line">第<span class="number">11</span>次运行--&gt;耗时：[<span class="number">2205.0</span>] ms</span><br><span class="line">第<span class="number">12</span>次运行--&gt;耗时：[<span class="number">1829.0</span>] ms</span><br><span class="line">第<span class="number">13</span>次运行--&gt;耗时：[<span class="number">1887.0</span>] ms</span><br><span class="line">第<span class="number">14</span>次运行--&gt;耗时：[<span class="number">2062.0</span>] ms</span><br><span class="line">第<span class="number">15</span>次运行--&gt;耗时：[<span class="number">2552.0</span>] ms</span><br><span class="line">第<span class="number">16</span>次运行--&gt;耗时：[<span class="number">2005.0</span>] ms</span><br><span class="line">第<span class="number">17</span>次运行--&gt;耗时：[<span class="number">2034.0</span>] ms</span><br><span class="line">第<span class="number">18</span>次运行--&gt;耗时：[<span class="number">2216.0</span>] ms</span><br><span class="line">第<span class="number">19</span>次运行--&gt;耗时：[<span class="number">1930.0</span>] ms</span><br><span class="line">平均每次调用--&gt;耗时：[<span class="number">0.24026</span>] ms</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在没有业务逻辑，服务端收到即返回的情况下，吞吐量 (32/0.23 )*1000 =13.9w 左右</p>
+<p>如上述代码，我们将线程池中线程设置为 128，连续调用 1w 次,重复 20 次</p>
+<ul>
+<li>serializer: protostuff</li>
+<li>compress: dummy</li>
+</ul>
+<p>调用结果：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">第<span class="number">0</span>次运行--&gt;耗时：[<span class="number">8796.0</span>] ms</span><br><span class="line">第<span class="number">1</span>次运行--&gt;耗时：[<span class="number">1614.0</span>] ms</span><br><span class="line">第<span class="number">2</span>次运行--&gt;耗时：[<span class="number">1730.0</span>] ms</span><br><span class="line">第<span class="number">3</span>次运行--&gt;耗时：[<span class="number">1752.0</span>] ms</span><br><span class="line">第<span class="number">4</span>次运行--&gt;耗时：[<span class="number">2035.0</span>] ms</span><br><span class="line">第<span class="number">5</span>次运行--&gt;耗时：[<span class="number">3431.0</span>] ms</span><br><span class="line">第<span class="number">6</span>次运行--&gt;耗时：[<span class="number">1993.0</span>] ms</span><br><span class="line">第<span class="number">7</span>次运行--&gt;耗时：[<span class="number">1936.0</span>] ms</span><br><span class="line">第<span class="number">8</span>次运行--&gt;耗时：[<span class="number">2045.0</span>] ms</span><br><span class="line">第<span class="number">9</span>次运行--&gt;耗时：[<span class="number">1888.0</span>] ms</span><br><span class="line">第<span class="number">10</span>次运行--&gt;耗时：[<span class="number">2067.0</span>] ms</span><br><span class="line">第<span class="number">11</span>次运行--&gt;耗时：[<span class="number">2282.0</span>] ms</span><br><span class="line">第<span class="number">12</span>次运行--&gt;耗时：[<span class="number">2699.0</span>] ms</span><br><span class="line">第<span class="number">13</span>次运行--&gt;耗时：[<span class="number">2703.0</span>] ms</span><br><span class="line">第<span class="number">14</span>次运行--&gt;耗时：[<span class="number">2289.0</span>] ms</span><br><span class="line">第<span class="number">15</span>次运行--&gt;耗时：[<span class="number">2572.0</span>] ms</span><br><span class="line">第<span class="number">16</span>次运行--&gt;耗时：[<span class="number">2519.0</span>] ms</span><br><span class="line">第<span class="number">17</span>次运行--&gt;耗时：[<span class="number">2438.0</span>] ms</span><br><span class="line">第<span class="number">18</span>次运行--&gt;耗时：[<span class="number">2681.0</span>] ms</span><br><span class="line">第<span class="number">19</span>次运行--&gt;耗时：[<span class="number">2515.0</span>] ms</span><br><span class="line">平均每次调用--&gt;耗时：[<span class="number">0.259925</span>] ms</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在没有业务逻辑，服务端收到即返回的情况下，吞吐量 (128/0.26 )*1000 =49.2w 左右</p>
+<p>如上述代码，我们将线程池中线程设置为 256，连续调用 1w 次,重复 20 次</p>
+<ul>
+<li>serializer: protostuff</li>
+<li>compress: dummy</li>
+</ul>
+<p>调用结果：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">第<span class="number">0</span>次运行--&gt;耗时：[<span class="number">8915.0</span>] ms</span><br><span class="line">第<span class="number">1</span>次运行--&gt;耗时：[<span class="number">2074.0</span>] ms</span><br><span class="line">第<span class="number">2</span>次运行--&gt;耗时：[<span class="number">2036.0</span>] ms</span><br><span class="line">第<span class="number">3</span>次运行--&gt;耗时：[<span class="number">1861.0</span>] ms</span><br><span class="line">第<span class="number">4</span>次运行--&gt;耗时：[<span class="number">1930.0</span>] ms</span><br><span class="line">第<span class="number">5</span>次运行--&gt;耗时：[<span class="number">1966.0</span>] ms</span><br><span class="line">第<span class="number">6</span>次运行--&gt;耗时：[<span class="number">1939.0</span>] ms</span><br><span class="line">第<span class="number">7</span>次运行--&gt;耗时：[<span class="number">2337.0</span>] ms</span><br><span class="line">第<span class="number">8</span>次运行--&gt;耗时：[<span class="number">3372.0</span>] ms</span><br><span class="line">第<span class="number">9</span>次运行--&gt;耗时：[<span class="number">2432.0</span>] ms</span><br><span class="line">第<span class="number">10</span>次运行--&gt;耗时：[<span class="number">2291.0</span>] ms</span><br><span class="line">第<span class="number">11</span>次运行--&gt;耗时：[<span class="number">2494.0</span>] ms</span><br><span class="line">第<span class="number">12</span>次运行--&gt;耗时：[<span class="number">2455.0</span>] ms</span><br><span class="line">第<span class="number">13</span>次运行--&gt;耗时：[<span class="number">3207.0</span>] ms</span><br><span class="line">第<span class="number">14</span>次运行--&gt;耗时：[<span class="number">2450.0</span>] ms</span><br><span class="line">第<span class="number">15</span>次运行--&gt;耗时：[<span class="number">2345.0</span>] ms</span><br><span class="line">第<span class="number">16</span>次运行--&gt;耗时：[<span class="number">2119.0</span>] ms</span><br><span class="line">第<span class="number">17</span>次运行--&gt;耗时：[<span class="number">2542.0</span>] ms</span><br><span class="line">第<span class="number">18</span>次运行--&gt;耗时：[<span class="number">2788.0</span>] ms</span><br><span class="line">第<span class="number">19</span>次运行--&gt;耗时：[<span class="number">2539.0</span>] ms</span><br><span class="line">平均每次调用--&gt;耗时：[<span class="number">0.27046</span>] ms</span><br></pre></td></tr></tbody></table></figure>
+
+<p>当并发量达到 256 时，响应时间仍没有大幅增加，只有小幅增加，吞吐量仍在进一步提升。<br>当然，由于客服端和服务端都在本地，通信成本相对较低，有条件可以模拟真实的网络环境进行再测试。<br><img src= "/img/loading.gif" data-lazy-src="https://cdn.nlark.com/yuque/0/2022/png/1164521/1651940776430-89cd3ad4-9184-41df-9068-e860e6421dae.png#clientId=ucc345779-629b-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=977&amp;id=u0e0eb0a5&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=977&amp;originWidth=1457&amp;originalType=binary%E2%88%B6=1&amp;rotation=0&amp;showTitle=false&amp;size=134767&amp;status=done&amp;style=none&amp;taskId=u06f15d5f-6d56-4430-8199-839001d9906&amp;title=&amp;width=1457" alt="image.png"></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">DongZhou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dongzhougu.github.io/2022/05/12/yuque/ba-xiang-mu-xing-neng-ce-shi/">https://dongzhougu.github.io/2022/05/12/yuque/ba-xiang-mu-xing-neng-ce-shi/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongzhougu.github.io" target="_blank">欢迎来到，TWOTO 的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/XPRC/">XPRC</a><a class="post-meta__tags" href="/tags/Netty/">Netty</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/wechat.png" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/wechat.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><meta name="referrer" content="no-referrer" /><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/05/12/yuque/qi-ji-cheng-spring-yu-springboot/"><img class="next-cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">七、集成Spring与SpringBoot</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/05/12/yuque/xrpc-xiang-mu-fang-dubbo-readme/" title="XRPC项目(仿Dubbo)-README"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-2.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">XRPC项目(仿Dubbo)-README</div></div></a></div><div><a href="/2022/05/12/yuque/qi-ji-cheng-spring-yu-springboot/" title="七、集成Spring与SpringBoot"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-6.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">七、集成Spring与SpringBoot</div></div></a></div><div><a href="/2022/05/12/yuque/er-wang-luo-chuan-shu-gao-xiao-xu-lie-hua-xie-yi-yu-shi-xian/" title="二、网络传输高效序列化协议与实现"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">二、网络传输高效序列化协议与实现</div></div></a></div><div><a href="/2022/05/12/yuque/wu-shi-yong-spi-shi-xian-ke-cha-ba-kuo-zhan-she-ji/" title="五、使用SPI实现可插拔扩展设计"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">五、使用SPI实现可插拔扩展设计</div></div></a></div><div><a href="/2022/05/12/yuque/liu-qu-diao-yong-na-ge-fu-wu-qi-ni-fu-zai-jun-heng-ce-lue/" title="六、去调用哪个服务器呢？负载均衡策略"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">六、去调用哪个服务器呢？负载均衡策略</div></div></a></div><div><a href="/2022/05/12/yuque/ling-ru-he-shi-xian-yi-ge-qing-liang-ji-rpc-kuang-jia/" title="零、如何实现一个轻量级RPC框架？"><img class="cover" src= "/img/loading.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-05-12</div><div class="title">零、如何实现一个轻量级RPC框架？</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "/img/loading.gif" data-lazy-src="/img/avatar.png" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/DongZhouGu/DongZhouGu.github.io/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">DongZhou</div><div class="author-info__description">技术、效率、摄影</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">59</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/DongZhouGu"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="tencent://AddContact/?fromId=45&amp;fromSubId=1&amp;subcmd=all&amp;uin=1596586942&amp;website=www.oicqzone.com" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://github.com/DongZhouGu" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:gdz678@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83"><span class="toc-number">2.</span> <span class="toc-text">测试环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E6%B5%8B%E8%AF%95"><span class="toc-number">3.</span> <span class="toc-text">序列化测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E5%90%8E%E7%9A%84%E6%95%B0%E6%8D%AE%E5%A4%A7%E5%B0%8F"><span class="toc-number">3.1.</span> <span class="toc-text">序列化后的数据大小</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E6%80%A7%E8%83%BD"><span class="toc-number">3.2.</span> <span class="toc-text">序列化性能</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JMH-%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.2.1.</span> <span class="toc-text">JMH 中的注解介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Warmup"><span class="toc-number">3.2.2.</span> <span class="toc-text">@Warmup</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Measurement"><span class="toc-number">3.2.3.</span> <span class="toc-text">@Measurement</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Benchmark"><span class="toc-number">3.2.4.</span> <span class="toc-text">@Benchmark</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BenchmarkMode"><span class="toc-number">3.2.5.</span> <span class="toc-text">@BenchmarkMode</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E7%BB%93%E6%9E%9C"><span class="toc-number">3.2.6.</span> <span class="toc-text">性能结果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%86%E6%9E%B6%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="toc-number">4.</span> <span class="toc-text">框架性能测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E9%87%8F%E9%A1%BA%E5%BA%8F%E8%AF%B7%E6%B1%82%E6%B5%8B%E8%AF%95"><span class="toc-number">4.1.</span> <span class="toc-text">大量顺序请求测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E9%87%8F%E5%B9%B6%E5%8F%91%E8%AF%B7%E6%B1%82%E6%B5%8B%E8%AF%95"><span class="toc-number">4.2.</span> <span class="toc-text">大量并发请求测试</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/ba-xiang-mu-xing-neng-ce-shi/" title="八，项目性能测试">八，项目性能测试</a><time datetime="2022-05-12T06:42:22.000Z" title="发表于 2022-05-12 14:42:22">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/qi-ji-cheng-spring-yu-springboot/" title="七、集成Spring与SpringBoot">七、集成Spring与SpringBoot</a><time datetime="2022-05-12T06:42:19.000Z" title="发表于 2022-05-12 14:42:19">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/xrpc-xiang-mu-fang-dubbo-readme/" title="XRPC项目(仿Dubbo)-README">XRPC项目(仿Dubbo)-README</a><time datetime="2022-05-12T06:42:18.000Z" title="发表于 2022-05-12 14:42:18">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/liu-qu-diao-yong-na-ge-fu-wu-qi-ni-fu-zai-jun-heng-ce-lue/" title="六、去调用哪个服务器呢？负载均衡策略">六、去调用哪个服务器呢？负载均衡策略</a><time datetime="2022-05-12T06:42:15.000Z" title="发表于 2022-05-12 14:42:15">2022-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/05/12/yuque/wu-shi-yong-spi-shi-xian-ke-cha-ba-kuo-zhan-she-ji/" title="五、使用SPI实现可插拔扩展设计">五、使用SPI实现可插拔扩展设计</a><time datetime="2022-05-12T06:42:14.000Z" title="发表于 2022-05-12 14:42:14">2022-05-12</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/material-7.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By DongZhou</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@3.8.4/source/js/main.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/tw_cn.min.js?ver=3.8.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/jerryc127/butterfly.js.org/source/selfjs/localsearch.min.js?ver=3.8.4"></script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      true && mermaid.init()
+    })
+  }
+}</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script>(function(d, w, c) {
+    w.ChatraID = 'ZjXyfadNfHZ8yJGFm';
+    var s = d.createElement('script');
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+    };
+    s.async = true;
+    s.src = 'https://call.chatra.io/chatra.js';
+    if (d.head) d.head.appendChild(s);
+})(document, window, 'Chatra');
+
+if (true) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      Chatra('openChat')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      Chatra('hide')
+    }
+    function chatBtnShow () {
+      Chatra('show')
+    }
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/talking/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.removeEventListener('scroll', window.tocScrollFn)
+  window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
